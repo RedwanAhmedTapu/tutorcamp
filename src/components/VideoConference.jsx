@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 
 const VideoConference = () => {
   const [localStream, setLocalStream] = useState(null);
-  const [remoteStream, setRemoteStream] = useState(null);
+  const [remoteStreams, setRemoteStreams] = useState([]);
   const [classID, setClassID] = useState("");
   const [studentId, setStudentId] = useState("");
   const [joiningClassID, setJoiningClassID] = useState("");
@@ -14,7 +14,8 @@ const VideoConference = () => {
 
   const peerConnectionRef = useRef(null);
   const localVideoRef = useRef(null);
-  const remoteVideoRef = useRef(null);
+  const remoteVideoRefs = useRef([]);
+
   const socket = useRef(null);
 
   useEffect(() => {
@@ -46,9 +47,10 @@ const VideoConference = () => {
         stream.getTracks().forEach((track) => peerConnection.addTrack(track, stream));
 
         peerConnection.ontrack = (event) => {
-          setRemoteStream(event.streams[0]);
-          if (remoteVideoRef.current) {
-            remoteVideoRef.current.srcObject = event.streams[0];
+          const newRemoteStreams = [...remoteStreams, event.streams[0]];
+          setRemoteStreams(newRemoteStreams);
+          if (remoteVideoRefs.current[newRemoteStreams.length - 1]) {
+            remoteVideoRefs.current[newRemoteStreams.length - 1].srcObject = event.streams[0];
           }
         };
 
@@ -91,14 +93,14 @@ const VideoConference = () => {
       if (localStream) {
         localStream.getTracks().forEach((track) => track.stop());
       }
-      if (remoteStream) {
-        remoteStream.getTracks().forEach((track) => track.stop());
-      }
+      remoteStreams.forEach((stream) => {
+        stream.getTracks().forEach((track) => track.stop());
+      });
       if (peerConnectionRef.current) {
         peerConnectionRef.current.close();
       }
     };
-  }, [isMeetingStarted, classID, joiningClassID]);
+  }, [isMeetingStarted, classID, joiningClassID, remoteStreams]);
 
   const startMeeting = () => {
     setMeetingStarted(true);
@@ -211,7 +213,14 @@ const VideoConference = () => {
               </button>
             </div>
             <video ref={localVideoRef} autoPlay className="w-full h-96" muted />
-            <video ref={remoteVideoRef} autoPlay className="w-full h-96" />
+            {remoteStreams.map((stream, index) => (
+              <video
+                key={`remoteVideo_${index}`}
+                ref={(el) => (remoteVideoRefs.current[index] = el)}
+                autoPlay
+                className="w-full h-96"
+              />
+            ))}
           </>
         )}
         {!isMeetingStarted && !isTeacher && (
