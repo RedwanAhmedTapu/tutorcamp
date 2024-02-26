@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import  { useState, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
+
 
 const VideoConference = () => {
   const [localStream, setLocalStream] = useState(null);
@@ -16,9 +17,11 @@ const VideoConference = () => {
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const socket = useRef(null);
+  
+
 
   useEffect(() => {
-    socket.current = io("http://localhost:5000");
+    socket.current = io(process.env.SERVER_URL);
 
     return () => {
       if (socket.current) {
