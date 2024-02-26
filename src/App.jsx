@@ -10,9 +10,8 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import SolutionComponent from "./components/SolutionComponent";
 import Nav from "./components/Nav";
 import Home from "./components/Home";
+import Login from "./components/Login";
 import Signup from "./components/Signup";
-import Login from "./components/login";
-
 // const basename = "/";
 
 const App = () => {
