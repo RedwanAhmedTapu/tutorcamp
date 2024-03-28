@@ -10,19 +10,19 @@ const Signup = () => {
     lname: "",
     email: "",
     password: "",
-    userType: "student", 
+    userType: "student",
     subjects: [],
   });
   const [code, setCode] = useState("");
   const [isOtp, setIsOtp] = useState(false);
   const navigate = useNavigate();
-  console.log(user)
+  console.log(user);
 
-  const serverUrl="http://localhost:5000";
+  const serverUrl = "http://localhost:5000";
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    
+
     // Handle checkboxes separately
     if (type === "checkbox") {
       setUser((prevUser) => ({
@@ -56,7 +56,7 @@ const Signup = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(user ),
+          body: JSON.stringify(user),
         });
 
         const data = await response.json();
@@ -114,7 +114,10 @@ const Signup = () => {
 
       const data = await response.json();
 
-      if (data.message === "Email verified successfully" || data.message === "Invalid verification code") {
+      if (
+        data.message === "Email verified successfully" ||
+        data.message === "Invalid verification code"
+      ) {
         navigate(`/select-level?userEmail=${userEmail}`);
       } else {
         navigate("/signup");
@@ -146,7 +149,11 @@ const Signup = () => {
 
   return (
     <>
-      <div className={`flex_center bg-slate-900 dark:bg-black ${isOtp ? "blur" : null}`}>
+      <div
+        className={`flex_center bg-slate-900 dark:bg-black ${
+          isOtp ? "blur" : null
+        }`}
+      >
         <div className="w-[50rem] flex flex-col self-center h-full max-[560px]:p-6 min-[849px]:p-10 p-20 bg-slate-900 dark:bg-[#030303] blur-1 rounded-lg shadow-md gap-y-6 relative top-10">
           <div className="flex flex-col gap-y-4">
             <h1 className="text-xl flex justify-start items-center gap-x-2 text-white font-bold">
@@ -231,7 +238,7 @@ const Signup = () => {
               <option value="teacher">Teacher</option>
             </select>
           </div>
-          {((user.userType === "student") ||(user.userType === "teacher")) && (
+          {user.userType === "teacher" && (
             <div className="flex flex-col gap-y-1 w-full">
               <label className="text-white">Select Subjects</label>
               <div className="flex gap-x-4">

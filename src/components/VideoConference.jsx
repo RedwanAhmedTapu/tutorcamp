@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 
 const VideoConference = () => {
@@ -19,7 +19,7 @@ const VideoConference = () => {
   const socket = useRef(null);
 
   useEffect(() => {
-    socket.current = io("https://tutorcampbackend.onrender.com");
+    socket.current = io(process.env.SERVER_URL);
 
     return () => {
       if (socket.current) {
@@ -70,12 +70,10 @@ const VideoConference = () => {
         }
 
         socket.current.on("answer", async (answer) => {
-          console.log("Received answer:", answer);
           await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
         });
 
         socket.current.on("ice-candidate", async (candidate) => {
-          console.log(candidate);
           if (candidate && candidate.sdpMid && candidate.sdpMLineIndex !== null) {
             await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
           }
@@ -127,7 +125,7 @@ const VideoConference = () => {
       setClassID(data);
       setIsTeacher(true);
     });
-    startMeeting(); // Start the meeting after creating the class
+    startMeeting();
   };
 
   const handleJoiningClassIDChange = (event) => {
@@ -148,7 +146,7 @@ const VideoConference = () => {
     socket.current.on("class-not-found", () => {
       console.error("Class not found");
     });
-    startMeeting(); // Start the meeting after joining the class
+    startMeeting();
   };
 
   const toggleAudio = () => {
@@ -202,27 +200,25 @@ const VideoConference = () => {
         </button>
       </div>
       <div className="w-full h-full flex_col_center">
-        { (
-          <>
-            <div className="flex justify-center items-center space-x-4 mb-4">
-              <button onClick={toggleAudio} className="bg-gray-500 text-white px-4 py-2 rounded">
-                {isAudioMuted ? "Unmute Audio" : "Mute Audio"}
-              </button>
-              <button onClick={toggleVideo} className="bg-gray-500 text-white px-4 py-2 rounded">
-                {isVideoMuted ? "Unmute Video" : "Mute Video"}
-              </button>
-            </div>
-            <video ref={localVideoRef} autoPlay className="w-full h-96" muted />
-            {remoteStreams.map((stream, index) => (
-              <video
-                key={`remoteVideo_${index}`}
-                ref={(el) => (remoteVideoRefs.current[index] = el)}
-                autoPlay
-                className="w-full h-96"
-              />
-            ))}
-          </>
-        )}
+        <>
+          <div className="flex justify-center items-center space-x-4 mb-4">
+            <button onClick={toggleAudio} className="bg-gray-500 text-white px-4 py-2 rounded">
+              {isAudioMuted ? "Unmute Audio" : "Mute Audio"}
+            </button>
+            <button onClick={toggleVideo} className="bg-gray-500 text-white px-4 py-2 rounded">
+              {isVideoMuted ? "Unmute Video" : "Mute Video"}
+            </button>
+          </div>
+          <video ref={localVideoRef} autoPlay className="w-full h-96" muted />
+          {remoteStreams.map((stream, index) => (
+            <video
+              key={`remoteVideo_${index}`}
+              ref={(el) => (remoteVideoRefs.current[index] = el)}
+              autoPlay
+              className="w-full h-96"
+            />
+          ))}
+        </>
         {!isMeetingStarted && !isTeacher && (
           <p className="text-xl text-white">Waiting for the class to start...</p>
         )}

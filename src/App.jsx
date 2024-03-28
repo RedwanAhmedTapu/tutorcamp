@@ -12,6 +12,8 @@ import Nav from "./components/Nav";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import LobbyScreen from "./components/Lobby";
+import RoomPage from "./components/Room";
 // const basename = "/";
 
 const App = () => {
@@ -25,6 +27,8 @@ const App = () => {
          <Route path="/" element={<Home/>}></Route>
          <Route path="/signup" element={<Signup/>}></Route>
          <Route path="/login" element={<Login/>}></Route>
+         
+        <Route path="/room/:roomId" element={<RoomPage />} />
          <Route path="/solution" element={<SolutionComponent/>}></Route>
         
         </Routes>
