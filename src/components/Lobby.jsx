@@ -52,7 +52,7 @@ const LobbyScreen = () => {
           onChange={(e) => setRoom(e.target.value)}
         />
         <br />
-        <button>Join</button>
+        <button type="submit">Join</button>
       </form>
     </div>
   );
