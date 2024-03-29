@@ -8,9 +8,9 @@ const RoomPage = () => {
   const [remoteSocketId, setRemoteSocketId] = useState(null);
   const [myStream, setMyStream] = useState();
   const [remoteStream, setRemoteStream] = useState();
-  const [videoMuted,setVideoMuted]=useState(false);
-  const [audioMuted,setAudioMuted]=useState(false);
-  const [screenSharing,setScreenSharing]=useState(false);
+  const [videoMuted, setVideoMuted] = useState(false);
+  const [audioMuted, setAudioMuted] = useState(false);
+  const [screenSharing, setScreenSharing] = useState(false);
 
   const handleUserJoined = useCallback(({ email, id }) => {
     console.log(`Email ${email} joined room`);
@@ -85,7 +85,7 @@ const RoomPage = () => {
     peer.peer.addEventListener("track", async (ev) => {
       const remoteStream = ev.streams;
       console.log("GOT TRACKS!!");
-      console.log("GOT TRACKS!!",remoteStream);
+      console.log("GOT TRACKS!!", remoteStream);
 
       setRemoteStream(remoteStream[0]);
     });
@@ -113,6 +113,7 @@ const RoomPage = () => {
     handleNegoNeedIncomming,
     handleNegoNeedFinal,
   ]);
+
   const toggleVideoMute = () => {
     myStream.getVideoTracks().forEach((track) => {
       track.enabled = !videoMuted;
@@ -163,8 +164,6 @@ const RoomPage = () => {
     <div className="w-full h-screen bg-slate-300 flex_col_center">
       <h1>Room Page</h1>
       <h4>{remoteSocketId ? "Connected" : "No one in room"}</h4>
-      {myStream && <button className="w-16 h-12 bg-blue-600 rounded-md shadow-lg text-white" onClick={sendStreams}>Send Stream</button>}
-      {remoteSocketId && <button className="w-16 h-12 bg-blue-600 rounded-md shadow-lg text-white" onClick={handleCallUser}>CALL</button>}
       {myStream && (
         <>
           <button
@@ -197,24 +196,29 @@ const RoomPage = () => {
       {myStream && (
         <>
           <h1>My Stream</h1>
-          <ReactPlayer
-            playing
-          
-            height="100px"
-            width="200px"
-            url={myStream}
+          <video
+            autoPlay
+            muted
+            ref={(videoRef) => {
+              if (videoRef) {
+                videoRef.srcObject = myStream;
+              }
+            }}
+            className="h-100 w-200"
           />
         </>
       )}
       {remoteStream && (
         <>
           <h1>Remote Stream</h1>
-          <ReactPlayer
-            playing
-            
-            height="100px"
-            width="200px"
-            url={remoteStream}
+          <video
+            autoPlay
+            ref={(videoRef) => {
+              if (videoRef) {
+                videoRef.srcObject = remoteStream;
+              }
+            }}
+            className="h-100 w-200"
           />
         </>
       )}
