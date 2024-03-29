@@ -163,6 +163,14 @@ const RoomPage = () => {
     <div className="w-full h-screen bg-slate-300 flex_col_center">
       <h1>Room Page</h1>
       <h4>{remoteSocketId ? "Connected" : "No one in room"}</h4>
+      {remoteSocketId && (
+        <button
+          className="w-16 h-12 bg-blue-600 rounded-md shadow-lg text-white"
+          onClick={handleCallUser}
+        >
+          CALL
+        </button>
+      )}
       {myStream && (
         <>
           <button
@@ -171,12 +179,7 @@ const RoomPage = () => {
           >
             Send Stream
           </button>
-          <button
-            className="w-16 h-12 bg-blue-600 rounded-md shadow-lg text-white"
-            onClick={handleCallUser}
-          >
-            CALL
-          </button>
+
           <button
             className="w-16 h-12 bg-blue-600 rounded-md shadow-lg text-white"
             onClick={toggleVideoMute}
@@ -200,12 +203,7 @@ const RoomPage = () => {
       {myStream && (
         <>
           <h1>My Stream</h1>
-          <ReactPlayer
-            playing
-            height="100px"
-            width="200px"
-            url={myStream}
-          />
+          <ReactPlayer playing height="100px" width="200px" url={myStream} />
         </>
       )}
       {remoteStream && (
