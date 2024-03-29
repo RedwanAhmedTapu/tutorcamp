@@ -1,6 +1,5 @@
 // RoomPage.jsx
 import React, { useEffect, useCallback, useState } from "react";
-import ReactPlayer from "react-player";
 import peer from "../service/peer";
 import { useSocket } from "../context/SocketProvider";
 
@@ -10,8 +9,8 @@ const RoomPage = () => {
   const [myStream, setMyStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
 
-  const handleUserJoined = useCallback(({ email, id }) => {
-    console.log(`Email ${email} joined room`);
+  const handleUserJoined = useCallback(({ id }) => {
+    console.log(`User ${id} joined room`);
     setRemoteSocketId(id);
   }, []);
 
@@ -111,9 +110,9 @@ const RoomPage = () => {
 
   useEffect(() => {
     peer.peer.addEventListener("track", async (ev) => {
-      const remoteStream = ev.streams;
+      const [stream] = ev.streams;
       console.log("GOT TRACKS!!");
-      setRemoteStream(remoteStream[0]);
+      setRemoteStream(stream);
     });
   }, []);
 
@@ -140,19 +139,6 @@ const RoomPage = () => {
     handleNegotiationFinal,
   ]);
 
-  const renderStream = (stream, label) => (
-    <>
-      <h1>{label}</h1>
-      <ReactPlayer
-        playing
-        muted
-        height="100px"
-        width="200px"
-        url={stream && URL.createObjectURL(stream)}
-      />
-    </>
-  );
-
   return (
     <div className="w-full h-screen bg-slate-300 flex_col_center">
       <h1>Room Page</h1>
@@ -173,8 +159,18 @@ const RoomPage = () => {
           CALL
         </button>
       )}
-      {myStream && renderStream(myStream, "My Stream")}
-      {remoteStream && renderStream(remoteStream, "Remote Stream")}
+      {myStream && (
+        <div>
+          <h1>My Stream</h1>
+          <video srcObject={myStream} autoPlay muted />
+        </div>
+      )}
+      {remoteStream && (
+        <div>
+          <h1>Remote Stream</h1>
+          <video srcObject={remoteStream} autoPlay />
+        </div>
+      )}
     </div>
   );
 };
