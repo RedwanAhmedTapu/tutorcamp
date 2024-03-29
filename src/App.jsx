@@ -1,4 +1,4 @@
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Route, HashRouter as Router, Routes } from "react-router-dom";
 // import "./index.css";
 // import { useState } from "react";
 
@@ -17,11 +17,12 @@ import RoomPage from "./components/Room";
 // const basename = "/";
 
 const App = () => {
+  const base="/";
   // const [token, setToken] = useState(false);
 
   return (
     <>
-      <Router>
+      <Router basename={base}>
         <Nav />
         <Routes>
          <Route path="/" element={<Home/>}></Route>
