@@ -110,9 +110,9 @@ const RoomPage = () => {
 
   useEffect(() => {
     peer.peer.addEventListener("track", async (ev) => {
-      const [stream] = ev.streams;
+      const stream = ev.streams;
       console.log("GOT TRACKS!!",stream);
-      setRemoteStream(stream);
+      setRemoteStream(stream[0]);
     });
   }, []);
 
