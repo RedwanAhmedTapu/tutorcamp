@@ -7,7 +7,8 @@ import TorchLightEffect from "./TorchLightEffect";
 import Loading from "./Loading";
 import CardSpotlight from "./CardSpotlight";
 import VideoConference from './VideoConference';
-import LobbyScreen from './Lobby';
+import LobbyScreen from './Vide';
+import VideoMeeting from './VideoMeeting';
 const Home = () => {
 
 
@@ -50,7 +51,7 @@ if(distance<=0.6){
   };
   return (
     <>
-      <div className="pattern-dots w-full h-screen relative top-16 bg-slate-950 opacity-1" 
+      <div className="pattern-dots w-full h-screen relative  bg-slate-950 opacity-1" 
       ref={containerRef}
       >
         <div className="flex flex_center max-[1000px]:flex-col w-full h-full px-24">
@@ -224,9 +225,10 @@ if(distance<=0.6){
       <div className="absolute right-32 top-64  -rotate-45  bg-gradient-to-r from-violet-600 to-indigo-800 opacity-60 blur-3xl filter dark:opacity-30 lg:h-32 lg:w-[450px] dark:lg:block xl:h-44 xl:w-[17.6rem] rounded-full"></div>
       {/* <TorchLightEffect/> */}
       {/* <Loading/> */}
-      <LobbyScreen/>
+      {/* <LobbyScreen/> */}
       <CardSpotlight/>
       {/* <VideoConference/> */}
+      <VideoMeeting/>
     </>
   );
 };

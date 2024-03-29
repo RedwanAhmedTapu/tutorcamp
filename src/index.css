@@ -83,6 +83,10 @@
   .list {
     @apply border min-[900px]:border-none border-dashed w-full flex justify-center items-center;
   }
+  .background_color{
+    background: #323260 ;
+
+  }
 
   .pattern-dots {
     background-image: radial-gradient(#323260 0.5px, transparent 1px);

@@ -41,7 +41,16 @@ const VideoConference = () => {
           localVideoRef.current.srcObject = stream;
         }
 
-        const peerConnection = new RTCPeerConnection();
+        const peerConnection = new RTCPeerConnection({
+          iceServers: [
+            {
+              urls: [
+                "stun:stun.l.google.com:19302",
+                "stun:global.stun.twilio.com:3478",
+              ],
+            },
+          ],
+        });
         peerConnectionRef.current = peerConnection;
 
         stream.getTracks().forEach((track) => peerConnection.addTrack(track, stream));

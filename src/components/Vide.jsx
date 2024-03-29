@@ -33,8 +33,8 @@ const LobbyScreen = () => {
   }, [socket, handleJoinRoom]);
 
   return (
-    <div className="w-full h-screen bg-slate-300 flex_center">
-      <h1>Lobby</h1>
+    <div className="w-full h-screen bg-slate-300 ">
+      <h1>video conferrence</h1>
       <form onSubmit={handleSubmitForm}>
         <label htmlFor="email">Email ID</label>
         <input
@@ -52,7 +52,7 @@ const LobbyScreen = () => {
           onChange={(e) => setRoom(e.target.value)}
         />
         <br />
-        <button type="submit">Join</button>
+        <button>Join</button>
       </form>
     </div>
   );

@@ -12,7 +12,7 @@ import Nav from "./components/Nav";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
-import LobbyScreen from "./components/Lobby";
+import LobbyScreen from "./components/Vide";
 import RoomPage from "./components/Room";
 // const basename = "/";
 
