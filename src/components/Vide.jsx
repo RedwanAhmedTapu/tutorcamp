@@ -33,7 +33,7 @@ const LobbyScreen = () => {
   }, [socket, handleJoinRoom]);
 
   return (
-    <div className="w-full h-screen bg-slate-300 ">
+    <div className="w-full h-screen flex_col_center bg-slate-300 ">
       <h1>video conferrence</h1>
       <form onSubmit={handleSubmitForm}>
         <label htmlFor="email">Email ID</label>
