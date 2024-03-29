@@ -50,7 +50,7 @@ if(distance<=0.6){
   };
   return (
     <>
-      <div className="pattern-dots w-full h-screen relative top-0 bg-slate-950 opacity-1" 
+      <div className="pattern-dots w-full h-screen relative top-16 bg-slate-950 opacity-1" 
       ref={containerRef}
       >
         <div className="flex flex_center max-[1000px]:flex-col w-full h-full px-24">
