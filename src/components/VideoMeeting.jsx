@@ -22,9 +22,9 @@ const VideoMeeting = () => {
           video: true,
           audio: true,
         });
-        setLocalStream(stream);
         console.log(stream)
-
+        console.log("Stream tracks:", stream.getAudioTracks());
+        setLocalStream(stream);
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
         }
@@ -32,19 +32,20 @@ const VideoMeeting = () => {
         console.error("Error accessing media devices:", error);
       }
     };
+    
 
     startMedia()
-    return () => {
-      if (localStream) {
-        localStream.getTracks().forEach((track) => track.stop());
-      }
-      remoteStreams.forEach((stream) => {
-        stream.getTracks().forEach((track) => track.stop());
-      });
-      if (peerConnectionRef.current) {
-        peerConnectionRef.current.close();
-      }
-    };
+    // return () => {
+    //   if (localStream) {
+    //     localStream.getTracks().forEach((track) => track.stop());
+    //   }
+    //   remoteStreams.forEach((stream) => {
+    //     stream.getTracks().forEach((track) => track.stop());
+    //   });
+    //   if (peerConnectionRef.current) {
+    //     peerConnectionRef.current.close();
+    //   }
+    // };
   }, []);
 
 
@@ -75,7 +76,7 @@ const VideoMeeting = () => {
             <option value="2"></option>
           </select>
         </div>
-        <video ref={localVideoRef} autoPlay className="w-full h-96" muted />
+        <video ref={localVideoRef} autoPlay className="w-full h-96"  />
         {remoteStreams.map((stream, index) => (
           <video
             key={`remoteVideo_${index}`}
