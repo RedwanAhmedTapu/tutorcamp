@@ -12,7 +12,6 @@ const LobbyScreen = () => {
   const handleSubmitForm = useCallback(
     (e) => {
       e.preventDefault();
-      console.log(email)
       socket.emit("room:join", { email, room });
     },
     [email, room, socket]
@@ -27,18 +26,15 @@ const LobbyScreen = () => {
   );
 
   useEffect(() => {
-    if (!socket) return;
-
     socket.on("room:join", handleJoinRoom);
-
     return () => {
       socket.off("room:join", handleJoinRoom);
     };
   }, [socket, handleJoinRoom]);
 
   return (
-    <div className="bg-slate-400 w-full h-screen flex_center">
-      <h1>video meeting between tapu & riaz</h1>
+    <div className="w-full h-screen bg-slate-300 flex_center">
+      <h1>Lobby</h1>
       <form onSubmit={handleSubmitForm}>
         <label htmlFor="email">Email ID</label>
         <input
@@ -56,7 +52,7 @@ const LobbyScreen = () => {
           onChange={(e) => setRoom(e.target.value)}
         />
         <br />
-        <button type="submit">Join</button>
+        <button>Join</button>
       </form>
     </div>
   );

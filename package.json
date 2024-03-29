@@ -28,7 +28,8 @@
     "simple-peer": "^9.11.1",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.4",
-    "styled-components": "^6.1.1"
+    "styled-components": "^6.1.1",
+    "unique-string": "^3.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
