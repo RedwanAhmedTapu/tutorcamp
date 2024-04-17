@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React,{ useState, useEffect, useRef } from "react";
 import { useSocket } from "../context/SocketProvider";
 import { useParams } from "react-router-dom";
 import peer from "../service/peer";
@@ -8,18 +8,13 @@ const VideoMeeting = () => {
   const socket = useSocket();
   const [localStream, setLocalStream] = useState(null);
   const [remoteStreams, setRemoteStreams] = useState([]);
-  const [classID, setClassID] = useState("");
-  const [studentId, setStudentId] = useState("");
-  const [joiningClassID, setJoiningClassID] = useState("");
-  const [isTeacher, setIsTeacher] = useState(false);
-  const [isMeetingStarted, setMeetingStarted] = useState(false);
+  // const [isMeetingStarted, setMeetingStarted] = useState(false);
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [isVideoMuted, setIsVideoMuted] = useState(false);
   const [screenSharing, setScreenSharing] = useState(false);
-  const [socketId, setSocketId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const peerConnectionRef = useRef(null);
+  // const peerConnectionRef = useRef(null);
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef([]);
   const selectAudioRef = useRef(null);
@@ -59,7 +54,7 @@ const VideoMeeting = () => {
             : selectedAudioConstraints
           : defaultConstraints;
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      console.log("Stream tracks:", stream);
+      console.log("Stream tracks:", stream.getAudioTracks());
       setLocalStream(stream);
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = stream;
@@ -70,6 +65,7 @@ const VideoMeeting = () => {
   };
 
   // useEffect to listen for socket events
+ 
 
   useEffect(() => {
     const initializeSocket = async () => {
@@ -95,7 +91,7 @@ const VideoMeeting = () => {
   
           if (localStream) {
             makingWebRTCConnection();
-          }
+          
           const offer = await peer.getOffer();
           socket.emit("sendTheOffer", offer, roomId);
   
@@ -125,17 +121,15 @@ const VideoMeeting = () => {
           // Add remote stream when received
           peer.peer.ontrack = (event) => {
             console.log("Received remote stream",event.streams[0]);
-            // setRemoteStreams((prevStreams) => [...prevStreams, event.streams[0]]);
+            setRemoteStreams((prevStreams) => [...prevStreams, event.streams[0]]);
             // Assuming remoteVideoRef is a reference to the <video> element for displaying remote stream
-          
-              remoteVideoRef.current.srcObject = event.streams[0];
-        console.log(remoteVideoRef.current.srcObject,"remotevideo")
-
-
+            remoteVideoRef.current.srcObject = event.streams[0];
+            remoteVideoRef.play();
           };
-        };
+        }};
   
         makingWebRTCConnection();
+        
   
         return () => {
           socket.disconnect();
@@ -150,7 +144,12 @@ const VideoMeeting = () => {
   
   
   
-
+  useEffect(() => {
+    remoteVideoRef.current = Array(remoteStreams.length)
+      .fill()
+      .map(() => React.createRef());
+      
+  }, [remoteStreams]);
   // function for muting or unmuting video
   const toggleVideo = () => {
     if (localStream) {
@@ -323,18 +322,18 @@ const VideoMeeting = () => {
           </div>
           <div className="w-full h-96 flex_col_center">
           <h1 className="text-white">Local video</h1>
-          <video ref={localVideoRef} autoPlay className="w-96 h-96" />
+          <video ref={localVideoRef} autoPlay className="w-full h-96" />
           <h1 className="text-white">Remote videos</h1>
-      
-            <video
-             
-              ref={remoteVideoRef }
-              autoPlay
-              className="w-96 h-96"
-              // srcObject={stream}
-            />
-        
-        </div>
+          {remoteStreams&& remoteStreams.map((stream, index) => (
+              <video
+                key={`remoteVideo_${index}`}
+                ref={remoteVideoRef.current[index]}
+                autoPlay
+                className="w-96 h-96"
+              />
+            ))}
+          </div>
+
           <div
             className="w-24 h-12 flex_center text-center bg-fuchsia-400 gap-x-8"
             onClick={startMedia}
