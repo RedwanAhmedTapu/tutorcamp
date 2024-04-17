@@ -7,7 +7,7 @@ const VideoMeeting = () => {
   // socket initialization
   const socket = useSocket();
   const [localStream, setLocalStream] = useState(null);
-  const [remoteStreams, setRemoteStreams] = useState([]);
+  const [remoteStreams, setRemoteStreams] = useState(null);
   const [classID, setClassID] = useState("");
   const [studentId, setStudentId] = useState("");
   const [joiningClassID, setJoiningClassID] = useState("");
@@ -59,7 +59,7 @@ const VideoMeeting = () => {
             : selectedAudioConstraints
           : defaultConstraints;
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      console.log("Stream tracks:", stream);
+      console.log("Stream tracks:", stream.getAudioTracks());
       setLocalStream(stream);
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = stream;
@@ -125,17 +125,15 @@ const VideoMeeting = () => {
           // Add remote stream when received
           peer.peer.ontrack = (event) => {
             console.log("Received remote stream",event.streams[0]);
-            // setRemoteStreams((prevStreams) => [...prevStreams, event.streams[0]]);
+            setRemoteStreams( event.streams[0]);
             // Assuming remoteVideoRef is a reference to the <video> element for displaying remote stream
-          
-              remoteVideoRef.current.srcObject = event.streams[0];
-        console.log(remoteVideoRef.current.srcObject,"remotevideo")
-
-
+            remoteVideoRef.current.srcObject = event.streams[0];
           };
         };
   
         makingWebRTCConnection();
+        console.log(remoteVideoRef.current.srcObject&& remoteVideoRef.current.srcObject,"remotevideo")
+        console.log(localVideoRef.current.srcObject,"local")
   
         return () => {
           socket.disconnect();
@@ -270,6 +268,7 @@ const VideoMeeting = () => {
       setScreenSharing(false);
     }
   };
+  console.log(remoteStreams,"remote-stream")
 
   return (
     <div className="w-full h-screen bg-slate-950 pattern-dots">
@@ -326,13 +325,13 @@ const VideoMeeting = () => {
           <video ref={localVideoRef} autoPlay className="w-96 h-96" />
           <h1 className="text-white">Remote videos</h1>
       
-            <video
+           {remoteStreams && <video
              
               ref={remoteVideoRef }
               autoPlay
               className="w-96 h-96"
               // srcObject={stream}
-            />
+            />}
         
         </div>
           <div

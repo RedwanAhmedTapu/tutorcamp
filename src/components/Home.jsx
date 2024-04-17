@@ -6,9 +6,8 @@ import homesectionVideo from "../assets/homesectionVideo.mp4.mp4";
 import TorchLightEffect from "./TorchLightEffect";
 import Loading from "./Loading";
 import CardSpotlight from "./CardSpotlight";
-import VideoConference from './VideoConference';
-import LobbyScreen from './Vide';
-import VideoMeeting from './VideoMeeting';
+
+import CreateRoom from './CreateRoom';
 const Home = () => {
 
 
@@ -225,10 +224,8 @@ if(distance<=0.6){
       <div className="absolute right-32 top-64  -rotate-45  bg-gradient-to-r from-violet-600 to-indigo-800 opacity-60 blur-3xl filter dark:opacity-30 lg:h-32 lg:w-[450px] dark:lg:block xl:h-44 xl:w-[17.6rem] rounded-full"></div>
       {/* <TorchLightEffect/> */}
       {/* <Loading/> */}
-      <LobbyScreen/>
       <CardSpotlight/>
-      {/* <VideoConference/> */}
-      {/* <VideoMeeting/> */}
+      <CreateRoom/>
     </>
   );
 };

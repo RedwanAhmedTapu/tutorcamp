@@ -1,4 +1,4 @@
-import React, { createContext, useMemo, useContext } from "react";
+import  { createContext, useMemo, useContext } from "react";
 import { io } from "socket.io-client";
 
 const SocketContext = createContext(null);
@@ -9,7 +9,11 @@ export const useSocket = () => {
 };
 
 export const SocketProvider = (props) => {
+  // Create socket memoized, so it only initializes once
   const socket = useMemo(() => io(`${process.env.SERVER_URL}`), []);
+  if (!socket.connected) {
+    socket.connect();
+  }
 
   return (
     <SocketContext.Provider value={socket}>

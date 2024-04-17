@@ -14,6 +14,7 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import LobbyScreen from "./components/Vide";
 import RoomPage from "./components/Room";
+import VideoMeeting from "./components/VideoMeeting";
 // const basename = "/";
 
 const App = () => {
@@ -30,6 +31,7 @@ const App = () => {
          <Route path="/login" element={<Login/>}></Route>
          
         <Route path="/room/:roomId" element={<RoomPage />} />
+        <Route path="/meetingroom/:roomId" element={<VideoMeeting />} />
          <Route path="/solution" element={<SolutionComponent/>}></Route>
         
         </Routes>

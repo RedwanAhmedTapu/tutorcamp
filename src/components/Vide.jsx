@@ -9,6 +9,7 @@ const LobbyScreen = () => {
   const socket = useSocket();
   const navigate = useNavigate();
 
+  console.log(socket)
   const handleSubmitForm = useCallback(
     (e) => {
       e.preventDefault();
