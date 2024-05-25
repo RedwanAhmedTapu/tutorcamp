@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, useAnimation } from "framer-motion";
 import imgsrc from "../assets/crystal-mashroom.jpg";
+import GlobeInnerRay from "./GlobeInnerRay";
 
 class Spotlight {
   constructor(containerElement) {
@@ -73,7 +74,7 @@ class Spotlight {
   }
 }
 
-const CardSpotlight = () => {
+const CurvedMonitor = () => {
   const containerRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
   const controls = useAnimation();
@@ -123,13 +124,13 @@ const CardSpotlight = () => {
 
   return (
     <div
-      className="flex flex-row items-center justify-center w-full h-screen max-[750px]:w-screen bg-slate-950 max-[750px]:px-2 px-8 flex-wrap max-[999px]:px-2"
+      className="flex flex-row items-center justify-center w-full h-screen bg-slate-950 max-[750px]:px-2 px-8 flex-wrap max-[999px]:h-full"
       ref={containerRef}
     >
       {cardsData.map((card, index) => (
         <div
           key={index}
-          className="relative w-[91%] h-[70%] max-[750px]:w-full  rounded-xl p-px before:absolute before:w-32 before:h-32 before:-left-40 before:-top-40 before:bg-slate-400 before:rounded-full before:opacity-0 before:pointer-events-none before:transition-opacity before:duration-500 before:translate-x-[var(--mouse-x)] before:translate-y-[var(--mouse-y)] before:group-hover:opacity-100 before:z-10 before:blur-[100px] after:absolute after:w-44 after:h-44 after:-left-48 after:-top-48 after:bg-indigo-500 after:rounded-full after:opacity-0 after:pointer-events-none after:transition-opacity after:duration-500 after:translate-x-[var(--mouse-x)] after:translate-y-[var(--mouse-y)] after:hover:opacity-10 after:z-30 after:blur-[100px] overflow-hidden space-x-2"
+          className="relative w-[91%] h-[70%] max-[750px]:w-screen bg-red-800 rounded-xl  before:absolute before:w-32 before:h-32 before:-left-40 before:-top-40 before:bg-slate-400 before:rounded-full before:opacity-0 before:pointer-events-none before:transition-opacity before:duration-500 before:translate-x-[var(--mouse-x)] before:translate-y-[var(--mouse-y)] before:group-hover:opacity-100 before:z-10 before:blur-[100px] after:absolute after:w-44 after:h-44 after:-left-48 after:-top-48 after:bg-indigo-500 after:rounded-full after:opacity-0 after:pointer-events-none after:transition-opacity after:duration-500 after:translate-x-[var(--mouse-x)] after:translate-y-[var(--mouse-y)] after:hover:opacity-10 after:z-30 after:blur-[100px] overflow-hidden space-x-2"
         >
           <div className="relative bg-slate-900 w-full h-full   rounded-[inherit] z-20 overflow-hidden">
             <div
@@ -139,14 +140,9 @@ const CardSpotlight = () => {
               <div className="absolute inset-0 bg-slate-800 rounded-full blur-[80px]"></div>
             </div>
             <div className="flex_center justify-center items-center max-[750px]:w-full max-[750px]:flex-col w-full h-full gap-x-6  rounded-md">
-              <img
-                className="w-[40%] h-[70%] max-[700px]:w-[90%] rounded-md"
-                src={card.imageSrc}
-                width="200"
-                height="200"
-                alt={`Card ${index + 1}`}
-              />
-              <div className="w-[45%] max-[750px]:w-full h-[70%] flex_col_center text-center">
+
+           <div className="w-[50%] max-[750px]:w-full h-[70%] max-[750px]:h-full  flex_center"> <GlobeInnerRay/></div>
+              <div className="w-[45%] max-[750px]:w-full  h-[70%] flex_col_center text-center">
                 <motion.h2
                   initial={{ opacity: 0, y: 90 }}
                   animate={controls}
@@ -172,4 +168,4 @@ const CardSpotlight = () => {
   );
 };
 
-export default CardSpotlight;
+export default CurvedMonitor;

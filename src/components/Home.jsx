@@ -1,16 +1,16 @@
 // Home.js
 
-import  { useRef } from 'react';
+import { useRef } from "react";
 import SectionImage from "../assets/homesectionImage.svg";
 import homesectionVideo from "../assets/homesectionVideo.mp4.mp4";
 import TorchLightEffect from "./TorchLightEffect";
 import Loading from "./Loading";
 import CardSpotlight from "./CardSpotlight";
+import MonitorScreen from "./CurvedMonitor";
 
-import CreateRoom from './CreateRoom';
+import CreateRoom from "./CreateRoom";
+import LLMApp from "./Qst";
 const Home = () => {
-
-
   const containerRef = useRef(null);
 
   const handleMouseMove = (event) => {
@@ -25,38 +25,40 @@ const Home = () => {
 
         const distance = Math.sqrt((x - 0.5) ** 2 + (y - 0.5) ** 2);
 
-if(distance<=0.6){
-        const sparkle = document.createElement('div');
-        sparkle.className = 'sparkle';
-        sparkle.style.left = `${x * 100}%`;
-        sparkle.style.top = `${y * 100}%`;
+        if (distance <= 0.6) {
+          const sparkle = document.createElement("div");
+          sparkle.className = "sparkle";
+          sparkle.style.left = `${x * 100}%`;
+          sparkle.style.top = `${y * 100}%`;
 
-        // Randomize sparkle size and opacity
-        const size = Math.random() * 20 + 5; // Adjust size range as needed
-        const opacity = Math.random() * 0.5 + 0.5; // Adjust opacity range as needed
+          // Randomize sparkle size and opacity
+          const size = Math.random() * 20 + 5; // Adjust size range as needed
+          const opacity = Math.random() * 0.5 + 0.5; // Adjust opacity range as needed
 
-        sparkle.style.width = `${size}px`;
-        sparkle.style.height = `${size}px`;
-        sparkle.style.opacity = opacity;
+          sparkle.style.width = `${size}px`;
+          sparkle.style.height = `${size}px`;
+          sparkle.style.opacity = opacity;
 
-        container.appendChild(sparkle);
-       
+          container.appendChild(sparkle);
 
-        setTimeout(() => {
-          container.removeChild(sparkle);
-        }, 300);
-      }}
+          setTimeout(() => {
+            container.removeChild(sparkle);
+          }, 300);
+        }
+      }
     }
   };
   return (
     <>
-      <div className="pattern-dots w-full h-screen relative  bg-slate-950 opacity-1" 
-      ref={containerRef}
+      <div
+        className="pattern-dots w-full  h-screen relative max-[1000px]:pt-12 max-[1000px]:h-[50rem]  bg-slate-950 opacity-1"
+        ref={containerRef}
+        onMouseMove={handleMouseMove}
       >
-        <div className="flex flex_center max-[1000px]:flex-col w-full h-full px-24">
-          <div className="flex w-[40%] flex-col justify-center">
-            <div className="flex flex-col space-y-4 text-center lg:text-left">
-              <div>
+        <div className="flex flex_center max-[1000px]:flex-col   w-full h-full max-[1000px]:p-1 md:px-24">
+          <div className="flex min-[1000px]:w-[40%] h-full max-[1000px]:w-screen    max-[1000px]:h-[50%] flex-col justify-center p-2">
+            <div className="flex flex-col space-y-2 text-center lg:text-left">
+              <div className="">
                 <span
                   style={{
                     boxSizing: "border-box",
@@ -91,12 +93,12 @@ if(distance<=0.6){
               <h2 className="text-link text-white font-semibold text-3xl">
                 Welcome To
               </h2>
-              <h1 className="hero-title text-5xl text-white">
+              <h1 className="hero-title text-3xl  md:text-4xl xl:text-5xl text-white">
                 Our{" "}
-                <span className="primary-highlighter font-light m-2 text-sky-500 text-6xl">
+                <span className="primary-highlighter font-light m-2 text-sky-500 text-4xl md:text-5xl xl:text-6xl">
                   TutorCamp{" "}
                 </span>
-                Site{" "}
+              
               </h1>
               <h2 className="subtitle text-2xl text-white">
                 Your trusted platform
@@ -105,7 +107,7 @@ if(distance<=0.6){
             <p className="text-xl text-white text-medium mt-10 text-center lg:text-left">
               It{`'`}s a platform where you can learn easily anything
             </p>
-            <div className="mx-auto mt-10 flex gap-4 lg:mx-0">
+            <div className="mx-auto  mt-10 flex gap-8 lg:mx-0">
               <div className="flex flex-col space-y-3">
                 <button
                   className="mantine-Button-filled bg-slate-900 dark:bg-secondary2 hover:bg-slate-700 dark:hover:bg-secondary1 text-white mantine-Button-root mantine-1ogymfb"
@@ -128,17 +130,16 @@ if(distance<=0.6){
                         <path d="M686.7 638.6L544.1 535.5V288c0-4.4-3.6-8-8-8H488c-4.4 0-8 3.6-8 8v275.4c0 2.6 1.2 5 3.3 6.5l165.4 120.6c3.6 2.6 8.6 1.8 11.2-1.7l28.6-39c2.6-3.7 1.8-8.7-1.8-11.2z"></path>
                       </svg>
                     </span> */}
-                  
-                      <div className=" animate-border w-[10rem] h-[4.5rem] relative p-[4px] overflow-hidden rounded-sm text-white">
-                        {/* <span>1000TK</span>
+
+                    <div className=" animate-border w-[10rem] h-[4.5rem] relative p-[4px] overflow-hidden rounded-sm text-white">
+                      {/* <span>1000TK</span>
                         <span className="flex items-center text-secondary1 dark:text-secondary1">
                           |
                         </span> */}
-                        <span className=" block bg-black px-[13px] py-[20px] relative z-10">
-                          Search Teacher
-                        </span>
-                      </div>
-                    
+                      <span className=" block bg-black px-[13px] py-[20px] relative z-10">
+                        Search Teacher
+                      </span>
+                    </div>
                   </div>
                 </button>
               </div>
@@ -202,30 +203,27 @@ if(distance<=0.6){
               </div>
             </div>
           </div>
-          <div className="flex w-[60%] flex-col justify-center items-center relative"><img src={SectionImage} className="w-full h-full"/>
-          <div className="absolute w-72 h-72  overflow-hidden rounded-full">
+          <div className="flex w-[60%] h-full max-[1000px]:w-screen   max-[1000px]:h-[50%] flex_col_center  ">
+            <img src={SectionImage} className=" relative w-full h-full" />
+            <div className="absolute w-44 h-44 lg:w-52 lg:h-52 xl:w-72 xl:h-72   rounded-full overflow-hidden">
               {/* Add the video element */}
-              <video
-                autoPlay
-                muted
-                loop
-                className="w-full h-full object-cover"
-              >
+              <video autoPlay muted loop className="w-full h-full object-cover">
                 <source src={homesectionVideo} type="video/mp4" />
-                
               </video>
             </div>
           </div>
         </div>
       </div>
-      <div className="absolute bottom-44 -left-64 h-[150px] w-[900px] -rotate-45 rounded-3xl bg-gradient-to-r from-violet-600 to-indigo-800 opacity-30 blur-[2.4rem] filter dark:block lg:bottom-24 lg:-left-20 lg:h-28 lg:w-[250px] lg:-rotate-12 lg:opacity-20 xl:h-40 xl:w-[400px]"></div>
+      {/* <div className="absolute bottom-44 -left-64 h-[150px] w-[900px] -rotate-45 rounded-3xl bg-gradient-to-r from-violet-600 to-indigo-800 opacity-30 blur-[2.4rem] filter dark:block lg:bottom-24 lg:-left-20 lg:h-28 lg:w-[250px] lg:-rotate-12 lg:opacity-20 xl:h-40 xl:w-[400px]"></div> */}
       <div className="absolute left-[12%] top-64  -rotate-12 rounded-3xl bg-gradient-to-r from-violet-600 to-indigo-800 opacity-60 blur-3xl filter dark:opacity-30 lg:h-32 lg:w-[450px] dark:lg:block xl:h-24 xl:w-[10rem]"></div>
       <div className="absolute left-80 top-64  -rotate-45 rounded-3xl bg-gradient-to-r from-violet-600 to-indigo-800 opacity-60 blur-3xl filter dark:opacity-30 lg:h-32 lg:w-[450px] dark:lg:block xl:h-24 xl:w-[15rem]"></div>
       <div className="absolute right-32 top-64  -rotate-45  bg-gradient-to-r from-violet-600 to-indigo-800 opacity-60 blur-3xl filter dark:opacity-30 lg:h-32 lg:w-[450px] dark:lg:block xl:h-44 xl:w-[17.6rem] rounded-full"></div>
       {/* <TorchLightEffect/> */}
       {/* <Loading/> */}
-      <CardSpotlight/>
-      <CreateRoom/>
+      <CardSpotlight />
+      <MonitorScreen />
+      <LLMApp/>
+      {/* <CreateRoom/> */}
     </>
   );
 };

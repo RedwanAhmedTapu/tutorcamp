@@ -1,12 +1,4 @@
 import { Route, HashRouter as Router, Routes } from "react-router-dom";
-// import "./index.css";
-// import { useState } from "react";
-
-// import Nav from "./components/Nav";
-// import Home from "./components/Home";
-// import Login from "./components/Login";
-// import Signup from "./components/Signup";
-// import User from "./components/UserDashBoard";
 import SolutionComponent from "./components/SolutionComponent";
 import Nav from "./components/Nav";
 import Home from "./components/Home";
@@ -14,27 +6,32 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import LobbyScreen from "./components/Vide";
 import RoomPage from "./components/Room";
-import VideoMeeting from "./components/VideoMeeting";
-// const basename = "/";
+import VideoMeeting from "./pages/VideoMeeting";
+import ChapterWiseDescription from "./pages/ChapterWiseDescription";
+import { SocketProvider } from "./context/SocketProvider";
+import { PeerProvider } from "./context/PeerProvider"; // Correct import
 
 const App = () => {
-  const base="/";
-  // const [token, setToken] = useState(false);
-
+  const base = "/";
+  
   return (
     <>
       <Router basename={base}>
         <Nav />
-        <Routes>
-         <Route path="/" element={<Home/>}></Route>
-         <Route path="/signup" element={<Signup/>}></Route>
-         <Route path="/login" element={<Login/>}></Route>
-         
-        <Route path="/room/:roomId" element={<RoomPage />} />
-        <Route path="/meetingroom/:roomId" element={<VideoMeeting />} />
-         <Route path="/solution" element={<SolutionComponent/>}></Route>
-        
-        </Routes>
+        <SocketProvider>
+          {/* Use PeerProvider, not peerProvider */}
+          <PeerProvider> 
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/room/:roomId" element={<RoomPage />} />
+              <Route path="/:roomId" element={<VideoMeeting />} />
+              <Route path="/solution" element={<SolutionComponent />} />
+              <Route path="/sub/:subID" element={<ChapterWiseDescription />} />
+            </Routes>
+          </PeerProvider>
+        </SocketProvider>
       </Router>
     </>
   );
