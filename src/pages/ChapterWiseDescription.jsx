@@ -28,7 +28,7 @@ const ChapterwiseDescription = () => {
         <CiMenuFries className="w-12 h-12 text-white" onClick={toggleSidebar} />
       </div>
       <div className="w-full flex   ">
-        <div className={`w-[20%] max-[700px]:w-[50%] max-[450px]:w-[70%] max-[998px]:w-[30%]  h-full fixed   max-[999px]:top-[4.1rem] top-16 left-0 bg-slate-950 opacity-90 overflow-y-auto z-10 ${isSidebarOpen ? " hidden " : ""}`}>
+        <div className={`w-[20%] max-[700px]:w-[50%] max-[450px]:w-[70%] max-[998px]:w-[30%]  h-full fixed   max-[999px]:top-[4.1rem] top-16 left-0 bg-slate-950 opacity-90 overflow-y-auto z-10 ${isSidebarOpen ? "  " : "hidden"}`}>
           <div className="text-white p-2">
             {selectedMenuItems.map((item, index) => (
               <div key={index} className="mb-4">
