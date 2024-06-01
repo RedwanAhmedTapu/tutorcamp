@@ -71,6 +71,7 @@ const VideoMeeting = () => {
     socket.on("recieveAnswer", handlereceiveAnswer);
     socket.on("receiveIceCandidate", handleReceiveIceCandidate);
     console.log(remoteVideoRef)
+    console.log(localVideoRef)
 
     return () => {
       socket.off("new-user-joined", handlenewUserJoining);
