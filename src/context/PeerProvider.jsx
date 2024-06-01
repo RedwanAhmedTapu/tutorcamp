@@ -1,103 +1,94 @@
-import React, { useMemo, createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
+import React, { createContext, useContext, useRef, useState, useCallback } from "react";
+import { useSocket } from "../context/SocketProvider";
 
-// Creating the context
 const PeerContext = createContext();
 
-// Custom hook to consume the context
-export const usePeer = () => useContext(PeerContext);
+export const usePeer = () => {
+  return useContext(PeerContext);
+};
 
-// Provider component to provide the context
-export const PeerProvider = (props) => {
+export const PeerProvider = ({ children, roomId }) => {
+  const socket = useSocket(); // Access the socket instance
+  const peer = useRef(new RTCPeerConnection({
+    iceServers: [
+      {
+        urls: "stun:stun.l.google.com:19302",
+      },
+    ],
+  }));
   const [remoteStream, setRemoteStream] = useState(null);
   const remoteVideoRef = useRef(null);
-  const peerRef = useRef(null);
+  const iceCandidateQueue = useRef([]);
 
-  useEffect(() => {
-    // Initialize the RTCPeerConnection instance
-    peerRef.current = new RTCPeerConnection({
-      iceServers: [
-        {
-          urls: [
-            "stun:stun.l.google.com:19302",
-            "stun:global.stun.twilio.com:3478",
-          ],
-        },
-      ],
-    });
-
-    // Add event listeners
-    peerRef.current.addEventListener("track", handleTrackEvent);
-    peerRef.current.addEventListener("negotiationneeded", handleNegotiationEvent);
-
-    // Cleanup function to remove event listeners
-    return () => {
-      if (peerRef.current) {
-        peerRef.current.removeEventListener("track", handleTrackEvent);
-        peerRef.current.removeEventListener("negotiationneeded", handleNegotiationEvent);
-      }
-    };
-  }, []); // Only run this effect once on component mount
-
-  // Function to get offer
-  const getOffer = async () => {
-    if (peerRef.current) {
-      const offer = await peerRef.current.createOffer();
-      await peerRef.current.setLocalDescription(offer);
-      return offer;
+  peer.current.ontrack = (event) => {
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.srcObject = event.streams[0];
     }
-  };
-
-  const getAnswer = async (offer) => {
-    if (peerRef.current) {
-      await peerRef.current.setRemoteDescription(offer);
-      const ans = await peerRef.current.createAnswer();
-      await peerRef.current.setLocalDescription(ans);
-      return ans;
-    }
-  };
-
-  const setRemoteDescription = async (ans) => {
-    try {
-      await peerRef.current.setRemoteDescription(ans);
-      // If successful, continue with other operations
-    } catch (error) {
-      console.error("Error setting remote description:", error);
-      // Handle the error gracefully, e.g., display an error message to the user
-    }
-  };
-
-  const addTrackToPeer = async (stream) => {
-    if (peerRef.current) {
-      stream.getTracks().forEach((track) => {
-        peerRef.current.addTrack(track, stream);
-      });
-    }
-  };
-
-  const handleTrackEvent = useCallback((event) => {
-    console.log("Received remote stream", event.streams[0]);
     setRemoteStream(event.streams[0]);
+  };
+
+  peer.current.onicecandidate = (event) => {
+    if (event.candidate) {
+      handleIceCandidate(event.candidate); // Call the handleIceCandidate function
+    }
+  };
+
+  const handleIceCandidate = useCallback((candidate) => {
+    socket.emit("sendIceCandidate", {
+      candidate,
+      roomId, // Use roomId from the prop
+    });
+  }, [socket, roomId]);
+
+  const getOffer = useCallback(async () => {
+    const offer = await peer.current.createOffer();
+    await peer.current.setLocalDescription(offer);
+    return offer;
   }, []);
 
-  const handleNegotiationEvent = useCallback((event) => {
-    console.log("Negotiation needed");
-    // Perform any necessary actions when negotiation is needed
+  const getAnswer = useCallback(async (offer) => {
+    await peer.current.setRemoteDescription(offer);
+    const answer = await peer.current.createAnswer();
+    await peer.current.setLocalDescription(answer);
+    return answer;
   }, []);
 
-  // Providing peer and related functions as context values
+  const setRemoteDescription = useCallback(async (answer) => {
+    await peer.current.setRemoteDescription(answer);
+    while (iceCandidateQueue.current.length > 0) {
+      const candidate = iceCandidateQueue.current.shift();
+      await peer.current.addIceCandidate(candidate);
+    }
+  }, []);
+
+  const addTrackToPeer = useCallback((stream) => {
+    stream.getTracks().forEach((track) => {
+      peer.current.addTrack(track, stream);
+    });
+  }, []);
+
+  const addIceCandidate = useCallback((candidate) => {
+    if (peer.current.remoteDescription) {
+      peer.current.addIceCandidate(candidate);
+    } else {
+      iceCandidateQueue.current.push(candidate);
+    }
+  }, []);
+
   return (
     <PeerContext.Provider
       value={{
-        peer: peerRef.current,
+        peer: peer.current,
         getOffer,
         getAnswer,
         setRemoteDescription,
         addTrackToPeer,
+        addIceCandidate,
         remoteStream,
         remoteVideoRef,
       }}
     >
-      {props.children}
+      {children}
     </PeerContext.Provider>
   );
 };

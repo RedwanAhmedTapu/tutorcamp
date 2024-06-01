@@ -223,7 +223,7 @@ const Home = () => {
       <CardSpotlight />
       <MonitorScreen />
       <LLMApp/>
-      {/* <CreateRoom/> */}
+      <CreateRoom/>
     </>
   );
 };

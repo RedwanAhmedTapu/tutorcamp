@@ -1,12 +1,11 @@
+// CreateRoom.js
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "../context/SocketProvider";
 
 const CreateRoom = () => {
   const socket = useSocket();
-
-  // Initialize email state with an empty string
-  const [email, setemail] = useState("");
+  const [email, setEmail] = useState("");
   const [room, setRoom] = useState("");
 
   const navigate = useNavigate();
@@ -31,51 +30,52 @@ const CreateRoom = () => {
       }
       result += sanitizedString[i];
     }
-    result = result.slice(0, 12);
-    return result;
+    return result.slice(0, 12);
   };
 
   const createRoom = useCallback(() => {
     const inputString = generateRandomString();
     const formattedString = formatString(inputString);
-    return formattedString; // Return the formatted room string
+    setRoom(formattedString); // Set the room state with the formatted room string
+    return formattedString;
   }, []);
 
   const handleJoinRoom = useCallback(async () => {
-    // const room = createRoom(); // Generate a new room
-    if (room && email) {
-      socket.emit("room-join", { room, email });
+    if (email) {
+      const roomToJoin = room || createRoom(); // Use existing room or generate a new one
+      socket.emit("room-join", { room: roomToJoin, email });
     }
-  }, [createRoom, email,room, navigate, socket]);
+  }, [createRoom, email, room, socket]);
 
-  const handleroomJoined=(data)=>{
+  const handleroomJoined = (data) => {
     navigate(`/${data}`);
+  };
 
-  }
-  useEffect(()=>{
-socket.on("joined-room",handleroomJoined)
-  },[socket])
+  useEffect(() => {
+    socket.on("joined-room", handleroomJoined);
+    return () => {
+      socket.off("joined-room", handleroomJoined);
+    };
+  }, [socket]);
 
   return (
     <div className="w-full h-screen flex_col_center bg-slate-300 ">
-      <h1>video conferrence</h1>
+      <h1>Video Conference</h1>
       <input
         type="email"
         name="email"
-        placeholder="enter your email"
-        onChange={(e) => {
-          setemail(e.target.value);
-        }}
+        placeholder="Enter your email"
+        onChange={(e) => setEmail(e.target.value)}
+        value={email}
       />
       <input
         type="text"
         name="room"
-        placeholder="enter your room"
-        onChange={(e) => {
-          setRoom(e.target.value);
-        }}
+        placeholder="Enter your room (or leave blank to create a new one)"
+        onChange={(e) => setRoom(e.target.value)}
+        value={room}
       />
-      <button onClick={handleJoinRoom}>Create Room</button>
+      <button onClick={handleJoinRoom}>Join/Create Room</button>
     </div>
   );
 };
