@@ -22,6 +22,7 @@ export const PeerProvider = ({ children, roomId }) => {
 
   peer.current.ontrack = (event) => {
     if (remoteVideoRef.current) {
+      console.log(remoteVideoRef,"remote from peerprovider")
       remoteVideoRef.current.srcObject = event.streams[0];
     }
     setRemoteStream(event.streams[0]);
