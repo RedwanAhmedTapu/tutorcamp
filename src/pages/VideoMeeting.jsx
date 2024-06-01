@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSocket } from "../context/SocketProvider";
 import { useParams } from "react-router-dom";
-import { usePeer, PeerProvider } from "../context/PeerProvider"; // Import PeerProvider
+import { usePeer, PeerProvider } from "../context/PeerProvider";
 
 const VideoMeeting = () => {
   const socket = useSocket();
@@ -28,18 +28,18 @@ const VideoMeeting = () => {
     async (data) => {
       const { email } = data;
       const offer = await getOffer();
-      socket.emit("sendTheOffer", { email, offer });
+      socket.emit("sendTheOffer", { email, offer, roomId });
     },
-    [getOffer, socket]
+    [getOffer, roomId, socket]
   );
 
   const handlereceiveoffer = useCallback(
     async (data) => {
       const { from, offer } = data;
       const ans = await getAnswer(offer);
-      socket.emit("sendTheAnswer", { emailID: from, ans });
+      socket.emit("sendTheAnswer", { emailID: from, ans, roomId });
     },
-    [getAnswer, socket]
+    [getAnswer, roomId, socket]
   );
 
   const handlereceiveAnswer = useCallback(
@@ -70,8 +70,6 @@ const VideoMeeting = () => {
     socket.on("recieveOffer", handlereceiveoffer);
     socket.on("recieveAnswer", handlereceiveAnswer);
     socket.on("receiveIceCandidate", handleReceiveIceCandidate);
-    console.log(remoteVideoRef)
-    console.log(localVideoRef)
 
     return () => {
       socket.off("new-user-joined", handlenewUserJoining);
@@ -116,14 +114,6 @@ const VideoMeeting = () => {
         setIsAudioMuted(!track.enabled);
       });
     }
-  };
-
-  const selectAudioDevice = async () => {
-    // Logic for selecting audio device
-  };
-
-  const selectVideoDevice = async () => {
-    // Logic for selecting video device
   };
 
   const toggleScreenSharing = async () => {
