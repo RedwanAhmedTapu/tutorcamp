@@ -28,6 +28,7 @@ const VideoMeeting = () => {
     async (data) => {
       const { email } = data;
       const offer = await getOffer();
+      console.log(offer)
       socket.emit("sendTheOffer", { email, offer, roomId });
     },
     [getOffer, roomId, socket]
@@ -37,6 +38,7 @@ const VideoMeeting = () => {
     async (data) => {
       const { from, offer } = data;
       const ans = await getAnswer(offer);
+      console.log(ans)
       socket.emit("sendTheAnswer", { emailID: from, ans, roomId });
     },
     [getAnswer, roomId, socket]
@@ -45,6 +47,7 @@ const VideoMeeting = () => {
   const handlereceiveAnswer = useCallback(
     async (data) => {
       const { ans } = data;
+      console.log(ans)
       await setRemoteDescription(ans);
       if (localStream) {
         addTrackToPeer(localStream);
@@ -56,6 +59,7 @@ const VideoMeeting = () => {
   const handleReceiveIceCandidate = useCallback(
     async (data) => {
       const { candidate } = data;
+      console.log(candidate)
       try {
         await addIceCandidate(candidate);
       } catch (error) {
