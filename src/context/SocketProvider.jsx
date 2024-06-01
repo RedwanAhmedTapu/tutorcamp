@@ -6,7 +6,7 @@ const SocketContext = createContext(null);
 export const useSocket = () => useContext(SocketContext);
 
 export const SocketProvider = ({ children }) => {
-  const socket = useMemo(() => io(process.env.REACT_APP_BACKEND_URL), []);
+  const socket = useMemo(() => io(process.env.SERVER_URL), []);
 
   useEffect(() => {
     return () => {
