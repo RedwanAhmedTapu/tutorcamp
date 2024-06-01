@@ -21,6 +21,8 @@ export const PeerProvider = ({ children, roomId }) => {
   const iceCandidateQueue = useRef([]);
 
   peer.current.ontrack = (event) => {
+    console.log(remoteVideoRef,"remote from peerprovider")
+
     if (remoteVideoRef.current) {
       console.log(remoteVideoRef,"remote from peerprovider")
       remoteVideoRef.current.srcObject = event.streams[0];
