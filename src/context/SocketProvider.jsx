@@ -1,22 +1,24 @@
-import React, { createContext, useContext, useEffect, useMemo } from "react";
-import io from "socket.io-client";
+import  { createContext, useMemo, useContext } from "react";
+import { io } from "socket.io-client";
 
 const SocketContext = createContext(null);
 
-export const useSocket = () => useContext(SocketContext);
+export const useSocket = () => {
+  const socket = useContext(SocketContext);
+  return socket;
+};
 
-export const SocketProvider = ({ children }) => {
-  const socket = useMemo(() => io(process.env.SERVER_URL), []);
-
-  useEffect(() => {
-    return () => {
-      socket.disconnect();
-    };
-  }, [socket]);
+export const SocketProvider = (props) => {
+  // Create socket memoized, so it only initializes once
+  const socket = useMemo(() => io(process.env.SERVER_URL || 'http://localhost:5000'), []);
+  if (!socket.connected) {
+    socket.connect();
+  }
 
   return (
     <SocketContext.Provider value={socket}>
-      {children}
+      {props.children}
     </SocketContext.Provider>
   );
 };
+

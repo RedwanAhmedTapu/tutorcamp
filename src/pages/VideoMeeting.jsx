@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useSocket } from "../context/SocketProvider";
-import { useParams } from "react-router-dom";
-import { usePeer, PeerProvider } from "../context/PeerProvider";
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useSocket } from '../context/SocketProvider';
+import { useParams } from 'react-router-dom';
+import { usePeer, PeerProvider } from '../context/PeerProvider';
 
 const VideoMeeting = () => {
   const socket = useSocket();
   const { roomId } = useParams();
+  const email = localStorage.getItem("email"); // Assuming you store the email in local storage
   const {
     peer,
     getOffer,
@@ -21,82 +22,70 @@ const VideoMeeting = () => {
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [isVideoMuted, setIsVideoMuted] = useState(false);
   const [screenSharing, setScreenSharing] = useState(false);
+  const [answerReceived, setAnswerReceived] = useState(false); // New state to track if answer has been received
 
   const localVideoRef = useRef(null);
 
-  const handlenewUserJoining = useCallback(
-    async (data) => {
+  useEffect(() => {
+    // Peer A sends the offer
+    socket.on("new-user-joined", async (data) => {
       const { email } = data;
+      console.log(`New user joined: ${email}`);
+      localStorage.setItem('recipientEmail', email); // Store recipient email
       const offer = await getOffer();
-      console.log(offer)
-      socket.emit("sendTheOffer", { email, offer, roomId });
-    },
-    [getOffer, roomId, socket]
-  );
+      socket.emit('sendOffer', { email, offer, roomId });
+    });
 
-  const handlereceiveoffer = useCallback(
-    async (data) => {
+    // Peer B receives the offer and sends back an answer
+    socket.on("receiveOffer", async (data) => {
       const { from, offer } = data;
-      const ans = await getAnswer(offer);
-      console.log(ans)
-      socket.emit("sendTheAnswer", { emailID: from, ans, roomId });
-    },
-    [getAnswer, roomId, socket]
-  );
+      console.log(`Received offer from: ${from}`);
+      const answer = await getAnswer(offer);
+      localStorage.setItem('recipientEmail', from); // Store sender email
+      socket.emit('sendAnswer', { email: from, answer, roomId });
+      setAnswerReceived(true);
+    });
 
-  const handlereceiveAnswer = useCallback(
-    async (data) => {
-      const { ans } = data;
-      console.log(ans)
-      await setRemoteDescription(ans);
+    // Peer A receives the answer and sets it as the remote description
+    socket.on("receiveAnswer", async (data) => {
+      const { answer } = data;
+      console.log('Received answer');
+      await setRemoteDescription(answer);
       if (localStream) {
         addTrackToPeer(localStream);
       }
-    },
-    [setRemoteDescription, localStream, addTrackToPeer]
-  );
+    });
 
-  const handleReceiveIceCandidate = useCallback(
-    async (data) => {
+    // ICE candidates exchange
+    socket.on("receiveIceCandidate", (data) => {
       const { candidate } = data;
-      console.log(candidate)
-      try {
-        await addIceCandidate(candidate);
-      } catch (error) {
-        console.error("Error adding received ICE candidate", error);
-      }
-    },
-    [addIceCandidate]
-  );
-
-  useEffect(() => {
-    socket.on("new-user-joined", handlenewUserJoining);
-    socket.on("recieveOffer", handlereceiveoffer);
-    socket.on("recieveAnswer", handlereceiveAnswer);
-    socket.on("receiveIceCandidate", handleReceiveIceCandidate);
+      console.log('Received ICE candidate');
+      addIceCandidate(candidate);
+    });
 
     return () => {
-      socket.off("new-user-joined", handlenewUserJoining);
-      socket.off("recieveOffer", handlereceiveoffer);
-      socket.off("recieveAnswer", handlereceiveAnswer);
-      socket.off("receiveIceCandidate", handleReceiveIceCandidate);
+      socket.off('new-user-joined');
+      socket.off('receiveOffer');
+      socket.off('receiveAnswer');
+      socket.off('receiveIceCandidate');
     };
-  }, [socket, handlenewUserJoining, handlereceiveoffer, handlereceiveAnswer, handleReceiveIceCandidate]);
+  }, [socket, getOffer, getAnswer, setRemoteDescription, addTrackToPeer, localStream, addIceCandidate]);
 
   const startMedia = useCallback(async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
       setLocalStream(stream);
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = stream;
       }
-      stream.getTracks().forEach((track) => {
-        peer.addTrack(track, stream);
-      });
+      addTrackToPeer(stream);
     } catch (error) {
-      console.error("Error accessing media devices:", error);
+      console.error('Error accessing media devices:', error);
     }
-  }, [peer]);
+  }, [addTrackToPeer]);
 
   useEffect(() => {
     startMedia();
@@ -125,39 +114,48 @@ const VideoMeeting = () => {
   };
 
   return (
-    <PeerProvider roomId={roomId}>
-      <div className="w-full h-screen bg-slate-950 pattern-dots">
-        <div className="w-full h-full flex_col_center">
-          <div className="flex justify-center items-center space-x-4 mb-4">
-            <button
-              className="bg-gray-500 text-white px-4 py-2 rounded"
-              onClick={toggleAudio}
-            >
-              {isAudioMuted ? "Unmute Audio" : "Mute Audio"}
-            </button>
-            <button
-              className="bg-gray-500 text-white px-4 py-2 rounded"
-              onClick={toggleVideo}
-            >
-              {isVideoMuted ? "Unmute Video" : "Mute Video"}
-            </button>
-            <button
-              className="w-16 h-12 bg-blue-600 rounded-md shadow-lg text-white"
-              onClick={toggleScreenSharing}
-            >
-              {screenSharing ? "Stop Sharing" : "Share Screen"}
-            </button>
-          </div>
-          <div className="w-full h-96 flex_col_center">
-            <h1 className="text-white">Local video</h1>
-            <video ref={localVideoRef} autoPlay className="w-full h-96" />
-            <h1 className="text-white">Remote video</h1>
-            <video ref={remoteVideoRef} autoPlay className="w-full h-96" />
-          </div>
+    <div className="w-full h-screen bg-slate-950 pattern-dots">
+      <div className="w-full h-full flex_col_center">
+        <div className="flex justify-center items-center space-x-4 mb-4">
+          <button
+            className="bg-gray-500 text-white px-4 py-2 rounded"
+            onClick={toggleAudio}
+          >
+            {isAudioMuted ? 'Unmute Audio' : 'Mute Audio'}
+          </button>
+          <button
+            className="bg-gray-500 text-white px-4 py-2 rounded"
+            onClick={toggleVideo}
+          >
+            {isVideoMuted ? 'Unmute Video' : 'Mute Video'}
+          </button>
+          <button
+            className="w-16 h-12 bg-blue-600 rounded-md shadow-lg text-white"
+            onClick={toggleScreenSharing}
+          >
+            {screenSharing ? 'Stop Sharing' : 'Share Screen'}
+          </button>
+        </div>
+        <div className="w-full h-96 flex_col_center">
+          <h1 className="text-white">Local video</h1>
+          <video ref={localVideoRef} autoPlay className="w-full h-96" />
+          <h1 className="text-white">Remote video</h1>
+          <video ref={remoteVideoRef} autoPlay className="w-full h-96" />
         </div>
       </div>
+    </div>
+  );
+};
+
+const VideoMeetingWrapper = () => {
+  const { roomId } = useParams();
+  const email = localStorage.getItem("email");  // Assuming you store the email in local storage
+
+  return (
+    <PeerProvider roomId={roomId} email={email}>
+      <VideoMeeting />
     </PeerProvider>
   );
 };
 
-export default VideoMeeting;
+export default VideoMeetingWrapper;

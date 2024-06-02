@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useRef, useState, useCallback } from "react";
-import { useSocket } from "../context/SocketProvider";
+import React, { createContext, useContext, useRef, useState, useCallback } from 'react';
+import { useSocket } from './SocketProvider';
 
 const PeerContext = createContext();
 
@@ -7,12 +7,12 @@ export const usePeer = () => {
   return useContext(PeerContext);
 };
 
-export const PeerProvider = ({ children, roomId }) => {
-  const socket = useSocket(); // Access the socket instance
+export const PeerProvider = ({ children }) => {
+  const socket = useSocket();
   const peer = useRef(new RTCPeerConnection({
     iceServers: [
       {
-        urls: "stun:stun.l.google.com:19302",
+        urls: 'stun:stun.l.google.com:19302',
       },
     ],
   }));
@@ -21,10 +21,7 @@ export const PeerProvider = ({ children, roomId }) => {
   const iceCandidateQueue = useRef([]);
 
   peer.current.ontrack = (event) => {
-    console.log(remoteVideoRef,"remote from peerprovider")
-
     if (remoteVideoRef.current) {
-      console.log(remoteVideoRef,"remote from peerprovider")
       remoteVideoRef.current.srcObject = event.streams[0];
     }
     setRemoteStream(event.streams[0]);
@@ -32,16 +29,18 @@ export const PeerProvider = ({ children, roomId }) => {
 
   peer.current.onicecandidate = (event) => {
     if (event.candidate) {
-      handleIceCandidate(event.candidate); // Call the handleIceCandidate function
+      handleIceCandidate(event.candidate);
     }
   };
 
   const handleIceCandidate = useCallback((candidate) => {
-    socket.emit("sendIceCandidate", {
+    const recipientEmail = localStorage.getItem('recipientEmail');
+    console.log(`Sending ICE candidate to ${recipientEmail}`);
+    socket.emit('sendIceCandidate', {
       candidate,
-      roomId, // Use roomId from the prop
+      recipientEmail,
     });
-  }, [socket, roomId]);
+  }, [socket]);
 
   const getOffer = useCallback(async () => {
     const offer = await peer.current.createOffer();

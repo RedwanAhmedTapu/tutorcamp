@@ -6,7 +6,8 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import LobbyScreen from "./components/Vide";
 import RoomPage from "./components/Room";
-import VideoMeeting from "./pages/VideoMeeting";
+import VideoMeetingWrapper from "./pages/VideoMeeting";
+// import VideoMeetingWrapper from "./pages/VideoMeeting";
 
 import ChapterWiseDescription from "./pages/ChapterWiseDescription";
 import { SocketProvider } from "./context/SocketProvider";
@@ -27,7 +28,7 @@ const App = () => {
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
               <Route path="/room/:roomId" element={<RoomPage />} />
-              <Route path="/:roomId" element={<VideoMeeting />} />
+              <Route path="/:roomId" element={<VideoMeetingWrapper />} />
               <Route path="/solution" element={<SolutionComponent />} />
               <Route path="/sub/:subID" element={<ChapterWiseDescription />} />
             </Routes>
