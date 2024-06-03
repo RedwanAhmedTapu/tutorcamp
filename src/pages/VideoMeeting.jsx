@@ -6,7 +6,7 @@ import { usePeer, PeerProvider } from '../context/PeerProvider';
 const VideoMeeting = () => {
   const socket = useSocket();
   const { roomId } = useParams();
-  const email = localStorage.getItem("email"); // Assuming you store the email in local storage
+  const email = localStorage.getItem("email");
   const {
     peer,
     getOffer,
@@ -22,54 +22,58 @@ const VideoMeeting = () => {
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [isVideoMuted, setIsVideoMuted] = useState(false);
   const [screenSharing, setScreenSharing] = useState(false);
-  const [answerReceived, setAnswerReceived] = useState(false); // New state to track if answer has been received
 
   const localVideoRef = useRef(null);
 
+  const handleNewUserJoining = useCallback(async (data) => {
+    const { email } = data;
+    console.log(`New user joined: ${email}`);
+    localStorage.setItem('recipientEmail', email);
+   await console.log(localStream,"await localstream")
+    if (localStream) {
+     await addTrackToPeer(localStream);
+    }
+    const offer = await getOffer();
+    socket.emit('sendOffer', { email, offer, roomId });
+     if (localStream) {
+      addTrackToPeer(localStream);
+    }
+  }, [roomId, getOffer, socket]);
+
+  const handleReceiveOffer = useCallback(async (data) => {
+    const { from, offer } = data;
+    console.log(`Received offer from: ${from}`);
+    const answer = await getAnswer(offer);
+    localStorage.setItem('recipientEmail', from);
+    socket.emit('sendAnswer', { email: from, answer });
+   
+  }, [getAnswer, socket, localStream, addTrackToPeer]);
+
+  const handleReceiveAnswer = useCallback(async (data) => {
+    const { answer } = data;
+    console.log('Received answer');
+    await setRemoteDescription(answer);
+  }, [setRemoteDescription]);
+
+  const handleReceiveIceCandidate = useCallback((data) => {
+    const { candidate } = data;
+    console.log('Received ICE candidate');
+    addIceCandidate(candidate);
+  }, [addIceCandidate]);
+
   useEffect(() => {
-    // Peer A sends the offer
-    socket.on("new-user-joined", async (data) => {
-      const { email } = data;
-      console.log(`New user joined: ${email}`);
-      localStorage.setItem('recipientEmail', email); // Store recipient email
-      const offer = await getOffer();
-      socket.emit('sendOffer', { email, offer, roomId });
-    });
-
-    // Peer B receives the offer and sends back an answer
-    socket.on("receiveOffer", async (data) => {
-      const { from, offer } = data;
-      console.log(`Received offer from: ${from}`);
-      const answer = await getAnswer(offer);
-      localStorage.setItem('recipientEmail', from); // Store sender email
-      socket.emit('sendAnswer', { email: from, answer, roomId });
-      setAnswerReceived(true);
-    });
-
-    // Peer A receives the answer and sets it as the remote description
-    socket.on("receiveAnswer", async (data) => {
-      const { answer } = data;
-      console.log('Received answer');
-      await setRemoteDescription(answer);
-      if (localStream) {
-        addTrackToPeer(localStream);
-      }
-    });
-
-    // ICE candidates exchange
-    socket.on("receiveIceCandidate", (data) => {
-      const { candidate } = data;
-      console.log('Received ICE candidate');
-      addIceCandidate(candidate);
-    });
+    socket.on('new-user-joined', handleNewUserJoining);
+    socket.on('receiveOffer', handleReceiveOffer);
+    socket.on('receiveAnswer', handleReceiveAnswer);
+    socket.on('receiveIceCandidate', handleReceiveIceCandidate);
 
     return () => {
-      socket.off('new-user-joined');
-      socket.off('receiveOffer');
-      socket.off('receiveAnswer');
-      socket.off('receiveIceCandidate');
+      socket.off('new-user-joined', handleNewUserJoining);
+      socket.off('receiveOffer', handleReceiveOffer);
+      socket.off('receiveAnswer', handleReceiveAnswer);
+      socket.off('receiveIceCandidate', handleReceiveIceCandidate);
     };
-  }, [socket, getOffer, getAnswer, setRemoteDescription, addTrackToPeer, localStream, addIceCandidate]);
+  }, [socket, handleNewUserJoining, handleReceiveOffer, handleReceiveAnswer, handleReceiveIceCandidate]);
 
   const startMedia = useCallback(async () => {
     try {
@@ -89,7 +93,7 @@ const VideoMeeting = () => {
 
   useEffect(() => {
     startMedia();
-  }, [startMedia]);
+  }, [startMedia,handleNewUserJoining]);
 
   const toggleVideo = () => {
     if (localStream) {
@@ -136,26 +140,19 @@ const VideoMeeting = () => {
             {screenSharing ? 'Stop Sharing' : 'Share Screen'}
           </button>
         </div>
-        <div className="w-full h-96 flex_col_center">
-          <h1 className="text-white">Local video</h1>
-          <video ref={localVideoRef} autoPlay className="w-full h-96" />
-          <h1 className="text-white">Remote video</h1>
-          <video ref={remoteVideoRef} autoPlay className="w-full h-96" />
+        <div className="w-full h-96 flex flex-row gap-x-8">
+          <div className="flex flex-col items-center">
+            <h1 className="text-white mb-2">Local Video</h1>
+            <video ref={localVideoRef} autoPlay className="w-full h-96" />
+          </div>
+          <div className="flex flex-col items-center">
+            <h1 className="text-white mb-2">Remote Video</h1>
+            <video ref={remoteVideoRef} autoPlay className="w-full h-96" />
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-const VideoMeetingWrapper = () => {
-  const { roomId } = useParams();
-  const email = localStorage.getItem("email");  // Assuming you store the email in local storage
-
-  return (
-    <PeerProvider roomId={roomId} email={email}>
-      <VideoMeeting />
-    </PeerProvider>
-  );
-};
-
-export default VideoMeetingWrapper;
+export default VideoMeeting;

@@ -18,9 +18,11 @@ export const PeerProvider = ({ children }) => {
   }));
   const [remoteStream, setRemoteStream] = useState(null);
   const remoteVideoRef = useRef(null);
+  const localStreamRef = useRef(null);
   const iceCandidateQueue = useRef([]);
 
   peer.current.ontrack = (event) => {
+    console.log('ontrack event', event);
     if (remoteVideoRef.current) {
       remoteVideoRef.current.srcObject = event.streams[0];
     }
@@ -35,7 +37,6 @@ export const PeerProvider = ({ children }) => {
 
   const handleIceCandidate = useCallback((candidate) => {
     const recipientEmail = localStorage.getItem('recipientEmail');
-    console.log(`Sending ICE candidate to ${recipientEmail}`);
     socket.emit('sendIceCandidate', {
       candidate,
       recipientEmail,
@@ -65,6 +66,7 @@ export const PeerProvider = ({ children }) => {
 
   const addTrackToPeer = useCallback((stream) => {
     stream.getTracks().forEach((track) => {
+      console.log(track)
       peer.current.addTrack(track, stream);
     });
   }, []);
