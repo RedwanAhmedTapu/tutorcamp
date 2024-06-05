@@ -24,21 +24,23 @@ const VideoMeeting = () => {
   const [screenSharing, setScreenSharing] = useState(false);
 
   const localVideoRef = useRef(null);
+  
+
+  
 
   const handleNewUserJoining = useCallback(async (data) => {
     const { email } = data;
     console.log(`New user joined: ${email}`);
     localStorage.setItem('recipientEmail', email);
-   await console.log(localStream,"await localstream")
+    
     if (localStream) {
-     await addTrackToPeer(localStream);
-    }
-    const offer = await getOffer();
-    socket.emit('sendOffer', { email, offer, roomId });
-     if (localStream) {
+      console.log(localStream,"createoffer")
+
       addTrackToPeer(localStream);
+      const offer = await getOffer();
+      socket.emit('sendOffer', { email, offer, roomId });
     }
-  }, [roomId, getOffer, socket]);
+  }, [roomId, getOffer, socket, localStream]);
 
   const handleReceiveOffer = useCallback(async (data) => {
     const { from, offer } = data;
@@ -46,8 +48,12 @@ const VideoMeeting = () => {
     const answer = await getAnswer(offer);
     localStorage.setItem('recipientEmail', from);
     socket.emit('sendAnswer', { email: from, answer });
-   
-  }, [getAnswer, socket, localStream, addTrackToPeer]);
+
+    if (localStream) {
+      console.log(localStream,"recieveoffer")
+      addTrackToPeer(localStream);
+    }
+  }, [getAnswer, socket, localStream]);
 
   const handleReceiveAnswer = useCallback(async (data) => {
     const { answer } = data;
@@ -63,7 +69,9 @@ const VideoMeeting = () => {
 
   useEffect(() => {
     socket.on('new-user-joined', handleNewUserJoining);
+    if(localStream){
     socket.on('receiveOffer', handleReceiveOffer);
+    }
     socket.on('receiveAnswer', handleReceiveAnswer);
     socket.on('receiveIceCandidate', handleReceiveIceCandidate);
 
@@ -73,7 +81,7 @@ const VideoMeeting = () => {
       socket.off('receiveAnswer', handleReceiveAnswer);
       socket.off('receiveIceCandidate', handleReceiveIceCandidate);
     };
-  }, [socket, handleNewUserJoining, handleReceiveOffer, handleReceiveAnswer, handleReceiveIceCandidate]);
+  }, [socket, handleNewUserJoining, handleReceiveOffer, handleReceiveAnswer, handleReceiveIceCandidate,localStream]);
 
   const startMedia = useCallback(async () => {
     try {
@@ -81,19 +89,22 @@ const VideoMeeting = () => {
         video: true,
         audio: true,
       });
-      setLocalStream(stream);
+      if(stream){
+        console.log("steam got")
+        setLocalStream(stream);
+      }
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = stream;
       }
-      addTrackToPeer(stream);
+      // addTrackToPeer(stream);
     } catch (error) {
       console.error('Error accessing media devices:', error);
     }
-  }, [addTrackToPeer]);
+  }, [peer]);
 
   useEffect(() => {
     startMedia();
-  }, [startMedia,handleNewUserJoining]);
+  }, [startMedia]);
 
   const toggleVideo = () => {
     if (localStream) {

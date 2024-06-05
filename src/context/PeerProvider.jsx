@@ -18,8 +18,8 @@ export const PeerProvider = ({ children }) => {
   }));
   const [remoteStream, setRemoteStream] = useState(null);
   const remoteVideoRef = useRef(null);
-  const localStreamRef = useRef(null);
   const iceCandidateQueue = useRef([]);
+  const sendersRef = useRef([]);
 
   peer.current.ontrack = (event) => {
     console.log('ontrack event', event);
@@ -65,9 +65,12 @@ export const PeerProvider = ({ children }) => {
   }, []);
 
   const addTrackToPeer = useCallback((stream) => {
-    stream.getTracks().forEach((track) => {
-      console.log(track)
-      peer.current.addTrack(track, stream);
+    console.log(stream,"peer-a-b");
+    stream.getTracks().forEach(track => {
+      if (!sendersRef.current.find(sender => sender.track === track)) {
+        const sender = peer.current.addTrack(track, stream);
+        sendersRef.current.push(sender);
+      }
     });
   }, []);
 
