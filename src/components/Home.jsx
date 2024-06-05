@@ -221,8 +221,8 @@ const Home = () => {
       {/* <TorchLightEffect/> */}
       {/* <Loading/> */}
       <CardSpotlight />
-      <MonitorScreen />
-      <LLMApp/>
+      {/* <MonitorScreen /> */}
+      {/* <LLMApp/> */}
       <CreateRoom/>
     </>
   );
