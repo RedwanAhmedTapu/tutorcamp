@@ -54,7 +54,7 @@ const VideoMeeting = () => {
         localStorage.setItem("recipientEmail", from);
         await socket.emit("sendAnswer", { email: from, answer });
 
-        console.log(localStream, "recieveoffer");
+       
       }
     },
     [getAnswer, socket, localStream, addTrackToPeer]
