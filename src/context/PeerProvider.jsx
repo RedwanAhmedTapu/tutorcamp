@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useRef, useState, useCallback, useEffect } from 'react';
 import { useSocket } from './SocketProvider';
+import axios from 'axios';
 
 const PeerContext = createContext();
 
@@ -9,47 +10,52 @@ export const usePeer = () => {
 
 export const PeerProvider = ({ children }) => {
   const socket = useSocket();
-  const peer = useRef(new RTCPeerConnection({
-    iceServers: [
-      { urls: 'stun:stun.l.google.com:19302' },
-      { urls: 'stun:stun1.l.google.com:19302' },
-      { urls: 'stun:global.stun.twilio.com:3478' },
-      {
-        urls: 'relay1.expressturn.com:3478',
-        username: 'efGYIAJX8LZT3XAPIV',
-        credential: 'jqdaH4GVPLxQizua'
-      }
-    ],
-  }));
-  const [remoteStream, setRemoteStream] = useState(null);
+  const peer = useRef(null);
   const remoteVideoRef = useRef(null);
   const iceCandidateQueue = useRef([]);
   const sendersRef = useRef([]);
   const [offerReceived, setOfferReceived] = useState(false);
   const [answerReceived, setAnswerReceived] = useState(false);
 
+  useEffect(() => {
+    const fetchTurnServers = async () => {
+      try {
+        const response = await axios.get(`https://yourappname.metered.live/api/v1/turn/credentials?apiKey=${process.env.API_KEY}`);
+        const iceServers = response.data;
+        const peerConfiguration = { iceServers };
+        peer.current = new RTCPeerConnection(peerConfiguration);
+        // Attach event listeners
+        peer.current.ontrack = handleRemoteTrack;
+        peer.current.onicecandidate = handleIceCandidate;
+      } catch (error) {
+        console.error("Error fetching TURN server credentials:", error);
+      }
+    };
+    fetchTurnServers();
+  }, []);
+
   // Send ICE candidate to the remote peer via socket
-  const handleIceCandidate = useCallback((candidate) => {
-    const recipientEmail = localStorage.getItem('recipientEmail');
-    socket.emit('sendIceCandidate', {
-      candidate,
-      recipientEmail,
-    });
+  const handleIceCandidate = useCallback((event) => {
+    if (event.candidate) {
+      const recipientEmail = localStorage.getItem('recipientEmail');
+      socket.emit('sendIceCandidate', {
+        candidate: event.candidate,
+        recipientEmail,
+      });
+    }
   }, [socket]);
 
-  // Handle remote track event
-  useEffect(() => {
-    peer.current.ontrack = (event) => {
-      console.log('ontrack event', event);
-      if (remoteVideoRef.current) {
-        remoteVideoRef.current.srcObject = event.streams[0];
-      }
-      setRemoteStream(event.streams[0]);
-    };
+  const handleRemoteTrack = useCallback((event) => {
+    console.log('ontrack event', event);
+    if (remoteVideoRef.current && event.streams && event.streams[0]) {
+      remoteVideoRef.current.srcObject = event.streams[0];
+    }
   }, []);
 
   // Handle ICE candidate event
   useEffect(() => {
+    if (!peer.current) return;
+
     peer.current.onicecandidate = (event) => {
       if (event.candidate) {
         handleIceCandidate(event.candidate);
@@ -59,6 +65,8 @@ export const PeerProvider = ({ children }) => {
 
   // Create and send an offer
   const getOffer = useCallback(async () => {
+    if (!peer.current) return;
+
     const offer = await peer.current.createOffer();
     await peer.current.setLocalDescription(offer);
     return offer;
@@ -66,6 +74,8 @@ export const PeerProvider = ({ children }) => {
 
   // Create and send an answer
   const getAnswer = useCallback(async (offer) => {
+    if (!peer.current) return;
+
     await peer.current.setRemoteDescription(offer);
     setOfferReceived(true);
     const answer = await peer.current.createAnswer();
@@ -76,6 +86,8 @@ export const PeerProvider = ({ children }) => {
 
   // Set the remote description and process any buffered ICE candidates
   const setRemoteDescription = useCallback(async (answer) => {
+    if (!peer.current) return;
+
     await peer.current.setRemoteDescription(answer);
     setAnswerReceived(true);
     processBufferedICECandidates();
@@ -93,7 +105,8 @@ export const PeerProvider = ({ children }) => {
 
   // Add tracks to the peer connection
   const addTrackToPeer = useCallback((stream) => {
-    console.log(stream, "peer-a-b");
+    if (!peer.current) return;
+
     stream.getTracks().forEach(track => {
       if (!sendersRef.current.find(sender => sender.track === track)) {
         const sender = peer.current.addTrack(track, stream);
@@ -104,6 +117,8 @@ export const PeerProvider = ({ children }) => {
 
   // Add ICE candidate or buffer it if the remote description is not set
   const addIceCandidate = useCallback((candidate) => {
+    if (!peer.current) return;
+
     if (offerReceived && answerReceived) {
       peer.current.addIceCandidate(candidate);
     } else {
@@ -126,7 +141,6 @@ export const PeerProvider = ({ children }) => {
         setRemoteDescription,
         addTrackToPeer,
         addIceCandidate,
-        remoteStream,
         remoteVideoRef,
       }}
     >

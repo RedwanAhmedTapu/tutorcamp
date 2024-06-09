@@ -147,7 +147,7 @@ const VideoMeeting = () => {
           video: true,
         });
         const videoTrack = screenStream.getVideoTracks()[0];
-        const sender = peer.getSenders().find((s) => {
+        const sender = peer.peer.getSenders().find((s) => {
           return s.track.kind === videoTrack.kind;
         });
         if (sender) {
@@ -162,7 +162,7 @@ const VideoMeeting = () => {
         video: true,
       });
       const videoTrack = videoStream.getVideoTracks()[0];
-      const sender = peer.getSenders().find((s) => {
+      const sender = peer.peer.getSenders().find((s) => {
         return s.track.kind === videoTrack.kind;
       });
       if (sender) {
