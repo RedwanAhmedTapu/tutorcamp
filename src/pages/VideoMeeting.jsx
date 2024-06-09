@@ -14,7 +14,6 @@ const VideoMeeting = () => {
     setRemoteDescription,
     addTrackToPeer,
     addIceCandidate,
-    remoteStream,
     remoteVideoRef,
   } = usePeer();
 
@@ -44,17 +43,17 @@ const VideoMeeting = () => {
 
   const handleReceiveOffer = useCallback(
     async (data) => {
-      let stream = await startMedia();
+      const stream = await startMedia();
       const { from, offer } = data;
       console.log(`Received offer from: ${from}`);
-      if (stream != "null") {
-        console.log(stream, "sdsd");
-      }
-      addTrackToPeer(stream);
+      if (stream) {
+        console.log(stream, "received offer stream");
+        addTrackToPeer(stream);
 
-      const answer = await getAnswer(offer);
-      localStorage.setItem("recipientEmail", from);
-      socket.emit("sendAnswer", { email: from, answer });
+        const answer = await getAnswer(offer);
+        localStorage.setItem("recipientEmail", from);
+        socket.emit("sendAnswer", { email: from, answer });
+      }
     },
     [getAnswer, socket, localStream, addTrackToPeer]
   );
@@ -82,7 +81,6 @@ const VideoMeeting = () => {
     socket.on("receiveOffer", handleReceiveOffer);
     socket.on("receiveAnswer", handleReceiveAnswer);
     socket.on("receiveIceCandidate", handleReceiveIceCandidate);
-    console.log(remoteVideoRef.current.srcObject, "isrem");
 
     return () => {
       socket.off("new-user-joined", handleNewUserJoining);
@@ -108,7 +106,7 @@ const VideoMeeting = () => {
         },
       });
       if (stream) {
-        console.log("steam got");
+        console.log("stream obtained");
         setLocalStream(stream);
       }
       if (localVideoRef.current) {
