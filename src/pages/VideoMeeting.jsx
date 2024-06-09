@@ -14,6 +14,7 @@ const VideoMeeting = () => {
     setRemoteDescription,
     addTrackToPeer,
     addIceCandidate,
+    remoteStream,
     remoteVideoRef,
   } = usePeer();
 
@@ -46,15 +47,13 @@ const VideoMeeting = () => {
       let stream = await startMedia();
       const { from, offer } = data;
       console.log(`Received offer from: ${from}`);
-      if (stream!="null") {
+      if (stream != "null") {
         console.log(stream, "sdsd");
         addTrackToPeer(stream);
 
         const answer = await getAnswer(offer);
         localStorage.setItem("recipientEmail", from);
         await socket.emit("sendAnswer", { email: from, answer });
-
-       
       }
     },
     [getAnswer, socket, localStream, addTrackToPeer]
@@ -204,7 +203,9 @@ const VideoMeeting = () => {
           </div>
           <div className="flex flex-col items-center">
             <h1 className="text-white mb-2">Remote Video</h1>
-            <video ref={remoteVideoRef} autoPlay className="w-full h-96" />
+            {remoteStream && (
+              <video ref={remoteVideoRef} autoPlay className="w-full h-96" />
+            )}
           </div>
         </div>
       </div>
