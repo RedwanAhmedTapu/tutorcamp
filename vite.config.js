@@ -8,7 +8,7 @@ export default ({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
   // Define server URL dynamically
-  const serverUrl = env.SERVER_URL || 'http://localhost:5000';
+  const serverUrl = env.SERVER_URL ;
 
   return defineConfig({
     plugins: [react()],
