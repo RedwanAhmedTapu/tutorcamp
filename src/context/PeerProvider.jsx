@@ -14,6 +14,11 @@ export const PeerProvider = ({ children }) => {
       { urls: 'stun:stun.l.google.com:19302' },
       { urls: 'stun:stun1.l.google.com:19302' },
       { urls: 'stun:global.stun.twilio.com:3478' },
+      {
+        urls: 'relay1.expressturn.com:3478',
+        username: 'efGYIAJX8LZT3XAPIV',
+        credential: 'jqdaH4GVPLxQizua'
+      }
     ],
   }));
   const [remoteStream, setRemoteStream] = useState(null);
