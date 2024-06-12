@@ -22,7 +22,7 @@ export const PeerProvider = ({ children }) => {
       try {
         const response = await axios.get(`https://yourappname.metered.live/api/v1/turn/credentials?apiKey=${process.env.API_KEY}`);
         const iceServers = response.data;
-        const peerConfiguration = { iceServers };
+        const peerConfiguration = { iceServers: iceServers.slice(0, 3) }; // Limit to 3 servers
         peer.current = new RTCPeerConnection(peerConfiguration);
         // Attach event listeners
         peer.current.ontrack = handleRemoteTrack;
@@ -34,7 +34,6 @@ export const PeerProvider = ({ children }) => {
     fetchTurnServers();
   }, []);
 
-  // Send ICE candidate to the remote peer via socket
   const handleIceCandidate = useCallback((event) => {
     if (event.candidate) {
       const recipientEmail = localStorage.getItem('recipientEmail');
@@ -52,9 +51,20 @@ export const PeerProvider = ({ children }) => {
     }
   }, []);
 
-  // Handle ICE candidate event
   useEffect(() => {
     if (!peer.current) return;
+
+    peer.current.oniceconnectionstatechange = () => {
+      if (peer.current.iceConnectionState === 'failed') {
+        console.error('ICE connection failed');
+        // Implement retry logic or fallback mechanisms
+      }
+    };
+
+    peer.current.onicecandidateerror = (event) => {
+      console.error('ICE candidate error:', event.errorText);
+      // Implement specific handling for candidate errors
+    };
 
     peer.current.onicecandidate = (event) => {
       if (event.candidate) {
@@ -63,7 +73,6 @@ export const PeerProvider = ({ children }) => {
     };
   }, [handleIceCandidate]);
 
-  // Create and send an offer
   const getOffer = useCallback(async () => {
     if (!peer.current) return;
 
@@ -72,7 +81,6 @@ export const PeerProvider = ({ children }) => {
     return offer;
   }, []);
 
-  // Create and send an answer
   const getAnswer = useCallback(async (offer) => {
     if (!peer.current) return;
 
@@ -84,7 +92,6 @@ export const PeerProvider = ({ children }) => {
     return answer;
   }, []);
 
-  // Set the remote description and process any buffered ICE candidates
   const setRemoteDescription = useCallback(async (answer) => {
     if (!peer.current) return;
 
@@ -93,7 +100,6 @@ export const PeerProvider = ({ children }) => {
     processBufferedICECandidates();
   }, []);
 
-  // Process buffered ICE candidates when both offer and answer are received
   const processBufferedICECandidates = useCallback(() => {
     if (offerReceived && answerReceived) {
       iceCandidateQueue.current.forEach(candidate => {
@@ -105,7 +111,6 @@ export const PeerProvider = ({ children }) => {
     }
   }, [offerReceived, answerReceived]);
 
-  // Add tracks to the peer connection
   const addTrackToPeer = useCallback((stream) => {
     if (!peer.current) return;
 
@@ -117,7 +122,6 @@ export const PeerProvider = ({ children }) => {
     });
   }, []);
 
-  // Add ICE candidate or buffer it if the remote description is not set
   const addIceCandidate = useCallback((candidate) => {
     if (!peer.current) return;
 
