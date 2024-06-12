@@ -62,11 +62,11 @@ const VideoMeeting = () => {
       const { from, offer } = data;
       console.log(`Received offer from: ${from}`);
       try {
-        const stream = await startMedia();
+        // const stream = await startMedia();
         console.log(localStream,"ans");
-        if (stream) {
-          console.log("Local stream obtained for received offer:", stream);
-          addTrackToPeer(stream);
+        if (localStream) {
+          console.log("Local stream obtained for received offer:", localStream);
+          addTrackToPeer(localStream);
 
           console.log("Remote description set for received offer");
 
