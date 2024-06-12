@@ -58,7 +58,7 @@ export const PeerProvider = ({ children }) => {
 
     peer.current.onicecandidate = (event) => {
       if (event.candidate) {
-        handleIceCandidate(event.candidate);
+        handleIceCandidate(event);
       }
     };
   }, [handleIceCandidate]);
@@ -97,7 +97,9 @@ export const PeerProvider = ({ children }) => {
   const processBufferedICECandidates = useCallback(() => {
     if (offerReceived && answerReceived) {
       iceCandidateQueue.current.forEach(candidate => {
-        peer.current.addIceCandidate(candidate);
+        peer.current.addIceCandidate(candidate).catch(e => {
+          console.error('Error adding ICE candidate:', e);
+        });
       });
       iceCandidateQueue.current = [];
     }
@@ -120,7 +122,9 @@ export const PeerProvider = ({ children }) => {
     if (!peer.current) return;
 
     if (offerReceived && answerReceived) {
-      peer.current.addIceCandidate(candidate);
+      peer.current.addIceCandidate(candidate).catch(e => {
+        console.error('Error adding ICE candidate:', e);
+      });
     } else {
       iceCandidateQueue.current.push(candidate);
     }
