@@ -142,11 +142,9 @@ const VideoMeeting = () => {
     } catch (error) {
       console.error("Error accessing media devices:", error);
     }
-  }, []);
+  }, [handleNewUserJoining,handleReceiveOffer]);
 
-  useEffect(() => {
-    startMedia();
-  }, [startMedia]);
+  
 
   const toggleVideo = () => {
     if (localStream) {
