@@ -70,11 +70,12 @@ const VideoMeeting = () => {
           console.log("Remote description set for received offer");
 
           console.log("Local description set with answer");
-          const answer = await getAnswer(offer);
-          localStorage.setItem("recipientEmail", from);
-          socket.emit("sendAnswer", { email: from, answer });
+         
           console.log(`Answer sent to: ${from}`);
         }
+        const answer = await getAnswer(offer);
+        localStorage.setItem("recipientEmail", from);
+        socket.emit("sendAnswer", { email: from, answer });
       } catch (error) {
         console.error("Error handling received offer:", error);
       }
