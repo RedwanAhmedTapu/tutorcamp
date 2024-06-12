@@ -42,37 +42,32 @@ const VideoMeeting = () => {
   );
 
   // const handleReceiveOffer = useCallback(
-    async (data) => {
-      const stream = await startMedia();
-      const { from, offer } = data;
-      console.log(`Received offer from: ${from}`);
-      if (stream) {
-        console.log(stream, "received offer stream");
-        addTrackToPeer(stream);
+  async (data) => {
+    const stream = await startMedia();
+    const { from, offer } = data;
+    console.log(`Received offer from: ${from}`);
+    if (stream) {
+      console.log(stream, "received offer stream");
+      addTrackToPeer(stream);
 
-        const answer = await getAnswer(offer);
-        localStorage.setItem("recipientEmail", from);
-        socket.emit("sendAnswer", { email: from, answer });
-      }
-    },
-    [getAnswer, socket, localStream, addTrackToPeer]
+      const answer = await getAnswer(offer);
+      localStorage.setItem("recipientEmail", from);
+      socket.emit("sendAnswer", { email: from, answer });
+    }
+  },
+    [getAnswer, socket, localStream, addTrackToPeer];
   // );
   const handleReceiveOffer = useCallback(
     async (data) => {
       const { from, offer } = data;
       console.log(`Received offer from: ${from}`);
       try {
-        // const stream = await startMedia();
-        console.log(localStream,"ans");
+        const stream = await startMedia();
+        console.log(localStream, "ans");
         if (localStream) {
-          console.log("Local stream obtained for received offer:", localStream);
           addTrackToPeer(localStream);
-
-          console.log("Remote description set for received offer");
-
-          console.log("Local description set with answer");
-         
-          console.log(`Answer sent to: ${from}`);
+        } else {
+          addTrackToPeer(stream);
         }
         const answer = await getAnswer(offer);
         localStorage.setItem("recipientEmail", from);
