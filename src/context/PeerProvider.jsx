@@ -22,7 +22,7 @@ export const PeerProvider = ({ children }) => {
       try {
         const response = await axios.get(`https://yourappname.metered.live/api/v1/turn/credentials?apiKey=${process.env.API_KEY}`);
         const iceServers = response.data;
-        const peerConfiguration = { iceServers: iceServers.slice(0, 3) }; // Limit to 3 servers
+        const peerConfiguration = { iceServers: iceServers.slice(0, 6) }; // Limit to 3 servers
         peer.current = new RTCPeerConnection(peerConfiguration);
         // Attach event listeners
         peer.current.ontrack = handleRemoteTrack;
