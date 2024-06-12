@@ -43,20 +43,31 @@ const VideoMeeting = () => {
 
   const handleReceiveOffer = useCallback(
     async (data) => {
-      const stream = await startMedia();
       const { from, offer } = data;
       console.log(`Received offer from: ${from}`);
-      if (stream) {
-        console.log(stream, "received offer stream");
-        addTrackToPeer(stream);
-
-        const answer = await getAnswer(offer);
-        localStorage.setItem("recipientEmail", from);
-        socket.emit("sendAnswer", { email: from, answer });
+      try {
+        const stream = await startMedia();
+        if (stream) {
+          console.log("Local stream obtained for received offer:", stream);
+          addTrackToPeer(stream);
+  
+          await peer.current.setRemoteDescription(new RTCSessionDescription(offer));
+          console.log("Remote description set for received offer");
+  
+          const answer = await peer.current.createAnswer();
+          await peer.current.setLocalDescription(answer);
+          console.log("Local description set with answer");
+  
+          socket.emit("sendAnswer", { email: from, answer });
+          console.log(`Answer sent to: ${from}`);
+        }
+      } catch (error) {
+        console.error("Error handling received offer:", error);
       }
     },
     [getAnswer, socket, localStream, addTrackToPeer]
   );
+  
 
   const handleReceiveAnswer = useCallback(
     async (data) => {
@@ -102,7 +113,7 @@ const VideoMeeting = () => {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: {
-          echoCancellation: true, // Add echoCancellation constraint
+          echoCancellation: true,
         },
       });
       if (stream) {
