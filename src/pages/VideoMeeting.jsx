@@ -63,7 +63,7 @@ const VideoMeeting = () => {
       console.log(`Received offer from: ${from}`);
       try {
         const stream = await startMedia();
-        console.log(stream,"ans");
+        console.log(localStream,"ans");
         if (stream) {
           console.log("Local stream obtained for received offer:", stream);
           addTrackToPeer(stream);
@@ -142,9 +142,11 @@ const VideoMeeting = () => {
     } catch (error) {
       console.error("Error accessing media devices:", error);
     }
-  }, [handleNewUserJoining,handleReceiveOffer]);
+  }, []);
 
-  
+  useEffect(() => {
+    startMedia();
+  }, [startMedia]);
 
   const toggleVideo = () => {
     if (localStream) {
