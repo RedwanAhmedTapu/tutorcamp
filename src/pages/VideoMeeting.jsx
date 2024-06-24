@@ -63,13 +63,14 @@ const VideoMeeting = () => {
       console.log(`Received offer from: ${from}`);
       try {
         console.log(localStream, "ans");
-        if (localStream) {
-          addTrackToPeer(localStream);
-        } else {
-          const stream = await startMedia();
-
-          addTrackToPeer(stream);
+        let stream = localStream;
+        if (!stream) {
+          stream = await startMedia();
+          // Assuming startMedia sets localStream
+         setLocalStream(stream);
         }
+    
+        addTrackToPeer(stream);
         const answer = await getAnswer(offer);
         localStorage.setItem("recipientEmail", from);
         socket.emit("sendAnswer", { email: from, answer });
