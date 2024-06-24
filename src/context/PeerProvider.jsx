@@ -17,46 +17,41 @@ export const PeerProvider = ({ children }) => {
   const [offerReceived, setOfferReceived] = useState(false);
   const [answerReceived, setAnswerReceived] = useState(false);
 
-  const restartIce = useCallback(async () => {
-    if (!peer.current) return;
-
-    try {
-      const offer = await peer.current.createOffer({ iceRestart: true });
-      await peer.current.setLocalDescription(offer);
-      socket.emit('sendOffer', offer);
-    } catch (error) {
-      console.error('Error restarting ICE:', error);
-    }
-  }, [socket]);
-
   useEffect(() => {
-    const iceServers = [
-      { urls: 'stun:stun.l.google.com:19302' },
-      { urls: 'stun:stun1.l.google.com:19302' },
-      { urls: 'stun:stun2.l.google.com:19302' },
-      {
-        urls: 'turn:turn.anyfirewall.com:443?transport=tcp',
-        credential: 'webrtc',
-        username: 'webrtc',
-      },
-      {
-        urls: 'turn:turn.bistri.com:80',
-        credential: 'homeo',
-        username: 'homeo',
-      },
-      {
-        urls: 'turn:turn.bistri.com:443',
-        credential: 'homeo',
-        username: 'homeo',
-      },
-    ];
-
-    const peerConfiguration = { iceServers };
-    peer.current = new RTCPeerConnection(peerConfiguration);
-
-    // Attach event listeners
-    peer.current.ontrack = handleRemoteTrack;
-    peer.current.onicecandidate = handleIceCandidate;
+    const fetchTurnServers = async () => {
+      try {
+        // const response = await axios.get(`https://yourappname.metered.live/api/v1/turn/credentials?apiKey=${process.env.API_KEY}`);
+         const iceServers = [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun1.l.google.com:19302' },
+          { urls: 'stun:stun2.l.google.com:19302' },
+          {
+            urls: 'turn:turn.anyfirewall.com:443?transport=tcp',
+            credential: 'webrtc',
+            username: 'webrtc',
+          },
+          {
+            urls: 'turn:turn.bistri.com:80',
+            credential: 'homeo',
+            username: 'homeo',
+          },
+          {
+            urls: 'turn:turn.bistri.com:443',
+            credential: 'homeo',
+            username: 'homeo',
+          },
+        ];
+        // const iceServers = response.data;
+        // const peerConfiguration = { iceServers: iceServers.slice(0, 6) }; // Limit to 3 servers
+        peer.current = new RTCPeerConnection(iceServers);
+        // Attach event listeners
+        peer.current.ontrack = handleRemoteTrack;
+        peer.current.onicecandidate = handleIceCandidate;
+      } catch (error) {
+        console.error("Error fetching TURN server credentials:", error);
+      }
+    };
+    fetchTurnServers();
   }, []);
 
   const handleIceCandidate = useCallback((event) => {
@@ -82,20 +77,13 @@ export const PeerProvider = ({ children }) => {
     peer.current.oniceconnectionstatechange = () => {
       if (peer.current.iceConnectionState === 'failed') {
         console.error('ICE connection failed');
-        restartIce();
+        // Implement retry logic or fallback mechanisms
       }
     };
 
     peer.current.onicecandidateerror = (event) => {
       console.error('ICE candidate error:', event.errorText);
-      if (event.errorCode === someSpecificErrorCode) {
-        // Handle specific error code
-        console.log('Handling specific ICE candidate error');
-        // Implement specific error handling logic
-      } else {
-        // Retry ICE connection
-        restartIce();
-      }
+      // Implement specific handling for candidate errors
     };
 
     peer.current.onicecandidate = (event) => {
@@ -103,7 +91,7 @@ export const PeerProvider = ({ children }) => {
         handleIceCandidate(event);
       }
     };
-  }, [handleIceCandidate, restartIce]);
+  }, [handleIceCandidate]);
 
   const getOffer = useCallback(async () => {
     if (!peer.current) return;
