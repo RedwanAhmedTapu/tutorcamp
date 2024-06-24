@@ -70,7 +70,7 @@ export const PeerProvider = ({ children }) => {
   const getAnswer = useCallback(async (offer) => {
     if (!peer.current) return;
 
-    await peer.current.setRemoteDescription(offer);
+    await peer.current.setRemoteDescription(new RTCSessionDescription(offer));
     setOfferReceived(true);
     const answer = await peer.current.createAnswer();
     await peer.current.setLocalDescription(answer);
@@ -81,7 +81,7 @@ export const PeerProvider = ({ children }) => {
   const setRemoteDescription = useCallback(async (answer) => {
     if (!peer.current) return;
 
-    await peer.current.setRemoteDescription(answer);
+    await peer.current.setRemoteDescription(new RTCSessionDescription(answer));
     setAnswerReceived(true);
     processBufferedICECandidates();
   }, []);
@@ -111,12 +111,17 @@ export const PeerProvider = ({ children }) => {
   const addIceCandidate = useCallback((candidate) => {
     if (!peer.current) return;
 
-    if (offerReceived && answerReceived) {
-      peer.current.addIceCandidate(candidate).catch(e => {
-        console.error('Error adding ICE candidate:', e);
-      });
+    // Check if the candidate is valid
+    if (candidate && candidate.sdpMid !== null && candidate.sdpMLineIndex !== null) {
+      if (offerReceived && answerReceived) {
+        peer.current.addIceCandidate(new RTCIceCandidate(candidate)).catch(e => {
+          console.error('Error adding ICE candidate:', e);
+        });
+      } else {
+        iceCandidateQueue.current.push(candidate);
+      }
     } else {
-      iceCandidateQueue.current.push(candidate);
+      console.error('Invalid ICE candidate:', candidate);
     }
   }, [offerReceived, answerReceived]);
 
@@ -128,8 +133,14 @@ export const PeerProvider = ({ children }) => {
 
   useEffect(() => {
     // Listen for ICE candidates from the socket
-    const handleIncomingIceCandidate = (candidate) => {
-      addIceCandidate(new RTCIceCandidate(candidate));
+    const handleIncomingIceCandidate = (data) => {
+      const candidate = data.candidate;
+      // Ensure the candidate has the necessary properties
+      if (candidate && candidate.sdpMid !== null && candidate.sdpMLineIndex !== null) {
+        addIceCandidate(candidate);
+      } else {
+        console.error('Received an invalid ICE candidate:', candidate);
+      }
     };
 
     socket.on('receiveIceCandidate', handleIncomingIceCandidate);
