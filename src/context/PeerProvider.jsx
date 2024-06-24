@@ -22,11 +22,12 @@ export const PeerProvider = ({ children }) => {
       try {
         const response = await axios.get(`https://yourappname.metered.live/api/v1/turn/credentials?apiKey=${process.env.API_KEY}`);
         const iceServers = response.data;
-        const peerConfiguration = { iceServers: iceServers.slice(0, 6) }; // Limit to 3 servers
+        const peerConfiguration = { iceServers: iceServers.slice(0, 6) };
         peer.current = new RTCPeerConnection(peerConfiguration);
-        // Attach event listeners
         peer.current.ontrack = handleRemoteTrack;
         peer.current.onicecandidate = handleIceCandidate;
+        peer.current.oniceconnectionstatechange = handleIceConnectionStateChange;
+        peer.current.onicecandidateerror = handleIceCandidateError;
       } catch (error) {
         console.error("Error fetching TURN server credentials:", error);
       }
@@ -51,27 +52,16 @@ export const PeerProvider = ({ children }) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (!peer.current) return;
+  const handleIceConnectionStateChange = useCallback(() => {
+    console.log('ICE Connection State Change:', peer.current.iceConnectionState);
+    if (peer.current.iceConnectionState === 'failed') {
+      console.error('ICE connection failed');
+    }
+  }, []);
 
-    peer.current.oniceconnectionstatechange = () => {
-      if (peer.current.iceConnectionState === 'failed') {
-        console.error('ICE connection failed');
-        // Implement retry logic or fallback mechanisms
-      }
-    };
-
-    peer.current.onicecandidateerror = (event) => {
-      console.error('ICE candidate error:', event.errorText);
-      // Implement specific handling for candidate errors
-    };
-
-    peer.current.onicecandidate = (event) => {
-      if (event.candidate) {
-        handleIceCandidate(event);
-      }
-    };
-  }, [handleIceCandidate]);
+  const handleIceCandidateError = useCallback((event) => {
+    console.error('ICE candidate error:', event.errorText, 'URL:', event.url, 'Host Candidate:', event.hostCandidate);
+  }, []);
 
   const getOffer = useCallback(async () => {
     if (!peer.current) return;
@@ -139,6 +129,23 @@ export const PeerProvider = ({ children }) => {
       processBufferedICECandidates();
     }
   }, [offerReceived, answerReceived, processBufferedICECandidates]);
+
+  useEffect(() => {
+    const handleIncomingIceCandidate = (data) => {
+      const candidate = data.candidate;
+      if (candidate && candidate.sdpMid !== null && candidate.sdpMLineIndex !== null) {
+        addIceCandidate(candidate);
+      } else {
+        console.error('Received an invalid ICE candidate:', candidate);
+      }
+    };
+
+    socket.on('receiveIceCandidate', handleIncomingIceCandidate);
+
+    return () => {
+      socket.off('receiveIceCandidate', handleIncomingIceCandidate);
+    };
+  }, [socket, addIceCandidate]);
 
   return (
     <PeerContext.Provider
