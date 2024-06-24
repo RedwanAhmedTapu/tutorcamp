@@ -55,7 +55,7 @@ export const PeerProvider = ({ children }) => {
   const handleIceConnectionStateChange = useCallback(() => {
     if (peer.current.iceConnectionState === 'failed') {
       console.error('ICE connection failed');
-      // Implement retry logic or fallback mechanisms
+      // Implement retry logic or fallback mechanisms if necessary
     }
   }, []);
 
@@ -125,6 +125,19 @@ export const PeerProvider = ({ children }) => {
       processBufferedICECandidates();
     }
   }, [offerReceived, answerReceived, processBufferedICECandidates]);
+
+  useEffect(() => {
+    // Listen for ICE candidates from the socket
+    const handleIncomingIceCandidate = (candidate) => {
+      addIceCandidate(new RTCIceCandidate(candidate));
+    };
+
+    socket.on('receiveIceCandidate', handleIncomingIceCandidate);
+
+    return () => {
+      socket.off('receiveIceCandidate', handleIncomingIceCandidate);
+    };
+  }, [socket, addIceCandidate]);
 
   return (
     <PeerContext.Provider
