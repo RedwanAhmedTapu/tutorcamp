@@ -62,11 +62,12 @@ const VideoMeeting = () => {
       const { from, offer } = data;
       console.log(`Received offer from: ${from}`);
       try {
-        const stream = await startMedia();
         console.log(localStream, "ans");
         if (localStream) {
           addTrackToPeer(localStream);
         } else {
+          const stream = await startMedia();
+
           addTrackToPeer(stream);
         }
         const answer = await getAnswer(offer);

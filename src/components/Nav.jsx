@@ -297,7 +297,7 @@ const Tabs = ({ isMenuOpen }) => {
               left: `${nubPosition + 2}px`,
             }}
             key={`nub-${selected}`}
-            className={`absolute top-[3.53rem] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-tl border border-neutral-600 bg-neutral-900 transition-all duration-[0.95s]`}
+            className={`absolute top-[3.53rem] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-tl border border-slate-600 bg-slate-900 transition-all duration-[0.95s]`}
           ></span>
         )}
       </>
@@ -308,7 +308,7 @@ const Tabs = ({ isMenuOpen }) => {
     const SelectedComponent = NAVS[selected - 1].Component;
     return (
       <div
-        className="absolute top-[calc(100%+24px)] -left-3 hidden mdUp:block w-96 h-80 rounded-lg border border-neutral-600 bg-gradient-to-b from-neutral-900 via-neutral-900 to-neutral-800 p-4"
+        className="absolute top-[calc(100%+24px)] -left-3 hidden mdUp:block w-96 h-80 rounded-lg border border-slate-600 bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-800  backdrop:blur-3xl p-4"
         id="overlay-content"
       >
         <SelectedComponent onSelect={handleSelected} isMenuOpen={isMenuOpen} />

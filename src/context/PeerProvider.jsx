@@ -22,11 +22,12 @@ export const PeerProvider = ({ children }) => {
       try {
         const response = await axios.get(`https://yourappname.metered.live/api/v1/turn/credentials?apiKey=${process.env.API_KEY}`);
         const iceServers = response.data;
-        const peerConfiguration = { iceServers: iceServers.slice(0, 6) }; // Limit to 3 servers
+        const peerConfiguration = { iceServers: iceServers.slice(0, 3) }; // Limit to 3 servers
         peer.current = new RTCPeerConnection(peerConfiguration);
         // Attach event listeners
         peer.current.ontrack = handleRemoteTrack;
         peer.current.onicecandidate = handleIceCandidate;
+        peer.current.oniceconnectionstatechange = handleIceConnectionStateChange;
       } catch (error) {
         console.error("Error fetching TURN server credentials:", error);
       }
@@ -51,27 +52,12 @@ export const PeerProvider = ({ children }) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (!peer.current) return;
-
-    peer.current.oniceconnectionstatechange = () => {
-      if (peer.current.iceConnectionState === 'failed') {
-        console.error('ICE connection failed');
-        // Implement retry logic or fallback mechanisms
-      }
-    };
-
-    peer.current.onicecandidateerror = (event) => {
-      console.error('ICE candidate error:', event.errorText);
-      // Implement specific handling for candidate errors
-    };
-
-    peer.current.onicecandidate = (event) => {
-      if (event.candidate) {
-        handleIceCandidate(event);
-      }
-    };
-  }, [handleIceCandidate]);
+  const handleIceConnectionStateChange = useCallback(() => {
+    if (peer.current.iceConnectionState === 'failed') {
+      console.error('ICE connection failed');
+      // Implement retry logic or fallback mechanisms
+    }
+  }, []);
 
   const getOffer = useCallback(async () => {
     if (!peer.current) return;
