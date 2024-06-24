@@ -22,12 +22,11 @@ export const PeerProvider = ({ children }) => {
       try {
         const response = await axios.get(`https://yourappname.metered.live/api/v1/turn/credentials?apiKey=${process.env.API_KEY}`);
         const iceServers = response.data;
-        const peerConfiguration = { iceServers: iceServers.slice(0, 3) }; // Limit to 3 servers
+        const peerConfiguration = { iceServers: iceServers.slice(0, 6) }; // Limit to 3 servers
         peer.current = new RTCPeerConnection(peerConfiguration);
         // Attach event listeners
         peer.current.ontrack = handleRemoteTrack;
         peer.current.onicecandidate = handleIceCandidate;
-        peer.current.oniceconnectionstatechange = handleIceConnectionStateChange;
       } catch (error) {
         console.error("Error fetching TURN server credentials:", error);
       }
@@ -52,12 +51,27 @@ export const PeerProvider = ({ children }) => {
     }
   }, []);
 
-  const handleIceConnectionStateChange = useCallback(() => {
-    if (peer.current.iceConnectionState === 'failed') {
-      console.error('ICE connection failed');
-      // Implement retry logic or fallback mechanisms if necessary
-    }
-  }, []);
+  useEffect(() => {
+    if (!peer.current) return;
+
+    peer.current.oniceconnectionstatechange = () => {
+      if (peer.current.iceConnectionState === 'failed') {
+        console.error('ICE connection failed');
+        // Implement retry logic or fallback mechanisms
+      }
+    };
+
+    peer.current.onicecandidateerror = (event) => {
+      console.error('ICE candidate error:', event.errorText);
+      // Implement specific handling for candidate errors
+    };
+
+    peer.current.onicecandidate = (event) => {
+      if (event.candidate) {
+        handleIceCandidate(event);
+      }
+    };
+  }, [handleIceCandidate]);
 
   const getOffer = useCallback(async () => {
     if (!peer.current) return;
@@ -70,7 +84,7 @@ export const PeerProvider = ({ children }) => {
   const getAnswer = useCallback(async (offer) => {
     if (!peer.current) return;
 
-    await peer.current.setRemoteDescription(new RTCSessionDescription(offer));
+    await peer.current.setRemoteDescription(offer);
     setOfferReceived(true);
     const answer = await peer.current.createAnswer();
     await peer.current.setLocalDescription(answer);
@@ -81,7 +95,7 @@ export const PeerProvider = ({ children }) => {
   const setRemoteDescription = useCallback(async (answer) => {
     if (!peer.current) return;
 
-    await peer.current.setRemoteDescription(new RTCSessionDescription(answer));
+    await peer.current.setRemoteDescription(answer);
     setAnswerReceived(true);
     processBufferedICECandidates();
   }, []);
@@ -111,17 +125,12 @@ export const PeerProvider = ({ children }) => {
   const addIceCandidate = useCallback((candidate) => {
     if (!peer.current) return;
 
-    // Check if the candidate is valid
-    if (candidate && candidate.sdpMid !== null && candidate.sdpMLineIndex !== null) {
-      if (offerReceived && answerReceived) {
-        peer.current.addIceCandidate(new RTCIceCandidate(candidate)).catch(e => {
-          console.error('Error adding ICE candidate:', e);
-        });
-      } else {
-        iceCandidateQueue.current.push(candidate);
-      }
+    if (offerReceived && answerReceived) {
+      peer.current.addIceCandidate(candidate).catch(e => {
+        console.error('Error adding ICE candidate:', e);
+      });
     } else {
-      console.error('Invalid ICE candidate:', candidate);
+      iceCandidateQueue.current.push(candidate);
     }
   }, [offerReceived, answerReceived]);
 
@@ -130,25 +139,6 @@ export const PeerProvider = ({ children }) => {
       processBufferedICECandidates();
     }
   }, [offerReceived, answerReceived, processBufferedICECandidates]);
-
-  useEffect(() => {
-    // Listen for ICE candidates from the socket
-    const handleIncomingIceCandidate = (data) => {
-      const candidate = data.candidate;
-      // Ensure the candidate has the necessary properties
-      if (candidate && candidate.sdpMid !== null && candidate.sdpMLineIndex !== null) {
-        addIceCandidate(candidate);
-      } else {
-        console.error('Received an invalid ICE candidate:', candidate);
-      }
-    };
-
-    socket.on('receiveIceCandidate', handleIncomingIceCandidate);
-
-    return () => {
-      socket.off('receiveIceCandidate', handleIncomingIceCandidate);
-    };
-  }, [socket, addIceCandidate]);
 
   return (
     <PeerContext.Provider
