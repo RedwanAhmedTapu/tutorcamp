@@ -1,11 +1,13 @@
 import React, { createContext, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiChevronDown, FiX } from "react-icons/fi";
+import { FiChevronDown, FiUser } from "react-icons/fi";
 import { motion } from "framer-motion";
 import Brain from "../assets/Brain.svg";
 
+// Create NavContext
 const NavContext = createContext();
 
+// Main Nav component
 const Nav = () => {
   const [routes] = useState([
     { path: "/", name: "Home" },
@@ -26,14 +28,34 @@ const Nav = () => {
   );
 };
 
+// NavBar component
 const NavBar = ({ isMenuOpen, toggleMenu }) => {
   const { routes } = React.useContext(NavContext);
+  const navigate = useNavigate();
+  const [loggedUser, setLoggedUser] = useState(null);
+  const [isUSerMenuOpen, setIsuserMenuOpen] = useState(false);
 
+  useEffect(() => {
+    const user = localStorage.getItem("loggedUser");
+    if (user) {
+      setLoggedUser(JSON.parse(user));
+    }
+  }, []);
+
+  const toggleUserMenu = () => {
+    setIsuserMenuOpen(!isUSerMenuOpen);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("loggedUser");
+    setLoggedUser(null);
+    navigate("/login");
+  };
   return (
     <div className="border-general w-screen h-16 fixed top-0 z-40 flex items-center justify-between bg-slate-950 opacity-90 backdrop-blur-2xl transition-colors duration-500">
       <div className="flex items-center">
         <Link to="/">
-          <div className="w-32 ml-24 max-[1000px]:ml-12 h-16 flex items-center">
+          <div className="w-32 ml-24 max-[1000px]:ml-4 h-16 flex items-center">
             <div className="w-12 h-12 rounded-full overflow-hidden cursor-pointer">
               <img
                 src={Brain}
@@ -41,21 +63,65 @@ const NavBar = ({ isMenuOpen, toggleMenu }) => {
                 alt="Brain Logo"
               />
             </div>
-            <span className="text-xl text-white ml-2 cursor-pointer">
-              Tutorcamp
-            </span>
+            <span className="text-xl text-white cursor-pointer">Tutorcamp</span>
           </div>
         </Link>
       </div>
 
-      <Tabs />
+      <Tabs isMenuOpen={isMenuOpen} />
 
-      <div className="w-24 mr-6 h-16 flex_col_center">
-        <div className="mdUp:hidden">
+      <div className="w-24 mr-8 h-16 flex_col_center">
+        <div className="mdUp:hidden  flex  self-center">
           {/* Responsive menu button */}
           <button className="text-white" onClick={toggleMenu}>
-            {isMenuOpen ? <FiX size={24} /> : "Menu"}
+            <div className="relative w-6 h-6 flex flex-col justify-between items-center">
+              <div
+                className={`absolute w-full h-0.5 bg-white transition-transform duration-300 ${
+                  isMenuOpen ? "transform rotate-45 top-1/2 left-0" : "top-0"
+                }`}
+              />
+              <div
+                className={`absolute w-full h-0.5 bg-white transition-opacity duration-300 ${
+                  isMenuOpen ? "opacity-0 top-1/2" : "opacity-100 top-1/2"
+                }`}
+              />
+              <div
+                className={`absolute w-full h-0.5 bg-white transition-transform duration-300 ${
+                  isMenuOpen
+                    ? "transform -rotate-45 top-1/2 left-0"
+                    : "top-full"
+                }`}
+              />
+            </div>
           </button>
+          {loggedUser && (
+            <>
+              <div className="relative ml-4 flex self-center">
+                <button className="text-white" onClick={toggleUserMenu}>
+                  <FiUser className="text-3xl cursor-pointer" />
+                </button>
+                {isUSerMenuOpen && (
+                  <div className="absolute top-12 -left-24 w-44 bg-slate-900 shadow-md py-2 rounded-md text-white">
+                    <div className="flex items-center gap-2 p-2">
+                      <img
+                        src={loggedUser.profileImage}
+                        alt="User"
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                      <div>{loggedUser.fname}</div>
+                    </div>
+                    <hr className="border-gray-700" />
+                    <button
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-800"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </div>
         <div
           className={`absolute top-16 left-0 px-6 py-6 right-0 w-full text-xl gap-y-4 h-96 bg-gray-900 flex flex-col ${
@@ -65,7 +131,9 @@ const NavBar = ({ isMenuOpen, toggleMenu }) => {
           {/* Responsive menu items */}
           {routes.map((route, index) => (
             <Link key={index} to={route.path}>
-              <button className="text-white">{route.name}</button>
+              <button className="text-white" onClick={toggleMenu}>
+                {route.name}
+              </button>
             </Link>
           ))}
           {/* Responsive menu items */}
@@ -86,9 +154,78 @@ const NavBar = ({ isMenuOpen, toggleMenu }) => {
           />
         </div>
       </div>
+      <div className="w-64 h-16 flex_center max-[1000px]:hidden p-2 mr-12">
+      {loggedUser && (
+            <>
+              <div className="relative ml-4 flex self-center">
+                <button className="text-white" onClick={toggleUserMenu}>
+                  <FiUser className="text-3xl cursor-pointer" />
+                </button>
+                {isUSerMenuOpen && (
+                  <div className="absolute top-12 -left-24 w-44 bg-slate-900 shadow-md py-2 rounded-md text-white">
+                    <div className="flex items-center gap-2 p-2">
+                      <img
+                        src={loggedUser.profileImage}
+                        alt="User"
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                      <div>{loggedUser.fname}</div>
+                    </div>
+                    <hr className="border-gray-700" />
+                    <button
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-800"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+          {!loggedUser&&(
+            <>
+        <Link to="/login">
+          <button className="p-2 m-2 text-white">signin</button>
+        </Link>
+        <Link to="/signup">
+          <button className="p-2 m-2 text-white">join now</button>
+        </Link>
+        </>
+          )
+}
+        
+      </div>
     </div>
   );
 };
+
+// DropdownMenu component
+const DropdownMenu = ({ title, subjects, onSelect }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  return (
+    <div className="relative">
+      <button onClick={toggleMenu} className="text-white">
+        {title} <FiChevronDown />
+      </button>
+      {isMenuOpen && (
+        <div className="relative w-full top-0 left-0 right-0 rounded-md bg-gray-800 divide-y-2 gap-y-2 flex  flex-col">
+          {subjects.map((subject, index) => (
+            <Link key={index} to={`/sub/${subject}`} onClick={onSelect}>
+              <div className="relative w-full text-white">{subject}</div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const SSCSubjects = [
   "Physics",
   "Chemistry",
@@ -115,31 +252,6 @@ const HSCSubjects = [
 ];
 
 const VersitySubjects = ["Coming Soon..."];
-
-const DropdownMenu = ({ title, subjects, onSelect }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  return (
-    <div className="relative">
-      <button onClick={toggleMenu} className="text-white">
-        {title} <FiChevronDown />
-      </button>
-      {isMenuOpen && (
-        <div className="absolute w-full top-full left-0 right-0 rounded-md bg-gray-800 divide-y-2 flex flex_col_center ">
-          {subjects.map((subject, index) => (
-            <Link key={index} to={`/sub/${subject}`} onClick={onSelect}>
-              <button className="text-white">{subject}</button>
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
 
 const SSC = ({ onSelect }) => {
   const subjects = [

@@ -1,3 +1,4 @@
+
 const CreateClass = ({ socket }) => {
   console.log(socket)
   const generateRandomId = () => {

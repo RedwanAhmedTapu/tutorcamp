@@ -1,6 +1,13 @@
-import React, { createContext, useContext, useRef, useState, useCallback, useEffect } from 'react';
-import { useSocket } from './SocketProvider';
-import axios from 'axios';
+import React, {
+  createContext,
+  useContext,
+  useRef,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
+import { useSocket } from "./SocketProvider";
+import axios from "axios";
 
 const PeerContext = createContext();
 
@@ -16,29 +23,30 @@ export const PeerProvider = ({ children }) => {
   const sendersRef = useRef([]);
   const [offerReceived, setOfferReceived] = useState(false);
   const [answerReceived, setAnswerReceived] = useState(false);
+  const [offerCreated, setOfferCreated] = useState(false);
 
   useEffect(() => {
     const fetchTurnServers = async () => {
       try {
         // const response = await axios.get(`https://yourappname.metered.live/api/v1/turn/credentials?apiKey=${process.env.API_KEY}`);
-         const iceServers = [
-          { urls: 'stun:stun.l.google.com:19302' },
-          { urls: 'stun:stun1.l.google.com:19302' },
-          { urls: 'stun:stun2.l.google.com:19302' },
+        const iceServers = [
+          { urls: "stun:stun.l.google.com:19302" },
+          { urls: "stun:stun1.l.google.com:19302" },
+          { urls: "stun:stun2.l.google.com:19302" },
           {
-            urls: 'turn:turn.anyfirewall.com:443?transport=tcp',
-            credential: 'webrtc',
-            username: 'webrtc',
+            urls: "turn:turn.anyfirewall.com:443?transport=tcp",
+            credential: "webrtc",
+            username: "webrtc",
           },
           {
-            urls: 'turn:turn.bistri.com:80',
-            credential: 'homeo',
-            username: 'homeo',
+            urls: "turn:turn.bistri.com:80",
+            credential: "homeo",
+            username: "homeo",
           },
           {
-            urls: 'turn:turn.bistri.com:443',
-            credential: 'homeo',
-            username: 'homeo',
+            urls: "turn:turn.bistri.com:443",
+            credential: "homeo",
+            username: "homeo",
           },
         ];
         // const iceServers = response.data;
@@ -54,18 +62,21 @@ export const PeerProvider = ({ children }) => {
     fetchTurnServers();
   }, []);
 
-  const handleIceCandidate = useCallback((event) => {
-    if (event.candidate) {
-      const recipientEmail = localStorage.getItem('recipientEmail');
-      socket.emit('sendIceCandidate', {
-        candidate: event.candidate,
-        recipientEmail,
-      });
-    }
-  }, [socket]);
+  const handleIceCandidate = useCallback(
+    (event) => {
+      if (event.candidate) {
+        const recipientEmail = localStorage.getItem("recipientEmail");
+        socket.emit("sendIceCandidate", {
+          candidate: event.candidate,
+          recipientEmail,
+        });
+      }
+    },
+    [socket]
+  );
 
   const handleRemoteTrack = useCallback((event) => {
-    console.log('ontrack event', event);
+    console.log("ontrack event", event);
     if (remoteVideoRef.current && event.streams && event.streams[0]) {
       remoteVideoRef.current.srcObject = event.streams[0];
     }
@@ -75,14 +86,14 @@ export const PeerProvider = ({ children }) => {
     if (!peer.current) return;
 
     peer.current.oniceconnectionstatechange = () => {
-      if (peer.current.iceConnectionState === 'failed') {
-        console.error('ICE connection failed');
+      if (peer.current.iceConnectionState === "failed") {
+        console.error("ICE connection failed");
         // Implement retry logic or fallback mechanisms
       }
     };
 
     peer.current.onicecandidateerror = (event) => {
-      console.error('ICE candidate error:', event.errorText);
+      console.error("ICE candidate error:", event.errorText);
       // Implement specific handling for candidate errors
     };
 
@@ -97,6 +108,9 @@ export const PeerProvider = ({ children }) => {
     if (!peer.current) return;
 
     const offer = await peer.current.createOffer();
+    if (offer) {
+      setOfferCreated(true);
+    }
     await peer.current.setLocalDescription(offer);
     return offer;
   }, []);
@@ -122,9 +136,9 @@ export const PeerProvider = ({ children }) => {
 
   const processBufferedICECandidates = useCallback(() => {
     if (offerReceived && answerReceived) {
-      iceCandidateQueue.current.forEach(candidate => {
-        peer.current.addIceCandidate(candidate).catch(e => {
-          console.error('Error adding ICE candidate:', e);
+      iceCandidateQueue.current.forEach((candidate) => {
+        peer.current.addIceCandidate(candidate).catch((e) => {
+          console.error("Error adding ICE candidate:", e);
         });
       });
       iceCandidateQueue.current = [];
@@ -134,25 +148,28 @@ export const PeerProvider = ({ children }) => {
   const addTrackToPeer = useCallback((stream) => {
     if (!peer.current) return;
 
-    stream.getTracks().forEach(track => {
-      if (!sendersRef.current.find(sender => sender.track === track)) {
+    stream.getTracks().forEach((track) => {
+      if (!sendersRef.current.find((sender) => sender.track === track)) {
         const sender = peer.current.addTrack(track, stream);
         sendersRef.current.push(sender);
       }
     });
   }, []);
 
-  const addIceCandidate = useCallback((candidate) => {
-    if (!peer.current) return;
+  const addIceCandidate = useCallback(
+    (candidate) => {
+      if (!peer.current) return;
 
-    if (offerReceived && answerReceived) {
-      peer.current.addIceCandidate(candidate).catch(e => {
-        console.error('Error adding ICE candidate:', e);
-      });
-    } else {
-      iceCandidateQueue.current.push(candidate);
-    }
-  }, [offerReceived, answerReceived]);
+      if (offerReceived && answerReceived) {
+        peer.current.addIceCandidate(candidate).catch((e) => {
+          console.error("Error adding ICE candidate:", e);
+        });
+      } else {
+        iceCandidateQueue.current.push(candidate);
+      }
+    },
+    [offerReceived, answerReceived]
+  );
 
   useEffect(() => {
     if (offerReceived && answerReceived) {
@@ -170,6 +187,7 @@ export const PeerProvider = ({ children }) => {
         addTrackToPeer,
         addIceCandidate,
         remoteVideoRef,
+        offerCreated,
       }}
     >
       {children}

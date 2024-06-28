@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { ImSpinner9 } from "react-icons/im";
-import { AiFillApple } from "react-icons/ai";
+import { AiFillApple, AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import CountdownTimer from "./CountdownTimer";
 
@@ -15,8 +14,8 @@ const Signup = () => {
   });
   const [code, setCode] = useState("");
   const [isOtp, setIsOtp] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  console.log(user);
 
   const serverUrl = "http://localhost:5000";
 
@@ -51,6 +50,7 @@ const Signup = () => {
       ) {
         alert("Please fill in all the required fields");
       } else {
+        console.log(user)
         const response = await fetch(`${serverUrl}/user/signup`, {
           method: "POST",
           headers: {
@@ -61,8 +61,9 @@ const Signup = () => {
 
         const data = await response.json();
 
-        if (data.message === "successfully studentInfo saved") {
-          setIsOtp(true);
+        if (data.message === "User registered successfully") {
+          // setIsOtp(true);
+          navigate("/login")
         } else {
           alert(data.message);
         }
@@ -147,77 +148,71 @@ const Signup = () => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
   return (
     <>
-      <div
-        className={`flex_center bg-slate-900 dark:bg-black ${
-          isOtp ? "blur" : null
-        }`}
-      >
-        <div className="w-[50rem] flex flex-col self-center h-full max-[560px]:p-6 min-[849px]:p-10 p-20 bg-slate-900 dark:bg-[#030303] blur-1 rounded-lg shadow-md gap-y-6 relative top-10">
-          <div className="flex flex-col gap-y-4">
-            <h1 className="text-xl flex justify-start items-center gap-x-2 text-white font-bold">
-              <ImSpinner9 />
-              TutorCamp.
-            </h1>
-            <h1 className="flex flex-col gap-y-2">
-              <p className="text-white text-2xl font-bold">Welcome back</p>
-              <p className="text-slate-50">
-                Unlock Your learning Potential with TutorCamp! Sign Up Today and
-                Let the learning Adventures Begin 🚀
-              </p>
-            </h1>
-          </div>
-          <div className="flex justify-between w-full gap-x-4">
-            <div className="flex flex-col gap-y-1 w-[50%]">
+      <div className={`flex_center w-full h-screen absolute  bottom-0 bg-slate-900 dark:bg-black ${isOtp ? "blur" : ""}`}>
+        <div className="w-full max-w-2xl flex flex-col self-center h-full px-6 py-10 bg-slate-900 dark:bg-[#030303] rounded-lg shadow-md gap-y-6 relative top-10">
+         
+          <div className="flex flex-col md:flex-row justify-between w-full gap-x-4">
+            <div className="flex flex-col gap-y-1 w-full md:w-[50%]">
               <label className="text-white">First Name</label>
               <input
                 type="text"
                 placeholder="Your first name"
                 name="fname"
                 id="fname"
-                className="w-full h-12 border-2 border-gray-900 text-black bg-slate-300 rounded-lg placeholder-black min-[560px]:placeholder:pl-10 placholder:pl-4"
+                className="w-full h-12 border-2 border-gray-900 text-black bg-slate-300 rounded-lg placeholder-black px-4"
                 value={user.fname}
                 onChange={handleChange}
               />
             </div>
-            <div className="flex flex-col gap-y-1 w-[50%]">
+            <div className="flex flex-col gap-y-1 w-full md:w-[50%]">
               <label className="text-white">Last Name</label>
               <input
                 type="text"
                 placeholder="Your last name"
                 name="lname"
                 id="lname"
-                className="w-full h-12 border-2 border-gray-900 text-black bg-slate-300 rounded-lg placeholder-black min-[560px]:placeholder:pl-10 placholder:pl-4"
+                className="w-full h-12 border-2 border-gray-900 text-black bg-slate-300 rounded-lg placeholder-black px-4"
                 value={user.lname}
                 onChange={handleChange}
               />
             </div>
           </div>
-          <div className="flex justify-between w-full gap-x-4">
-            <div className="flex flex-col gap-y-1 w-[50%]">
+          <div className="flex flex-col md:flex-row justify-between w-full gap-x-4">
+            <div className="flex flex-col gap-y-1 w-full md:w-[50%]">
               <label className="text-white">Email</label>
               <input
                 type="email"
                 placeholder="name@gmail.com"
                 name="email"
                 id="email"
-                className="w-full h-12 border-2 border-gray-900 text-black bg-slate-300 rounded-lg placeholder-black min-[560px]:placeholder:pl-10 placholder:pl-4"
+                className="w-full h-12 border-2 border-gray-900 text-black bg-slate-300 rounded-lg placeholder-black px-4"
                 value={user.email}
                 onChange={handleChange}
               />
             </div>
-            <div className="flex flex-col gap-y-1 w-[50%]">
+            <div className="flex flex-col gap-y-1 w-full md:w-[50%] relative">
               <label className="text-white">Password</label>
               <input
-                type="password"
-                placeholder="°°°°°°°"
+                type={showPassword ? "text" : "password"}
+                placeholder="password"
                 name="password"
                 id="password"
-                className="w-full h-12 border-2 border-gray-900 text-black bg-slate-300 border-1 rounded-lg placeholder-text-center placeholder-black placeholder:pl-10"
+                className="w-full h-12 border-2 border-gray-900 text-black bg-slate-300 border-1 rounded-lg placeholder-black px-4"
                 value={user.password}
                 onChange={handleChange}
               />
+              <span
+                className="absolute flex_center right-4 top-11 cursor-pointer text-black"
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+              </span>
             </div>
           </div>
           <div className="flex_center gap-2">
@@ -241,8 +236,8 @@ const Signup = () => {
           {user.userType === "teacher" && (
             <div className="flex flex-col gap-y-1 w-full">
               <label className="text-white">Select Subjects</label>
-              <div className="flex gap-x-4">
-                <label>
+              <div className="flex flex-wrap gap-x-4">
+                <label className="text-white">
                   <input
                     type="checkbox"
                     name="physics"
@@ -252,7 +247,7 @@ const Signup = () => {
                   />
                   Physics
                 </label>
-                <label>
+                <label className="text-white">
                   <input
                     type="checkbox"
                     name="chemistry"
@@ -262,7 +257,7 @@ const Signup = () => {
                   />
                   Chemistry
                 </label>
-                <label>
+                <label className="text-white">
                   <input
                     type="checkbox"
                     name="highermath"
@@ -272,7 +267,7 @@ const Signup = () => {
                   />
                   Higher Math
                 </label>
-                <label>
+                <label className="text-white">
                   <input
                     type="checkbox"
                     name="biology"
@@ -282,7 +277,7 @@ const Signup = () => {
                   />
                   Biology
                 </label>
-                <label>
+                <label className="text-white">
                   <input
                     type="checkbox"
                     name="english"
@@ -292,7 +287,7 @@ const Signup = () => {
                   />
                   English
                 </label>
-                <label>
+                <label className="text-white">
                   <input
                     type="checkbox"
                     name="ict"
@@ -327,7 +322,7 @@ const Signup = () => {
             <div className="text-blue-600">Forgot password?</div>
           </div>
           <div
-            className="max-w-full w-full h-12 flex_center bg-blue-700 rounded-lg text-white text-xl font-semibold"
+            className="max-w-full w-full h-12 flex_center bg-blue-700 rounded-lg text-white text-xl font-semibold cursor-pointer"
             onClick={handleSubmit}
           >
             Sign up

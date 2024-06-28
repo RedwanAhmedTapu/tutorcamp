@@ -1,5 +1,5 @@
 import { ImSpinner9 } from "react-icons/im";
-import { AiFillApple } from "react-icons/ai";
+import { AiFillApple, AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 // import { FcGoogle } from "react-icons/fc";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,8 +15,9 @@ const Login = () => {
     email: "",
     password: "",
   });
-
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser({
@@ -24,6 +25,7 @@ const Login = () => {
       [name]: value,
     });
   };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -33,58 +35,47 @@ const Login = () => {
         alert("please fill all the data");
       } else {
         await axios
-          .post("/user/login", user)
+          .post("http://localhost:5000/user/login", user)
           .then((res) => {
             console.log(res.data);
 
-            if (res.data.message === "not any user") {
+            if (res.data.message === "User not found") {
               alert("wrong password and email");
             } else {
               if (res.data.token) {
-                console.log(res.data.token);
-                axios.defaults.headers.common[
-                  "Authorization"
-                ] = ` ${res.data.token}`;
-                // setToken(true);
+                // console.log(res.data.token);
+                // axios.defaults.headers.common[
+                //   "Authorization"
+                // ] = ` ${res.data.token}`;
+                // console.log(res.data)
 
-                const { email, fname, isLoggedin, isVerified, lname } =
-                  res.data.user;
-                console.log({ email, fname, isLoggedin, isVerified, lname });
+                const { fname, lname, email, userType, token } = res.data;
+                console.log({ fname, lname, email, userType });
                 localStorage.setItem(
                   "loggedUser",
-                  JSON.stringify({
-                    email,
-                    fname,
-                    isLoggedin,
-                    isVerified,
-                    lname,
-                  })
+                  JSON.stringify({ fname, lname, email, userType, token })
                 );
 
-                if (email === "admin@gmail.com") {
-                 navigate("/adminDashboard");
+                if (userType === "teacher") {
+                  navigate("/dashboard/teacher-dashoard");
+                } else if (userType === "student") {
+                  navigate("/dashboard/student-dashoard");
                 } else {
-                //   let userEmail;
-                 navigate(`/select-level?userEmail=${email}`);
+                  navigate(`/select-level?userEmail=${email}`);
                 }
-              } else {
-                delete axios.defaults.headers.common["Authorization"];
               }
             }
           })
           .catch((error) => {
             if (error.response) {
-              // The server responded with a status code outside of the 2xx range
               console.error(
                 "Server responded with an error:",
                 error.response.status,
                 error.response.data
               );
             } else if (error.request) {
-              // The request was made, but no response was received
               console.error("No response received from the server");
             } else {
-              // Something happened in setting up the request
               console.error(
                 "An error occurred while sending the request:",
                 error.message
@@ -96,29 +87,25 @@ const Login = () => {
       console.error("Failed to login :", error);
     }
   };
-  // for google signin
+
   const handleVerificationAuth = async (otpData, userEmail) => {
-    // const { email } = user;
     console.log("codecamp", `${userEmail + otpData}`);
     try {
-      const res = await fetch(
-        "/auth/googleAuth-verfication",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userEmail, otpData }),
-        }
-      );
+      const res = await fetch("/auth/googleAuth-verfication", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userEmail, otpData }),
+      });
 
       const data = await res.json();
       console.log(data);
 
       if (data.message === "Email verified successfully") {
-       navigate(`/select-level?userEmail=${userEmail}`);
+        navigate(`/select-level?userEmail=${userEmail}`);
       } else if (data.message === "Invalid verification code") {
-       navigate(`/select-level?userEmail=${userEmail}`);
+        navigate(`/select-level?userEmail=${userEmail}`);
       } else {
         navigate("/login");
       }
@@ -128,19 +115,14 @@ const Login = () => {
   };
 
   const handleAuthuser = async (userData) => {
-    // const { fname, lname, email } = user;
-
     try {
-      const res = await fetch(
-        "/auth/registration",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(userData),
-        }
-      );
+      const res = await fetch("/auth/registration", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
 
       const data = await res.json();
       console.log(data);
@@ -152,108 +134,114 @@ const Login = () => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
   return (
-    <div className="flex_center bg-slate-900 dark:bg-black h-screen">
-      <div className=" w-[50rem] flex flex-col    h-full max-[560px]:p-6 min-[849px]:p-10 p-20 bg-slate-900 dark:bg-[#030303] blur-1  rounded-lg shadow-md gap-y-6 relative top-10 ">
-        <div className="flex flex-col gap-y-4">
-          <h1 className="text-xl flex justify-start items-center gap-x-2 text-white font-bold">
-            <ImSpinner9 />
-            CodecampJr.
-          </h1>
-          <h1 className="flex flex-col gap-y-2">
-            <p className="text-white text-2xl font-bold">Welcome back</p>
-            <p className="text-slate-50">
-              Unlock Your learning Potential with TutorCamp! Sign In Today and
-              Let the learning Adventures Begin 🚀
-            </p>
-          </h1>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-black">
+      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-lg">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-900">Welcome Back</h2>
+          <p className="text-gray-600">Sign in to your account</p>
         </div>
-        <div className="flex justify-between  w-full gap-x-4">
-          <div className="flex flex-col gap-y-1 w-[50%]">
-            <label className="text-white">Email</label>
-            <input
-              type="email"
-              placeholder="name@gmail.com"
-              name="email"
-              id="email"
-              className="w-full h-12 border-2 border-gray-900  text-black  bg-slate-300  rounded-lg placeholder-black min-[560px]:placeholder:pl-10 placholder:pl-4"
-              value={user && user.email}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="flex flex-col gap-y-1 w-[50%]">
-            <label className="text-white">Password</label>
-            <input
-              type="password"
-              name="password"
-              placeholder="°°°°°°°"
-              id="password"
-              className="w-full h-12 border-2 border-gray-900 text-black bg-slate-300 border-1 rounded-lg  placeholder-text-center placeholder-black placeholder:pl-10"
-              value={user && user.password}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-        <div className="flex_center gap-2">
-          <div className="w-2/3 bg-slate-300 h-[0.25px]"></div>
-          <p className="text-white text-2xl font-semibold">or</p>
-          <div className="w-2/3 bg-slate-300 h-[0.25px]"></div>
-        </div>
-        <div className="flex flex-col gap-y-8">
-          <div className="flex_center w-full h-10 gap-x-2 border-2 border-slate-300 rounded-lg">
-            {/* <GoogleOAuthProvider clientId="652975357008-sut0t0e8g66jbjaqbnouk0im5ofi3a5o.apps.googleusercontent.com">
-              <div className="w-full h-full flex_center bg-white rounded-lg">
-                <GoogleLogin
-                  onSuccess={(credentialResponse) => {
-                    var decoded = jwt_decode(credentialResponse.credential);
-
-                    console.log(decoded);
-                    const { family_name, given_name, email } = decoded;
-                    const fname = family_name;
-                    const lname = given_name;
-
-                    handleAuthuser({ fname, lname, email });
-                    localStorage.setItem(
-                      "loggedUser",
-                      JSON.stringify({ email, fname, lname })
-                    );
-                  }}
-                  onError={() => {
-                    console.log("Login Failed");
-                  }}
-                  logo_alignment="center"
-                  className="w-full h-full rounded-lg"
-                  text="continue_with"
-                  useOneTap="true"
-                  select_account
-                  theme="outline"
-                />
-              </div>
-            </GoogleOAuthProvider> */}
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="email-address" className="sr-only">
+                Email address
+              </label>
+              <input
+                id="email-address"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Email address"
+                value={user.email}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="relative">
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Password"
+                value={user.password}
+                onChange={handleChange}
+              />
+              <span
+                className="absolute right-3 top-3 cursor-pointer text-gray-500"
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+              </span>
+            </div>
           </div>
 
-          <div className="flex_center w-full h-12 gap-x-2 border-2 border-slate-300 rounded-lg">
-            <p className="text-white text-2xl flex_center">
-              <AiFillApple />
-              &nbsp;Sign In With Apple
-            </p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <input
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <label
+                htmlFor="remember-me"
+                className="ml-2 block text-sm text-gray-900"
+              >
+                Remember me
+              </label>
+            </div>
+
+            <div className="text-sm">
+              <a
+                href="#"
+                className="font-medium text-blue-600 hover:text-blue-500"
+              >
+                Forgot your password?
+              </a>
+            </div>
           </div>
-        </div>
-        <div className="flex justify-between">
-          <div className="flex_center gap-x-2">
-            <input
-              type="checkbox"
-              className="w-4 h-4 rounded-lg bg-slate-500"
-            />
-            <p className="text-white">Remember me</p>
+
+          <div>
+            <button
+              type="submit"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Sign in
+            </button>
           </div>
-          <div className="text-blue-600">Forgot password?</div>
-        </div>
-        <div
-          className=" max-w-full w-full h-12 flex_center bg-blue-700 rounded-lg text-white text-xl font-semibold"
-          onClick={handleSubmit}
-        >
-          Sign in to your account
+        </form>
+
+        <div className="mt-6">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">or</span>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <button
+              type="button"
+              className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              <AiFillApple className="w-5 h-5 mr-2" />
+              Sign in with Apple
+            </button>
+          </div>
         </div>
       </div>
     </div>

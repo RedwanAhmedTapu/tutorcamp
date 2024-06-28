@@ -10,6 +10,7 @@ import MonitorScreen from "./CurvedMonitor";
 
 import CreateRoom from "./CreateRoom";
 import LLMApp from "./Qst";
+import { Link } from "react-router-dom";
 const Home = () => {
   const containerRef = useRef(null);
 
@@ -136,8 +137,8 @@ const Home = () => {
                         <span className="flex items-center text-secondary1 dark:text-secondary1">
                           |
                         </span> */}
-                      <span className=" block bg-black px-[13px] py-[20px] relative z-10">
-                        Search Teacher
+                      <span className=" block bg-black px-[13px] py-[20px] relative z-10" >
+                       <Link to="/teacher/search-teacher">Search Teacher</Link> 
                       </span>
                     </div>
                   </div>
@@ -149,7 +150,7 @@ const Home = () => {
                   type="button"
                   href="/courses/think-in-a-redux-way/introduction"
                 >
-                  <div className="mantine-3xbgk5 mantine-Button-inner text-white">
+                  {/* <div className="mantine-3xbgk5 mantine-Button-inner text-white">
                     <span className="mantine-Button-icon mantine-Button-leftIcon mantine-1g4orza">
                       <svg
                         stroke="currentColor"
@@ -177,7 +178,7 @@ const Home = () => {
                     <span className="mantine-qo1k2 mantine-Button-label text-white">
                       See Intro Video
                     </span>
-                  </div>
+                  </div> */}
                 </button>
               </div>
             </div>
@@ -197,8 +198,7 @@ const Home = () => {
                   <path d="M464 336a48 48 0 1 0 96 0 48 48 0 1 0-96 0zm72 112h-48c-4.4 0-8 3.6-8 8v272c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V456c0-4.4-3.6-8-8-8z"></path>
                 </svg>
                 <span className="text-center text-xs md:text-sm lg:text-left text-white">
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Minus, placeat.
+                  you can find your desired teacher and learn easily here
                 </span>
               </div>
             </div>
@@ -218,7 +218,7 @@ const Home = () => {
       <div className="absolute left-[12%] top-64  -rotate-12 rounded-3xl bg-gradient-to-r from-violet-600 to-indigo-800 opacity-60 blur-3xl filter dark:opacity-30 lg:h-32 lg:w-[450px] dark:lg:block xl:h-24 xl:w-[10rem]"></div>
       <div className="absolute left-80 top-64  -rotate-45 rounded-3xl bg-gradient-to-r from-violet-600 to-indigo-800 opacity-60 blur-3xl filter dark:opacity-30 lg:h-32 lg:w-[450px] dark:lg:block xl:h-24 xl:w-[15rem]"></div>
       <div className="absolute right-32 top-64  -rotate-45  bg-gradient-to-r from-violet-600 to-indigo-800 opacity-60 blur-3xl filter dark:opacity-30 lg:h-32 lg:w-[450px] dark:lg:block xl:h-44 xl:w-[17.6rem] rounded-full"></div>
-      {/* <TorchLightEffect/> */}
+      <TorchLightEffect/>
       {/* <Loading/> */}
       <CardSpotlight />
       {/* <MonitorScreen /> */}
