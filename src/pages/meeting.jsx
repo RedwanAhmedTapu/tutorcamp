@@ -1,156 +1,139 @@
-import React,{ useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSocket } from "../context/SocketProvider";
 import { useParams } from "react-router-dom";
-import peer from "../service/peer";
+import { usePeer } from "../context/PeerProvider";
+import Draggable from "react-draggable";
+import { FiMic, FiMicOff, FiVideo, FiVideoOff, FiMonitor } from "react-icons/fi";
 
 const VideoMeeting = () => {
-  // socket initialization
   const socket = useSocket();
+  const { roomId } = useParams();
+  const email = localStorage.getItem("email");
+  const {
+    peer,
+    getOffer,
+    getAnswer,
+    setRemoteDescription,
+    addTrackToPeer,
+    addIceCandidate,
+    remoteVideoRef,
+  } = usePeer();
+
   const [localStream, setLocalStream] = useState(null);
-  const [remoteStreams, setRemoteStreams] = useState([]);
-  // const [isMeetingStarted, setMeetingStarted] = useState(false);
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [isVideoMuted, setIsVideoMuted] = useState(false);
   const [screenSharing, setScreenSharing] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  // const peerConnectionRef = useRef(null);
   const localVideoRef = useRef(null);
-  const remoteVideoRef = useRef([]);
   const selectAudioRef = useRef(null);
   const selectVideoRef = useRef(null);
 
-  let { roomId } = useParams();
-  console.log(roomId, "roomID");
+  const handleNewUserJoining = useCallback(
+    async (data) => {
+      const { email } = data;
+      console.log(`New user joined: ${email}`);
+      localStorage.setItem("recipientEmail", email);
 
-  const startMedia = async (cameraID, micID) => {
+      if (localStream) {
+        console.log(localStream, "createoffer");
+
+        addTrackToPeer(localStream);
+        const offer = await getOffer();
+        socket.emit("sendOffer", { email, offer, roomId });
+      }
+    },
+    [roomId, getOffer, socket, localStream, addTrackToPeer]
+  );
+
+  const handleReceiveOffer = useCallback(
+    async (data) => {
+      const { from, offer } = data;
+      console.log(`Received offer from: ${from}`);
+      try {
+        console.log(localStream, "ans");
+        let stream = localStream;
+        if (!stream) {
+          stream = await startMedia();
+          setLocalStream(stream);
+        }
+
+        if (stream) {
+          addTrackToPeer(stream);
+          const answer = await getAnswer(offer);
+          localStorage.setItem("recipientEmail", from);
+          socket.emit("sendAnswer", { email: from, answer });
+        } else {
+          console.error("Failed to get local stream.");
+        }
+      } catch (error) {
+        console.error("Error handling received offer:", error);
+      }
+    },
+    [getAnswer, socket, localStream, addTrackToPeer]
+  );
+
+  const handleReceiveAnswer = useCallback(
+    async (data) => {
+      const { answer } = data;
+      console.log("Received answer");
+      await setRemoteDescription(answer);
+    },
+    [setRemoteDescription]
+  );
+
+  const handleReceiveIceCandidate = useCallback(
+    (data) => {
+      const { candidate } = data;
+      console.log("Received ICE candidate");
+      addIceCandidate(candidate);
+    },
+    [addIceCandidate]
+  );
+
+  useEffect(() => {
+    socket.on("new-user-joined", handleNewUserJoining);
+    socket.on("receiveOffer", handleReceiveOffer);
+    socket.on("receiveAnswer", handleReceiveAnswer);
+    socket.on("receiveIceCandidate", handleReceiveIceCandidate);
+
+    return () => {
+      socket.off("new-user-joined", handleNewUserJoining);
+      socket.off("receiveOffer", handleReceiveOffer);
+      socket.off("receiveAnswer", handleReceiveAnswer);
+      socket.off("receiveIceCandidate", handleReceiveIceCandidate);
+    };
+  }, [
+    socket,
+    handleNewUserJoining,
+    handleReceiveOffer,
+    handleReceiveAnswer,
+    handleReceiveIceCandidate,
+    localStream,
+  ]);
+
+  const startMedia = async (cameraID = null, micID = null) => {
     try {
-      console.log(cameraID, "cameraId");
-
-      // Initialize currentCamera properly
-      let currentCamera = cameraID === null ? null : cameraID;
-
-      const defaultConstraints = {
-        video: true,
-        audio: true,
+      const constraints = {
+        video: cameraID ? { deviceId: { exact: cameraID } } : true,
+        audio: micID ? { deviceId: { exact: micID } } : true,
       };
-      const selectedCameraConstraints = {
-        audio: true,
-        video: {
-          deviceId: cameraID,
-        },
-      };
-      const cameraOption = currentCamera ? { deviceId: currentCamera } : true;
-      const selectedAudioConstraints = {
-        video: cameraOption,
-        audio: {
-          deviceId: micID,
-        },
-      };
-      const constraints =
-        cameraID || micID
-          ? cameraID
-            ? selectedCameraConstraints
-            : selectedAudioConstraints
-          : defaultConstraints;
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       console.log("Stream tracks:", stream.getAudioTracks());
       setLocalStream(stream);
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = stream;
       }
+      return stream;
     } catch (error) {
       console.error("Error accessing media devices:", error);
+      return null;
     }
   };
 
-  // useEffect to listen for socket events
- 
+  useEffect(() => {
+    startMedia();
+  }, []);
 
-  useEffect(() => {
-    const initializeSocket = async () => {
-      socket.connect();
-  
-      if (socket) {
-        setLoading(true);
-        if (roomId) {
-          console.log(roomId, "mm");
-          socket.emit("room-join", { roomId });
-        }
-  
-        // Listen for "newjoining" event
-        socket.on("newjoining", (data) => {
-          console.log("New user joined", data);
-        });
-  
-        const makingWebRTCConnection = async () => {
-          // Assuming localStream is already defined and contains tracks you want to add
-          await localStream.getTracks().forEach((track) => {
-            peer.peer.addTrack(track, localStream);
-          });
-  
-          if (localStream) {
-            makingWebRTCConnection();
-          
-          const offer = await peer.getOffer();
-          socket.emit("sendTheOffer", offer, roomId);
-  
-          console.log(offer);
-  
-          socket.on("recieveOffer", async (offer) => {
-            console.log(offer, "receive offer");
-            const ans = await peer.getAnswer(offer);
-            console.log(ans);
-            socket.emit("sendTheAnswer", ans, roomId); // Sending answer back to server
-          });
-  
-          // Listen for ICE candidates
-          peer.peer.onicecandidate = (event) => {
-            if (event.candidate) {
-              console.log("Sending ICE candidate:", event.candidate);
-              socket.emit("sendIceCandidate", event.candidate, roomId);
-            }
-          };
-  
-          // Receive ICE candidates from the other peer
-          socket.on("receiveIceCandidate", (candidate) => {
-            console.log("Received ICE candidate:", candidate);
-            peer.peer.addIceCandidate(new RTCIceCandidate(candidate));
-          });
-  
-          // Add remote stream when received
-          peer.peer.ontrack = (event) => {
-            console.log("Received remote stream",event.streams[0]);
-            setRemoteStreams((prevStreams) => [...prevStreams, event.streams[0]]);
-            // Assuming remoteVideoRef is a reference to the <video> element for displaying remote stream
-            remoteVideoRef.current.srcObject = event.streams[0];
-            remoteVideoRef.play();
-          };
-        }};
-  
-        makingWebRTCConnection();
-        
-  
-        return () => {
-          socket.disconnect();
-        };
-      }
-    };
-  
-    if (socket && startMedia) {
-      initializeSocket();
-    }
-  }, [socket, startMedia]);
-  
-  
-  
-  useEffect(() => {
-    remoteVideoRef.current = Array(remoteStreams.length)
-      .fill()
-      .map(() => React.createRef());
-      
-  }, [remoteStreams]);
-  // function for muting or unmuting video
   const toggleVideo = () => {
     if (localStream) {
       localStream.getVideoTracks().forEach((track) => {
@@ -160,7 +143,6 @@ const VideoMeeting = () => {
     }
   };
 
-  // function for muting or unmuting audio
   const toggleAudio = () => {
     if (localStream) {
       localStream.getAudioTracks().forEach((track) => {
@@ -170,9 +152,7 @@ const VideoMeeting = () => {
     }
   };
 
-  // function for selecting audio device
   const selectAudioDevice = async () => {
-    // Clear existing options
     selectAudioRef.current.innerHTML = "";
     const availableAudioDevices =
       await navigator.mediaDevices.enumerateDevices();
@@ -188,7 +168,6 @@ const VideoMeeting = () => {
         device.label ||
         `Microphone ${selectAudioRef.current.options.length + 1}`;
 
-      // Set selected attribute if it matches the current microphone
       if (currentMic && device.label === currentMic.label) {
         option.selected = true;
       }
@@ -197,9 +176,7 @@ const VideoMeeting = () => {
     });
   };
 
-  // function for selecting video device
   const selectVideoDevice = async () => {
-    // Clear existing options
     selectVideoRef.current.innerHTML = "";
     const availableVideoDevices =
       await navigator.mediaDevices.enumerateDevices();
@@ -215,7 +192,6 @@ const VideoMeeting = () => {
         device.label ||
         `VideoDevice ${selectVideoRef.current.options.length + 1}`;
 
-      // Set selected attribute if it matches the current camera
       if (currentCamera && device.label === currentCamera.label) {
         option.selected = true;
       }
@@ -224,25 +200,21 @@ const VideoMeeting = () => {
     });
   };
 
-  // handle audio device selection
   const setAudiodeviceId = (e) => {
     const deviceId = e.target.value;
     startMedia(null, deviceId);
   };
 
-  // handle video device selection
   const setVideodeviceId = (e) => {
     const deviceId = e.target.value;
     startMedia(deviceId);
   };
 
-  // screenSharing
   const toggleScreenSharing = async () => {
     if (!screenSharing) {
       try {
         const screenStream = await navigator.mediaDevices.getDisplayMedia({
           video: true,
-          audio: true,
         });
         const videoTrack = screenStream.getVideoTracks()[0];
         const sender = peer.peer.getSenders().find((s) => {
@@ -271,79 +243,71 @@ const VideoMeeting = () => {
   };
 
   return (
-    <div className="w-full h-screen bg-slate-950 pattern-dots">
-      {loading ? (
-        <div className="w-full h-full flex_col_center">
-          <div className="flex justify-center items-center space-x-4 mb-4">
-            <button
-              className="bg-gray-500 text-white px-4 py-2 rounded"
-              onClick={toggleAudio}
-            >
-              {isAudioMuted ? "Unmute Audio" : "Mute Audio"}
-            </button>
-            <button
-              className="bg-gray-500 text-white px-4 py-2 rounded"
-              onClick={toggleVideo}
-            >
-              {isVideoMuted ? "Unmute Video" : "Mute Video"}
-            </button>
-            <button
-              className="w-16 h-12 bg-blue-600 rounded-md shadow-lg text-white"
-              onClick={toggleScreenSharing}
-            >
-              {screenSharing ? "Stop Sharing" : "Share Screen"}
-            </button>
-          </div>
-          <div className="flex justify-center items-center space-x-4 mb-4">
-            <select
-              className="bg-gray-500 text-white px-4 py-2 rounded"
-              ref={selectAudioRef}
-              onClick={selectAudioDevice}
-              onChange={setAudiodeviceId}
-            >
-              {selectAudioRef.current && (
-                <option disabled selected>
-                  select mic
-                </option>
-              )}
-            </select>
-            <select
-              ref={selectVideoRef}
-              onClick={selectVideoDevice}
-              onChange={setVideodeviceId}
-              className="bg-gray-500 text-white px-4 py-2 rounded"
-            >
-              {selectVideoRef.current && (
-                <option disabled selected>
-                  select video device
-                </option>
-              )}
-            </select>
-          </div>
-          <div className="w-full h-96 flex_col_center">
-          <h1 className="text-white">Local video</h1>
-          <video ref={localVideoRef} autoPlay className="w-full h-96" />
-          <h1 className="text-white">Remote videos</h1>
-          {remoteStreams&& remoteStreams.map((stream, index) => (
-              <video
-                key={`remoteVideo_${index}`}
-                ref={remoteVideoRef.current[index]}
-                autoPlay
-                className="w-96 h-96"
-              />
-            ))}
-          </div>
-
+    <div className="w-full h-screen bg-slate-900 relative top-16 flex flex-col items-center justify-center">
+      <div className="relative w-full md:w-11/12 h-4/5 bg-slate-800 rounded-lg shadow-lg overflow-hidden">
+        <video
+          ref={localVideoRef}
+          autoPlay
+          className="w-full h-full object-cover"
+        />
+        <Draggable>
           <div
-            className="w-24 h-12 flex_center text-center bg-fuchsia-400 gap-x-8"
-            onClick={startMedia}
+            className="absolute w-64 h-44 md:w-1/4 md:h-1/4 bg-slate-600 rounded-lg shadow-lg top-4 right-4 cursor-move"
+            style={{ left: "calc(100% - 40%)", top: "4%" }}
           >
-            start media
+            <video
+              ref={remoteVideoRef}
+              autoPlay
+              className="w-full h-full object-cover rounded-lg z-50"
+            />
           </div>
+        </Draggable>
+      </div>
+      <div className="w-full flex flex-col  justify-center items-center space-y-4  md:space-x-4 mt-4">
+        <div className="flex justify-center items-center space-x-4">
+          <button
+            className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600"
+            onClick={toggleAudio}
+          >
+            {isAudioMuted ? <FiMicOff /> : <FiMic />}
+          </button>
+          <button
+            className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600"
+            onClick={toggleVideo}
+          >
+            {isVideoMuted ? <FiVideoOff /> : <FiVideo />}
+          </button>
+          <button
+            className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600"
+            onClick={toggleScreenSharing}
+          >
+            <FiMonitor />
+            {screenSharing ? " Stop Sharing" : " Share Screen"}
+          </button>
         </div>
-      ) : (
-        <div className="w-full h-screen flex_center text-white">loading...</div>
-      )}
+        <div className="flex justify-center items-center space-x-4">
+          <select
+            className="bg-gray-500 text-white px-4 py-2 rounded"
+            ref={selectAudioRef}
+            onClick={selectAudioDevice}
+            onChange={setAudiodeviceId}
+          >
+            <option disabled selected>
+              Select mic
+            </option>
+          </select>
+          <select
+            ref={selectVideoRef}
+            onClick={selectVideoDevice}
+            onChange={setVideodeviceId}
+            className="bg-gray-500 text-white px-4 py-2 rounded"
+          >
+            <option disabled selected>
+              Select video device
+            </option>
+          </select>
+        </div>
+      </div>
     </div>
   );
 };

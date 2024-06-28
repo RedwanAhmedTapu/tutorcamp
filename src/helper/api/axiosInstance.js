@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Create an axios instance with custom configuration
 const axiosInstance = axios.create({
-  baseURL: 'https://tutorcampbackend.onrender.com', // Replace with your API base URL
+  baseURL: 'http://localhost:5000', // Replace with your API base URL
   timeout: 30000, // Timeout after 10 seconds
   headers: {
     'Content-Type': 'application/json',
