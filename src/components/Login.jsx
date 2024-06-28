@@ -1,9 +1,8 @@
-import { ImSpinner9 } from "react-icons/im";
 import { AiFillApple, AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 // import { FcGoogle } from "react-icons/fc";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../helper/api/axiosInstance";
 // import GlobeInnerRay from "./GlobeInnerRay";
 // import { ConstructionOutlined } from "@mui/icons-material";
 // import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -34,8 +33,8 @@ const Login = () => {
       if (email.trim() === "" || password.trim() === "") {
         alert("please fill all the data");
       } else {
-        await axios
-          .post("http://localhost:5000/user/login", user)
+        await axiosInstance
+          .post("/user/login", user)
           .then((res) => {
             console.log(res.data);
 

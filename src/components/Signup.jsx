@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AiFillApple, AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import CountdownTimer from "./CountdownTimer";
+import axiosInstance from "../helper/api/axiosInstance";
 
 const Signup = () => {
   const [user, setUser] = useState({
@@ -50,20 +51,13 @@ const Signup = () => {
       ) {
         alert("Please fill in all the required fields");
       } else {
-        console.log(user)
-        const response = await fetch(`${serverUrl}/user/signup`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(user),
-        });
-
-        const data = await response.json();
+        console.log(user);
+        const response = await axiosInstance.post("/user/signup", user);
+        const data = response.data;
 
         if (data.message === "User registered successfully") {
           // setIsOtp(true);
-          navigate("/login")
+          navigate("/login");
         } else {
           alert(data.message);
         }
@@ -154,9 +148,12 @@ const Signup = () => {
 
   return (
     <>
-      <div className={`flex_center w-full h-screen absolute  bottom-0 bg-slate-900 dark:bg-black ${isOtp ? "blur" : ""}`}>
+      <div
+        className={`flex_center w-full h-screen absolute  bottom-0 bg-slate-900 dark:bg-black ${
+          isOtp ? "blur" : ""
+        }`}
+      >
         <div className="w-full max-w-2xl flex flex-col self-center h-full px-6 py-10 bg-slate-900 dark:bg-[#030303] rounded-lg shadow-md gap-y-6 relative top-10">
-         
           <div className="flex flex-col md:flex-row justify-between w-full gap-x-4">
             <div className="flex flex-col gap-y-1 w-full md:w-[50%]">
               <label className="text-white">First Name</label>
