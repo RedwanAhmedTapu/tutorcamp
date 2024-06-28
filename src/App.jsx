@@ -31,9 +31,9 @@ const App = () => {
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
               <Route path="/dashboard/teacher-dashoard" element={<PrivateRoute element={TeacherDashboard} />} />
-              <Route path="/teacher/search-teacher" element={SearchTeacher} />
-              <Route path="/room/:roomId" element={ RoomPage }/>
-              <Route path="/:roomId" element={VideoMeetingWrapper} />
+              <Route path="/teacher/search-teacher" element={<SearchTeacher/>} />
+              <Route path="/room/:roomId" element={ <RoomPage/> }/>
+              <Route path="/:roomId" element={<VideoMeetingWrapper/>} />
               <Route path="/solution" element={<SolutionComponent />} />
               <Route path="/sub/:subID" element={<ChapterWiseDescription />} />
             </Routes>
