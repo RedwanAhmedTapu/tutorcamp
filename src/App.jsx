@@ -8,6 +8,8 @@ import LobbyScreen from "./components/Vide";
 import RoomPage from "./components/Room";
 import VideoMeetingWrapper from "./pages/VideoMeeting";
 import TeacherDashboard from "./pages/dashboard/teacherDashBoard/TeacherDashBoard";
+import  StudentDashBoard from "./pages/dashboard/studentDashBoard/StudentDashBoard";
+import AdminDashboard from "./pages/dashboard/adminDashBoard/AdminDashBoard";
 import SearchTeacher from "./pages/SearchTeacher";
 import ChapterWiseDescription from "./pages/ChapterWiseDescription";
 import { SocketProvider } from "./context/SocketProvider";
@@ -31,6 +33,8 @@ const App = () => {
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
               <Route path="/dashboard/teacher-dashoard" element={<PrivateRoute element={TeacherDashboard} />} />
+              <Route path="/dashboard/student-dashoard" element={<PrivateRoute element={StudentDashBoard} />} />
+              <Route path="/dashboard/admin-dashoard" element={<PrivateRoute element={AdminDashboard} />} />
               <Route path="/teacher/search-teacher" element={<SearchTeacher/>} />
               <Route path="/room/:roomId" element={ <RoomPage/> }/>
               <Route path="/:roomId" element={<VideoMeetingWrapper/>} />

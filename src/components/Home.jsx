@@ -218,7 +218,7 @@ const Home = () => {
       <div className="absolute left-[12%] top-64  -rotate-12 rounded-3xl bg-gradient-to-r from-violet-600 to-indigo-800 opacity-60 blur-3xl filter dark:opacity-30 lg:h-32 lg:w-[450px] dark:lg:block xl:h-24 xl:w-[10rem]"></div>
       <div className="absolute left-80 top-64  -rotate-45 rounded-3xl bg-gradient-to-r from-violet-600 to-indigo-800 opacity-60 blur-3xl filter dark:opacity-30 lg:h-32 lg:w-[450px] dark:lg:block xl:h-24 xl:w-[15rem]"></div>
       <div className="absolute right-32 top-64  -rotate-45  bg-gradient-to-r from-violet-600 to-indigo-800 opacity-60 blur-3xl filter dark:opacity-30 lg:h-32 lg:w-[450px] dark:lg:block xl:h-44 xl:w-[17.6rem] rounded-full"></div>
-      <TorchLightEffect/>
+      {/* <TorchLightEffect/> */}
       {/* <Loading/> */}
       <CardSpotlight />
       {/* <MonitorScreen /> */}

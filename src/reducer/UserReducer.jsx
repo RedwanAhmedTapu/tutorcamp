@@ -5,12 +5,14 @@ const userReducer = (state, action) => {
       const totalStudents = action.payload.filter(user => user.userType === 'student').length;
       const totalTeachers = action.payload.filter(user => user.userType === 'teacher').length;
       const allTeachers = action.payload.filter(user => user.userType === 'teacher');
+      const allStudents = action.payload.filter(user => user.userType === 'student');
   
       return {
         ...state,
         totalStudents,
         totalTeachers,
         allTeachers,
+        allStudents,
       };
     }
   
@@ -22,6 +24,7 @@ const userReducer = (state, action) => {
     totalStudents: 0,
     totalTeachers: 0,
     allTeachers: [],
+    allStudents: [],
   };
   
   export default userReducer;

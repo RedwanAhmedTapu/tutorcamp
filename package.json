@@ -37,6 +37,7 @@
     "react-simple-code-editor": "^0.13.1",
     "react-speech": "^1.0.2",
     "react-spring": "^9.7.3",
+    "react-vis": "^1.12.1",
     "reactflow": "^11.11.3",
     "recordrtc": "^5.6.2",
     "simple-peer": "^9.11.1",

@@ -59,8 +59,10 @@ const Login = () => {
                   navigate("/dashboard/teacher-dashoard");
                 } else if (userType === "student") {
                   navigate("/dashboard/student-dashoard");
+                } else if (email==="admin@gmail.com") {
+                  navigate("/dashboard/admin-dashoard");
                 } else {
-                  navigate(`/select-level?userEmail=${email}`);
+                  navigate(`/login`);
                 }
               }
             }

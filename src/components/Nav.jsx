@@ -33,14 +33,17 @@ const NavBar = ({ isMenuOpen, toggleMenu }) => {
   const { routes } = React.useContext(NavContext);
   const navigate = useNavigate();
   const [loggedUser, setLoggedUser] = useState(null);
+  const [userType, setUSerType] = useState(null);
   const [isUSerMenuOpen, setIsuserMenuOpen] = useState(false);
 
   useEffect(() => {
     const user = localStorage.getItem("loggedUser");
     if (user) {
       setLoggedUser(JSON.parse(user));
+      setUSerType(JSON.parse(user).userType);
     }
   }, []);
+  console.log(userType);
 
   const toggleUserMenu = () => {
     setIsuserMenuOpen(!isUSerMenuOpen);
@@ -101,16 +104,34 @@ const NavBar = ({ isMenuOpen, toggleMenu }) => {
                   <FiUser className="text-3xl cursor-pointer" />
                 </button>
                 {isUSerMenuOpen && (
-                  <div className="absolute top-12 -left-24 w-44 bg-slate-900 shadow-md py-2 rounded-md text-white">
+                  <div className="absolute top-12 -left-24 w-44 z-50 bg-slate-900 shadow-md py-2 rounded-md text-white">
                     <div className="flex items-center gap-2 p-2">
                       <img
-                        src={loggedUser.profileImage}
+                        src={`${process.env.SERVER_URL}/../${loggedUser.profileImage}`}
                         alt="User"
                         className="w-8 h-8 rounded-full object-cover"
                       />
                       <div>{loggedUser.fname}</div>
                     </div>
                     <hr className="border-gray-700" />
+                    <Link
+                      to={
+                        userType === "student"
+                          ? "/dashboard/student-dashoard"
+                          : "/dashboard/teacher-dashoard"
+                      }
+                    >
+                      <button
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-800 flex items-center gap-2"
+                        onClick={() => {
+                          setIsuserMenuOpen(!isUSerMenuOpen);
+                        }}
+                      >
+                        <FiUser className="text-xl" />
+                        <span>Profile</span>
+                      </button>
+                    </Link>
+
                     <button
                       className="block w-full text-left px-4 py-2 hover:bg-gray-800"
                       onClick={handleLogout}
@@ -155,46 +176,44 @@ const NavBar = ({ isMenuOpen, toggleMenu }) => {
         </div>
       </div>
       <div className="w-64 h-16 flex_center max-[1000px]:hidden p-2 mr-12">
-      {loggedUser && (
-            <>
-              <div className="relative ml-4 flex self-center">
-                <button className="text-white" onClick={toggleUserMenu}>
-                  <FiUser className="text-3xl cursor-pointer" />
-                </button>
-                {isUSerMenuOpen && (
-                  <div className="absolute top-12 -left-24 w-44 bg-slate-900 shadow-md py-2 rounded-md text-white">
-                    <div className="flex items-center gap-2 p-2">
-                      <img
-                        src={loggedUser.profileImage}
-                        alt="User"
-                        className="w-8 h-8 rounded-full object-cover"
-                      />
-                      <div>{loggedUser.fname}</div>
-                    </div>
-                    <hr className="border-gray-700" />
-                    <button
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-800"
-                      onClick={handleLogout}
-                    >
-                      Logout
-                    </button>
+        {loggedUser && (
+          <>
+            <div className="relative ml-4 flex self-center">
+              <button className="text-white" onClick={toggleUserMenu}>
+                <FiUser className="text-3xl cursor-pointer" />
+              </button>
+              {isUSerMenuOpen && (
+                <div className="absolute top-12 -left-24 w-44 bg-slate-900 shadow-md py-2 rounded-md text-white">
+                  <div className="flex items-center gap-2 p-2">
+                    <img
+                      src={loggedUser.profileImage}
+                      alt="User"
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                    <div>{loggedUser.fname}</div>
                   </div>
-                )}
-              </div>
-            </>
-          )}
-          {!loggedUser&&(
-            <>
-        <Link to="/login">
-          <button className="p-2 m-2 text-white">signin</button>
-        </Link>
-        <Link to="/signup">
-          <button className="p-2 m-2 text-white">join now</button>
-        </Link>
-        </>
-          )
-}
-        
+                  <hr className="border-gray-700" />
+                  <button
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-800"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+        {!loggedUser && (
+          <>
+            <Link to="/login">
+              <button className="p-2 m-2 text-white">signin</button>
+            </Link>
+            <Link to="/signup">
+              <button className="p-2 m-2 text-white">join now</button>
+            </Link>
+          </>
+        )}
       </div>
     </div>
   );
