@@ -13,6 +13,7 @@ const SearchTeacher = () => {
   const subjects = ["Bangla", "English", "ICT", "Higher Math", "Chemistry", "Biology"];
   const [circlePosition, setCirclePosition] = useState(0);
   const subjectRefs = useRef([]);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     const universities = [...new Set(allTeachers.map((teacher) => teacher.institution))];
@@ -39,10 +40,26 @@ const SearchTeacher = () => {
     setDropdownVisible(false);
   };
 
-  const handleCircleMove = (event) => {
-    const line = event.currentTarget;
+  const handleDragStart = () => {
+    setIsDragging(true);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+    setFilteredTeachers(
+      allTeachers.filter(
+        (teacher) =>
+          selectedSubject === "" || teacher.subjects.includes(selectedSubject.toLowerCase())
+      )
+    );
+  };
+
+  const handleDragMove = (event) => {
+    if (!isDragging) return;
+    const line = subjectRefs.current[0].parentNode;
     const rect = line.getBoundingClientRect();
-    const newPosition = Math.min(Math.max(0, event.clientX - rect.left), rect.width);
+    const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+    const newPosition = Math.min(Math.max(0, clientX - rect.left), rect.width);
     setCirclePosition(newPosition);
 
     const subjectIndex = Math.round((newPosition / rect.width) * (subjects.length - 1));
@@ -53,15 +70,6 @@ const SearchTeacher = () => {
         setSelectedSubject(subjects[subjectIndex].replace(/\s+/g, ""));
       }
     }
-  };
-
-  const handleMouseUp = () => {
-    setFilteredTeachers(
-      allTeachers.filter(
-        (teacher) =>
-          selectedSubject === "" || teacher.subjects.includes(selectedSubject.toLowerCase())
-      )
-    );
   };
 
   return (
@@ -132,13 +140,16 @@ const SearchTeacher = () => {
       </div>
       <div className="flex flex-col items-center mb-6">
         <div
-          className="relative w-full h-1 bg-gray-300 cursor-pointer"
-          onMouseDown={(e) => e.preventDefault()}
-          onMouseMove={handleCircleMove}
-          onMouseUp={handleMouseUp}
+          className="relative w-full flex items-center h-1 bg-gray-300 cursor-pointer"
+          onMouseDown={handleDragStart}
+          onMouseUp={handleDragEnd}
+          onMouseMove={handleDragMove}
+          onTouchStart={handleDragStart}
+          onTouchEnd={handleDragEnd}
+          onTouchMove={handleDragMove}
         >
           <div
-            className="absolute w-5 h-5 bg-red-500 rounded-full cursor-pointer"
+            className="absolute w-3 h-3 bg-slate-500 rounded-full cursor-pointer"
             style={{
               left: `${circlePosition}px`,
               transform: "translateX(-50%)",
