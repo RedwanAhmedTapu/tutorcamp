@@ -14,7 +14,7 @@ const Profile = ( teacher ) => {
     <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
       <div className="flex items-center space-x-4 mb-6">
         <img
-          src={`http://localhost:5000/${singleTeacher.profileImage}`}
+          src={`${process.env.SERVER_URL}/../${singleTeacher.profileImage}`}
           alt="Profile"
           className="w-32 h-32 object-cover rounded-full border-4 border-gray-300"
         />

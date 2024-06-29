@@ -1,31 +1,37 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from "react";
 import { useUserContext } from "../context/UserContext";
-import Profile from '../components/Profile';
+import Profile from "../components/Profile";
 
 const SearchTeacher = () => {
   const { allTeachers } = useUserContext().state;
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [filteredTeachers, setFilteredTeachers] = useState(null);
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('All categories');
+  const [selectedCategory, setSelectedCategory] = useState("All categories");
   const [filteredCategories, setFilteredCategories] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState("");
+  const subjects = ["Bangla", "English", "ICT", "Higher Math", "Chemistry", "Biology"];
+  const [circlePosition, setCirclePosition] = useState(0);
+  const subjectRefs = useRef([]);
 
   useEffect(() => {
-    const universities = [...new Set(allTeachers.map(teacher => teacher.institution))];
+    const universities = [...new Set(allTeachers.map((teacher) => teacher.institution))];
     setFilteredCategories(universities);
   }, [allTeachers]);
 
-  const handleSearch = (event) => {
-    const value = event.target.value.toLowerCase();
-    setSearchTerm(value);
-
-    const filtered = allTeachers.filter((teacher) =>
-      (selectedCategory === 'All categories' || teacher.institution === selectedCategory) &&
-      (teacher.subjects.some(subject => subject.toLowerCase().includes(value)) ||
-        teacher.institution.toLowerCase().includes(value))
+  useEffect(() => {
+    const filtered = allTeachers.filter(
+      (teacher) =>
+        (selectedCategory === "All categories" || teacher.institution === selectedCategory) &&
+        (teacher.subjects.some((subject) => subject.toLowerCase().includes(searchTerm)) ||
+          teacher.institution.toLowerCase().includes(searchTerm)) &&
+        (selectedSubject === "" || teacher.subjects.includes(selectedSubject.toLowerCase()))
     );
-
     setFilteredTeachers(filtered);
+  }, [searchTerm, selectedCategory, selectedSubject, allTeachers]);
+
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value.toLowerCase());
   };
 
   const handleCategorySelect = (category) => {
@@ -33,51 +39,125 @@ const SearchTeacher = () => {
     setDropdownVisible(false);
   };
 
+  const handleCircleMove = (event) => {
+    const line = event.currentTarget;
+    const rect = line.getBoundingClientRect();
+    const newPosition = Math.min(Math.max(0, event.clientX - rect.left), rect.width);
+    setCirclePosition(newPosition);
+
+    const subjectIndex = Math.round((newPosition / rect.width) * (subjects.length - 1));
+    const subjectDiv = subjectRefs.current[subjectIndex];
+    if (subjectDiv) {
+      const subjectRect = subjectDiv.getBoundingClientRect();
+      if (newPosition >= subjectRect.left - rect.left && newPosition <= subjectRect.right - rect.left) {
+        setSelectedSubject(subjects[subjectIndex].replace(/\s+/g, ""));
+      }
+    }
+  };
+
+  const handleMouseUp = () => {
+    setFilteredTeachers(
+      allTeachers.filter(
+        (teacher) =>
+          selectedSubject === "" || teacher.subjects.includes(selectedSubject.toLowerCase())
+      )
+    );
+  };
+
   return (
-    <div className="p-6">
-      <div className="mb-6 relative top-20 md:left-44 lg:left-52">
-        <div className="flex">
-          <button 
-            id="dropdown-button" 
-            className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" 
-            type="button" 
-            onClick={() => setDropdownVisible(!dropdownVisible)}
-          >
-            {selectedCategory} 
-            <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
-            </svg>
-          </button>
-          {dropdownVisible && (
-            <div id="dropdown" className="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-              <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-button">
-                <li onClick={() => handleCategorySelect('All categories')} className="cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">All categories</li>
-                {filteredCategories.map((category, index) => (
-                  <li key={index} onClick={() => handleCategorySelect(category)} className="cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">{category}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-          <div className="relative w-96 ">
-            <input 
-              type="search" 
-              id="search-dropdown" 
+    <div className="p-6 max-w-4xl mx-auto">
+      <div className="mb-6 w-full">
+        <div className="flex flex-col md:flex-row items-center">
+          <div className="relative w-full md:w-auto mb-4 md:mb-0 md:mr-4">
+            <button
+              id="dropdown-button"
+              className="inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600 w-full md:w-auto"
+              type="button"
+              onClick={() => setDropdownVisible(!dropdownVisible)}
+            >
+              {selectedCategory}
+              <svg
+                className="w-2.5 h-2.5 ml-2.5"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 10 6"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M1 1l4 4 4-4"
+                />
+              </svg>
+            </button>
+            {dropdownVisible && (
+              <div
+                id="dropdown"
+                className="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-full dark:bg-gray-700"
+              >
+                <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
+                  <li
+                    onClick={() => handleCategorySelect("All categories")}
+                    className="cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600"
+                  >
+                    All categories
+                  </li>
+                  {filteredCategories.map((category, index) => (
+                    <li
+                      key={index}
+                      onClick={() => handleCategorySelect(category)}
+                      className="cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600"
+                    >
+                      {category}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+          <div className="relative w-full">
+            <input
+              type="search"
+              id="search-dropdown"
               value={searchTerm}
               onChange={handleSearch}
-              placeholder="Search by subject or institution..." 
-              className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
-              required 
+              placeholder="Search by subject or institution..."
+              className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
+              required
             />
-            <button type="submit" className="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-              <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-              </svg>
-              <span className="sr-only text-black">Search</span>
-            </button>
           </div>
         </div>
       </div>
-      <Profile allTeachers={filteredTeachers?filteredTeachers:allTeachers} />
+      <div className="flex flex-col items-center mb-6">
+        <div
+          className="relative w-full h-1 bg-gray-300 cursor-pointer"
+          onMouseDown={(e) => e.preventDefault()}
+          onMouseMove={handleCircleMove}
+          onMouseUp={handleMouseUp}
+        >
+          <div
+            className="absolute w-5 h-5 bg-red-500 rounded-full cursor-pointer"
+            style={{
+              left: `${circlePosition}px`,
+              transform: "translateX(-50%)",
+            }}
+          />
+        </div>
+        <div className="flex justify-between w-full mt-2">
+          {subjects.map((subject, index) => (
+            <div
+              key={index}
+              ref={(el) => (subjectRefs.current[index] = el)}
+              className="text-[0.6rem] md:text-sm text-center w-1/6 px-2"
+            >
+              {subject}
+            </div>
+          ))}
+        </div>
+      </div>
+      <Profile allTeachers={filteredTeachers || allTeachers} />
     </div>
   );
 };
