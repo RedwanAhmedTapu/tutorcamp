@@ -43,6 +43,7 @@
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.4",
     "styled-components": "^6.1.1",
+    "swiper": "^11.1.4",
     "tesseract.js": "^5.1.0",
     "unique-string": "^3.0.0",
     "zustand": "^4.5.2"

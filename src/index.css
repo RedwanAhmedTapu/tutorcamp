@@ -118,6 +118,7 @@
     align-items: center;
     margin-right: 10px; /* Adjust as needed */
   }
+  
 
   .circle::before {
     content: "";

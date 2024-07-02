@@ -23,7 +23,6 @@ const Signup = () => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
-    // Handle checkboxes separately
     if (type === "checkbox") {
       setUser((prevUser) => ({
         ...prevUser,
@@ -56,7 +55,6 @@ const Signup = () => {
         const data = response.data;
 
         if (data.message === "User registered successfully") {
-          // setIsOtp(true);
           navigate("/login");
         } else {
           alert(data.message);
@@ -149,32 +147,32 @@ const Signup = () => {
   return (
     <>
       <div
-        className={`flex_center w-full h-screen absolute  bottom-0 bg-slate-900 dark:bg-black ${
+        className={`flex items-center justify-center w-full h-screen absolute top-10 bottom-0 bg-white ${
           isOtp ? "blur" : ""
         }`}
       >
-        <div className="w-full max-w-2xl flex flex-col self-center h-full px-6 py-10 bg-slate-900 dark:bg-[#030303] rounded-lg shadow-md gap-y-6 relative top-10">
+        <div className="w-full max-w-2xl flex flex-col self-center h-full px-6 py-10 bg-white rounded-lg shadow-md gap-y-6">
           <div className="flex flex-col md:flex-row justify-between w-full gap-x-4">
             <div className="flex flex-col gap-y-1 w-full md:w-[50%]">
-              <label className="text-white">First Name</label>
+              <label className="text-gray-800">First Name</label>
               <input
                 type="text"
                 placeholder="Your first name"
                 name="fname"
                 id="fname"
-                className="w-full h-12 border-2 border-gray-900 text-black bg-slate-300 rounded-lg placeholder-black px-4"
+                className="w-full h-12 border-2 border-gray-300 text-gray-800 bg-gray-100 rounded-lg placeholder-gray-500 px-4"
                 value={user.fname}
                 onChange={handleChange}
               />
             </div>
             <div className="flex flex-col gap-y-1 w-full md:w-[50%]">
-              <label className="text-white">Last Name</label>
+              <label className="text-gray-800">Last Name</label>
               <input
                 type="text"
                 placeholder="Your last name"
                 name="lname"
                 id="lname"
-                className="w-full h-12 border-2 border-gray-900 text-black bg-slate-300 rounded-lg placeholder-black px-4"
+                className="w-full h-12 border-2 border-gray-300 text-gray-800 bg-gray-100 rounded-lg placeholder-gray-500 px-4"
                 value={user.lname}
                 onChange={handleChange}
               />
@@ -182,30 +180,30 @@ const Signup = () => {
           </div>
           <div className="flex flex-col md:flex-row justify-between w-full gap-x-4">
             <div className="flex flex-col gap-y-1 w-full md:w-[50%]">
-              <label className="text-white">Email</label>
+              <label className="text-gray-800">Email</label>
               <input
                 type="email"
                 placeholder="name@gmail.com"
                 name="email"
                 id="email"
-                className="w-full h-12 border-2 border-gray-900 text-black bg-slate-300 rounded-lg placeholder-black px-4"
+                className="w-full h-12 border-2 border-gray-300 text-gray-800 bg-gray-100 rounded-lg placeholder-gray-500 px-4"
                 value={user.email}
                 onChange={handleChange}
               />
             </div>
             <div className="flex flex-col gap-y-1 w-full md:w-[50%] relative">
-              <label className="text-white">Password</label>
+              <label className="text-gray-800">Password</label>
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="password"
                 name="password"
                 id="password"
-                className="w-full h-12 border-2 border-gray-900 text-black bg-slate-300 border-1 rounded-lg placeholder-black px-4"
+                className="w-full h-12 border-2 border-gray-300 text-gray-800 bg-gray-100 rounded-lg placeholder-gray-500 px-4"
                 value={user.password}
                 onChange={handleChange}
               />
               <span
-                className="absolute flex_center right-4 top-11 cursor-pointer text-black"
+                className="absolute flex_center right-4 top-9 cursor-pointer text-gray-500"
                 onClick={togglePasswordVisibility}
               >
                 {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
@@ -213,16 +211,16 @@ const Signup = () => {
             </div>
           </div>
           <div className="flex_center gap-2">
-            <div className="w-2/3 bg-slate-300 h-[0.25px]"></div>
-            <p className="text-white text-2xl font-semibold">or</p>
-            <div className="w-2/3 bg-slate-300 h-[0.25px]"></div>
+            <div className="w-2/3 bg-gray-300 h-[0.25px]"></div>
+            <p className="text-gray-800 text-2xl font-semibold">or</p>
+            <div className="w-2/3 bg-gray-300 h-[0.25px]"></div>
           </div>
           <div className="flex flex-col gap-y-1 w-full">
-            <label className="text-white">User Type</label>
+            <label className="text-gray-800">User Type</label>
             <select
               name="userType"
               id="userType"
-              className="w-full h-12 border-2 border-gray-900 text-black bg-slate-300 rounded-lg"
+              className="w-full h-12 border-2 border-gray-300 text-gray-800 bg-gray-100 rounded-lg"
               value={user.userType}
               onChange={handleChange}
             >
@@ -232,94 +230,46 @@ const Signup = () => {
           </div>
           {user.userType === "teacher" && (
             <div className="flex flex-col gap-y-1 w-full">
-              <label className="text-white">Select Subjects</label>
+              <label className="text-gray-800">Select Subjects</label>
               <div className="flex flex-wrap gap-x-4">
-                <label className="text-white">
-                  <input
-                    type="checkbox"
-                    name="physics"
-                    value="physics"
-                    checked={user.subjects.includes("physics")}
-                    onChange={handleChange}
-                  />
-                  Physics
-                </label>
-                <label className="text-white">
-                  <input
-                    type="checkbox"
-                    name="chemistry"
-                    value="chemistry"
-                    checked={user.subjects.includes("chemistry")}
-                    onChange={handleChange}
-                  />
-                  Chemistry
-                </label>
-                <label className="text-white">
-                  <input
-                    type="checkbox"
-                    name="highermath"
-                    value="highermath"
-                    checked={user.subjects.includes("highermath")}
-                    onChange={handleChange}
-                  />
-                  Higher Math
-                </label>
-                <label className="text-white">
-                  <input
-                    type="checkbox"
-                    name="biology"
-                    value="biology"
-                    checked={user.subjects.includes("biology")}
-                    onChange={handleChange}
-                  />
-                  Biology
-                </label>
-                <label className="text-white">
-                  <input
-                    type="checkbox"
-                    name="english"
-                    value="english"
-                    checked={user.subjects.includes("english")}
-                    onChange={handleChange}
-                  />
-                  English
-                </label>
-                <label className="text-white">
-                  <input
-                    type="checkbox"
-                    name="ict"
-                    value="ict"
-                    checked={user.subjects.includes("ict")}
-                    onChange={handleChange}
-                  />
-                  ICT
-                </label>
+                {["physics", "chemistry", "highermath", "biology", "english", "ict"].map((subject) => (
+                  <label className="text-gray-800" key={subject}>
+                    <input
+                      type="checkbox"
+                      name={subject}
+                      value={subject}
+                      checked={user.subjects.includes(subject)}
+                      onChange={handleChange}
+                    />
+                    {subject.charAt(0).toUpperCase() + subject.slice(1)}
+                  </label>
+                ))}
               </div>
             </div>
           )}
           <div className="flex flex-col gap-y-8">
-            <div className="flex_center w-full h-10 gap-x-2 border-2 border-slate-300 rounded-lg">
+            <div className="flex_center w-full h-12 gap-x-2 border-2 border-gray-300 rounded-lg">
               {/* Google OAuth or other authentication methods can be added here */}
             </div>
-            <div className="flex_center w-full h-12 gap-x-2 border-2 border-slate-300 rounded-lg">
-              <p className="text-white text-2xl flex_center">
+            {/* <div className="flex_center w-full h-12 gap-x-2 border-2 border-gray-300 rounded-lg">
+              <p className="text-gray-800 text-xl flex items-center">
                 <AiFillApple />
                 &nbsp;Sign In With Apple
               </p>
-            </div>
+            </div> */}
           </div>
           <div className="flex justify-between">
             <div className="flex_center gap-x-2">
               <input
                 type="checkbox"
-                className="w-4 h-4 rounded-lg bg-slate-500"
+                className="w-4 h-4 rounded-lg bg-gray-300"
               />
-              <p className="text-white">Remember me</p>
+              <p className="text-gray-800">Remember me</p>
             </div>
-            <div className="text-blue-600">Forgot password?</div>
+            <div className="text-blue-600 cursor-pointer">Forgot password?</div>
           </div>
           <div
-            className="max-w-full w-full h-12 flex_center bg-blue-700 rounded-lg text-white text-xl font-semibold cursor-pointer"
+            className="max-w-full w-full h-16 md:h-20 flex_center self-end bg-blue-700 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-gray-50 text-xl font-semibold cursor-pointer"
             onClick={handleSubmit}
           >
             Sign up
@@ -328,16 +278,15 @@ const Signup = () => {
       </div>
       {isOtp && (
         <div className="w-full h-full flex_center mt-20">
-          <div className="bg-slate-900 rounded-lg">
+          <div className="bg-white rounded-lg shadow-md p-6">
             <div className="max-w-md mx-auto p-4 rounded-lg shadow-md">
-              <h2 className="text-xl font-semibold mb-4 text-center text-white">
+              <h2 className="text-xl font-semibold mb-4 text-center text-gray-800">
                 Enter OTP within 5 minutes
               </h2>
               <CountdownTimer />
-
               <input
                 type="text"
-                className="w-full p-2 border text-black rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                className="w-full p-2 border text-gray-800 rounded-md focus:outline-none focus:ring focus:border-blue-300"
                 placeholder="Enter OTP"
                 value={code}
                 onChange={handleInputChange}

@@ -55,7 +55,7 @@ const NavBar = ({ isMenuOpen, toggleMenu }) => {
     navigate("/login");
   };
   return (
-    <div className="border-general w-screen h-16 fixed top-0 z-40 flex items-center justify-between bg-slate-950 opacity-90 backdrop-blur-2xl transition-colors duration-500">
+    <div className="border-general w-screen h-16 fixed top-0 z-40 flex items-center justify-between  bg-slate-100 opacity-90 backdrop-blur-2xl transition-colors duration-500">
       <div className="flex items-center">
         <Link to="/">
           <div className="w-32 ml-24 max-[1000px]:ml-4 h-16 flex items-center">
@@ -66,7 +66,7 @@ const NavBar = ({ isMenuOpen, toggleMenu }) => {
                 alt="Brain Logo"
               />
             </div>
-            <span className="text-xl text-white cursor-pointer">Tutorcamp</span>
+            <span className="text-xl text-gray-900 cursor-pointer">Tutorcamp</span>
           </div>
         </Link>
       </div>
@@ -76,20 +76,20 @@ const NavBar = ({ isMenuOpen, toggleMenu }) => {
       <div className="w-24 mr-8 h-16 flex_col_center">
         <div className="mdUp:hidden  flex  self-center">
           {/* Responsive menu button */}
-          <button className="text-white" onClick={toggleMenu}>
+          <button className="text-gray-900" onClick={toggleMenu}>
             <div className="relative w-6 h-6 flex flex-col justify-between items-center">
               <div
-                className={`absolute w-full h-0.5 bg-white transition-transform duration-300 ${
+                className={`absolute w-full h-0.5 bg-gray-900 transition-transform duration-300 ${
                   isMenuOpen ? "transform rotate-45 top-1/2 left-0" : "top-0"
                 }`}
               />
               <div
-                className={`absolute w-full h-0.5 bg-white transition-opacity duration-300 ${
+                className={`absolute w-full h-0.5 bg-gray-900 transition-opacity duration-300 ${
                   isMenuOpen ? "opacity-0 top-1/2" : "opacity-100 top-1/2"
                 }`}
               />
               <div
-                className={`absolute w-full h-0.5 bg-white transition-transform duration-300 ${
+                className={`absolute w-full h-0.5 bg-gray-900 transition-transform duration-300 ${
                   isMenuOpen
                     ? "transform -rotate-45 top-1/2 left-0"
                     : "top-full"
@@ -100,14 +100,14 @@ const NavBar = ({ isMenuOpen, toggleMenu }) => {
           {loggedUser && (
             <>
               <div className="relative ml-4 flex self-center">
-                <button className="text-white" onClick={toggleUserMenu}>
+                <button className="text-gray-900" onClick={toggleUserMenu}>
                   <FiUser className="text-3xl cursor-pointer" />
                 </button>
                 {isUSerMenuOpen && (
-                  <div className="absolute top-12 -left-24 w-44 z-50 bg-slate-900 shadow-md py-2 rounded-md text-white">
+                  <div className="absolute top-12 -left-24 w-44 z-50 bg-slate-200 shadow-md py-2 rounded-md text-gray-900">
                     <div className="flex items-center gap-2 p-2">
                       <img
-                        src={`${process.env.SERVER_URL}/../${loggedUser.profileImage}`}
+                        src={`${process.env.SERVER_URL}/../${loggedUser.image}`}
                         alt="User"
                         className="w-8 h-8 rounded-full object-cover"
                       />
@@ -122,7 +122,7 @@ const NavBar = ({ isMenuOpen, toggleMenu }) => {
                       }
                     >
                       <button
-                        className="block w-full text-left px-4 py-2 hover:bg-gray-800 flex items-center gap-2"
+                        className="block w-full text-left px-4 py-2  flex items-center gap-2"
                         onClick={() => {
                           setIsuserMenuOpen(!isUSerMenuOpen);
                         }}
@@ -133,7 +133,7 @@ const NavBar = ({ isMenuOpen, toggleMenu }) => {
                     </Link>
 
                     <button
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-800"
+                      className="block w-full text-left px-4 py-2 "
                       onClick={handleLogout}
                     >
                       Logout
@@ -176,41 +176,59 @@ const NavBar = ({ isMenuOpen, toggleMenu }) => {
         </div>
       </div>
       <div className="w-64 h-16 flex_center max-[1000px]:hidden p-2 mr-12">
-        {loggedUser && (
-          <>
-            <div className="relative ml-4 flex self-center">
-              <button className="text-white" onClick={toggleUserMenu}>
-                <FiUser className="text-3xl cursor-pointer" />
-              </button>
-              {isUSerMenuOpen && (
-                <div className="absolute top-12 -left-24 w-44 bg-slate-900 shadow-md py-2 rounded-md text-white">
-                  <div className="flex items-center gap-2 p-2">
-                    <img
-                      src={loggedUser.profileImage}
-                      alt="User"
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
-                    <div>{loggedUser.fname}</div>
+      {loggedUser && (
+            <>
+              <div className="relative ml-4 flex self-center">
+                <button className="text-gray-900" onClick={toggleUserMenu}>
+                  <FiUser className="text-3xl cursor-pointer" />
+                </button>
+                {isUSerMenuOpen && (
+                  <div className="absolute top-12 -left-24 w-44 z-50 bg-slate-200 shadow-md py-2 rounded-md text-gray-900">
+                    <div className="flex items-center gap-2 p-2">
+                      <img
+                        src={`${process.env.SERVER_URL}/${loggedUser.image}`}
+                        alt="User"
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                      <div>{loggedUser.fname}</div>
+                    </div>
+                    <hr className="border-gray-700" />
+                    <Link
+                      to={
+                        userType === "student"
+                          ? "/dashboard/student-dashoard"
+                          : "/dashboard/teacher-dashoard"
+                      }
+                    >
+                      <button
+                        className="block w-full text-left px-4 py-2  flex items-center gap-2"
+                        onClick={() => {
+                          setIsuserMenuOpen(!isUSerMenuOpen);
+                        }}
+                      >
+                        <FiUser className="text-xl" />
+                        <span>Profile</span>
+                      </button>
+                    </Link>
+
+                    <button
+                      className="block w-full text-left px-4 py-2 "
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </button>
                   </div>
-                  <hr className="border-gray-700" />
-                  <button
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-800"
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </button>
-                </div>
-              )}
-            </div>
-          </>
-        )}
+                )}
+              </div>
+            </>
+          )}
         {!loggedUser && (
           <>
             <Link to="/login">
-              <button className="p-2 m-2 text-white">signin</button>
+              <button className="p-2 m-2 text-gray-900 font-semibold">signin</button>
             </Link>
             <Link to="/signup">
-              <button className="p-2 m-2 text-white">join now</button>
+              <button className="p-2 m-2 text-gray-900 font-semibold">join now</button>
             </Link>
           </>
         )}
@@ -452,7 +470,7 @@ const Tabs = ({ isMenuOpen }) => {
       <button
         id={`shift-tab-${tab}`}
         className={`group flex items-center gap-1 rounded-full px-3 py-1.5 text-sm transition-colors ${
-          selected === tab ? " text-neutral-100" : "text-neutral-400"
+          selected === tab ? " text-neutral-900" : "text-gray-900"
         }`}
         onMouseEnter={() => handleSelected(tab)}
         onClick={() => setSelected(null)}

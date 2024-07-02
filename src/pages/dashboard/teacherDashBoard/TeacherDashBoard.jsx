@@ -166,7 +166,7 @@ const TeacherDashboard = ({ userEmail }) => {
                 <img
                   src={
                     singleTeacher && singleTeacher.profileImage
-                      ? `http://localhost:5000/${singleTeacher.profileImage}`
+                      ? `${process.env.SERVER_URL}/${singleTeacher.profileImage}`
                       : URL.createObjectURL(profilePic)
                   }
                   alt="Profile Preview"
@@ -201,7 +201,7 @@ const TeacherDashboard = ({ userEmail }) => {
               <img
                 src={
                   singleTeacher && singleTeacher.idImage
-                    ? `http://localhost:5000/${singleTeacher.idImage}`
+                    ? `${process.env.SERVER_URL}/${singleTeacher.idImage}`
                     : URL.createObjectURL(idImage)
                 }
                 alt="ID Image"

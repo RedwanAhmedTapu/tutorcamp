@@ -1,13 +1,7 @@
 import { AiFillApple, AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-// import { FcGoogle } from "react-icons/fc";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../helper/api/axiosInstance";
-// import GlobeInnerRay from "./GlobeInnerRay";
-// import { ConstructionOutlined } from "@mui/icons-material";
-// import { GoogleOAuthProvider } from "@react-oauth/google";
-// import { GoogleLogin } from "@react-oauth/google";
-// import jwt_decode from "jwt-decode";
 
 const Login = () => {
   const [user, setUser] = useState({
@@ -42,24 +36,19 @@ const Login = () => {
               alert("wrong password and email");
             } else {
               if (res.data.token) {
-                // console.log(res.data.token);
-                // axios.defaults.headers.common[
-                //   "Authorization"
-                // ] = ` ${res.data.token}`;
-                // console.log(res.data)
-
-                const { fname, lname, email, userType, token } = res.data;
+                const { fname, lname, email, image, userType, token } = res.data;
+                console.log(image);
                 console.log({ fname, lname, email, userType });
                 localStorage.setItem(
                   "loggedUser",
-                  JSON.stringify({ fname, lname, email, userType, token })
+                  JSON.stringify({ fname, lname, email, image, userType, token })
                 );
 
                 if (userType === "teacher") {
                   navigate("/dashboard/teacher-dashoard");
                 } else if (userType === "student") {
                   navigate("/dashboard/student-dashoard");
-                } else if (email==="admin@gmail.com") {
+                } else if (email === "admin@gmail.com") {
                   navigate("/dashboard/admin-dashoard");
                 } else {
                   navigate(`/login`);
@@ -217,7 +206,7 @@ const Login = () => {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-cyan-300 hover:bg-cyan-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Sign in
             </button>
@@ -230,11 +219,11 @@ const Login = () => {
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">or</span>
+              {/* <span className="px-2 bg-white text-gray-500">or</span> */}
             </div>
           </div>
 
-          <div className="mt-6">
+          {/* <div className="mt-6">
             <button
               type="button"
               className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
@@ -242,7 +231,7 @@ const Login = () => {
               <AiFillApple className="w-5 h-5 mr-2" />
               Sign in with Apple
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -11,6 +11,7 @@ import TeacherDashboard from "./pages/dashboard/teacherDashBoard/TeacherDashBoar
 import  StudentDashBoard from "./pages/dashboard/studentDashBoard/StudentDashBoard";
 import AdminDashboard from "./pages/dashboard/adminDashBoard/AdminDashBoard";
 import SearchTeacher from "./pages/SearchTeacher";
+import IntroVideos from "./pages/IntroVideos";
 import ChapterWiseDescription from "./pages/ChapterWiseDescription";
 import { SocketProvider } from "./context/SocketProvider";
 import { PeerProvider } from "./context/PeerProvider"; // Correct import
@@ -36,6 +37,7 @@ const App = () => {
               <Route path="/dashboard/student-dashoard" element={<PrivateRoute element={StudentDashBoard} />} />
               <Route path="/dashboard/admin-dashoard" element={<PrivateRoute element={AdminDashboard} />} />
               <Route path="/teacher/search-teacher" element={<SearchTeacher/>} />
+              <Route path="/teacher/intro-videos" element={<IntroVideos/>} />
               <Route path="/room/:roomId" element={ <RoomPage/> }/>
               <Route path="/:roomId" element={<VideoMeetingWrapper/>} />
               <Route path="/solution" element={<SolutionComponent />} />
