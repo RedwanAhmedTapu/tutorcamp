@@ -3,6 +3,8 @@ import axiosInstance from "../../../helper/api/axiosInstance";
 import { useUserContext } from "../../../context/UserContext";
 import TotalTeacherStudent from "./component/TotalTeacherStudent";
 import Profile from "./component/Profile";
+import ChatList from "../../../components/ChatListForTeacher";
+import { useSocket } from "../../../context/SocketProvider";
 
 const TeacherDashboard = ({ userEmail }) => {
   const [subjects] = useState(["highermath", "biology"]);
@@ -14,12 +16,13 @@ const TeacherDashboard = ({ userEmail }) => {
   const [university, setUniversity] = useState("");
   const [uploadError, setUploadError] = useState(null);
   const [profile, setProfile] = useState(false);
+  const [chatWith, setChatWith] = useState(null);
+  const [initialMessages, setInitialMessages] = useState([]);
 
-  const {  allTeachers } = useUserContext().state;
-
+  const { allTeachers, allStudents } = useUserContext().state;
   const loggedTeacher = JSON.parse(localStorage.getItem("loggedUser"));
-
   const [singleTeacher, setSingleTeacher] = useState(null);
+  const socket = useSocket();
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -155,6 +158,25 @@ const TeacherDashboard = ({ userEmail }) => {
     setProfile(!profile);
   };
 
+  const handleChatClick = async (studentEmail) => {
+    setChatWith(studentEmail);
+
+    try {
+      const response = await axiosInstance.get(
+        `/chat/${loggedTeacher.email}/${studentEmail}`
+      );
+      setInitialMessages(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getStudentNameFromEmail = (email) => {
+    const regex = /^[^@]+/;
+    const match = email.match(regex);
+    return match ? match[0] : email;
+  };
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gray-100">
       <div className="w-full md:w-1/4 bg-white shadow-lg p-4">
@@ -239,13 +261,13 @@ const TeacherDashboard = ({ userEmail }) => {
           <TotalTeacherStudent />
         </div>
         <p
-          className="text-slate-900 p-4 mb-2 text-xl hover:text-dark-blue cursor-pointer"
+          className="text-slate-900 p-4 mb-2 text-xl bg-slate-300 w-fit cursor-pointer"
           onClick={profileToggling}
         >
-         {profile ?"hide profile":"see profile"}
+          {profile ? "Close Profile" : "See Profile"}
         </p>
         {profile && (
-          <div className="w-full h-auto py-4">
+          <div className="bg-white shadow-lg rounded-lg p-4 mb-4-auto py-4">
             <Profile singleTeacher={singleTeacher} />
           </div>
         )}
@@ -310,6 +332,34 @@ const TeacherDashboard = ({ userEmail }) => {
             </div>
           ))}
         </div>
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold mb-4">Students</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {allStudents.map((student) => (
+              <div
+                key={student.email}
+                className="bg-white shadow-lg rounded-lg p-4 flex justify-between items-center"
+              >
+                <span className="text-lg">
+                  {getStudentNameFromEmail(student.email)}
+                </span>
+                <button
+                  onClick={() => handleChatClick(student.email)}
+                  className="bg-blue-500 text-black p-2 rounded-md"
+                >
+                  Message
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+        {chatWith && (
+          <ChatList
+            title={`Chat with ${chatWith}`}
+            messages={initialMessages} // Initial messages can be passed here
+            userEmail={chatWith}
+          />
+        )}
       </div>
     </div>
   );

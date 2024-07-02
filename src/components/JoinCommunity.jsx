@@ -10,12 +10,11 @@ const JoinCommunity = () => {
 
         <div className="w-full md:w-[45%]">
           <h2 className="text-[20px] md:text-[30px] font-[700] text-textColor">
-            Let’s Study Together
+          Join the Learning Community
+
           </h2>
           <p className="text-[14px] md:text-[18px] font-[500] text-textColor mt-3 mb-8">
-            We aim to provide you the best quality education & scope for
-            betterment. Join now & make your own study group to grow together &
-            build community.
+          Our mission is to deliver top-quality education and opportunities for improvement. Enroll today, form your own study group, and thrive together while building a supportive community.
           </p>
           <Link to="/signup"><button className="py-3 px-6 bg-violet-700 rounded-md text-[#fff]">
             Register Now

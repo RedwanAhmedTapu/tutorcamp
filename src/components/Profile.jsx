@@ -1,15 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
+import ChatList from './ChatListForStudent'; // Make sure the path is correct
 
-const Profile = ( teachers ) => {
+const Profile = ({ allTeachers }) => {
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
 
+  const handleChatIconClick = (teacher) => {
+    if (selectedTeacher && selectedTeacher.email === teacher.email) {
+      setSelectedTeacher(null); // Close the chat if the same teacher is clicked again
+    } else {
+      setSelectedTeacher(teacher);
+    }
+  };
 
-    const {allTeachers}=teachers;
   if (!allTeachers || allTeachers.length === 0) {
     return <p className="text-center text-gray-500 mt-20">No teachers found.</p>;
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-12  h-[35rem] relative top-20 space-y-8 overflow-y-scroll">
+    <div className="max-w-6xl mx-auto p-4 md:p-12 h-[35rem] relative top-20 space-y-8 overflow-y-scroll">
       {allTeachers.map((singleTeacher, index) => (
         <div key={index} className="bg-white shadow-lg rounded-lg p-6">
           <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-4 mb-6">
@@ -18,13 +26,33 @@ const Profile = ( teachers ) => {
               alt="Profile"
               className="w-32 h-32 object-cover rounded-full border-4 border-gray-300"
             />
-            <div className="text-center md:text-left">
+            <div className="text-center md:text-left flex-1">
               <h2 className="text-2xl font-bold text-gray-800">
                 {singleTeacher.fname} {singleTeacher.lname}
               </h2>
               <p className="text-lg text-gray-600">{singleTeacher.email}</p>
               <p className="text-gray-600">{singleTeacher.userType}</p>
             </div>
+            <button
+              onClick={() => handleChatIconClick(singleTeacher)}
+              className="text-blue-500 hover:text-blue-700 focus:outline-none"
+              aria-label="Message"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M7 8h10M7 12h4m-6 8h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+            </button>
           </div>
           <div className="mb-6">
             <h3 className="text-xl font-semibold text-gray-800">Institution</h3>
@@ -67,6 +95,15 @@ const Profile = ( teachers ) => {
               )}
             </div>
           </div>
+          {selectedTeacher && selectedTeacher.email === singleTeacher.email && (
+            <div className="mt-6">
+              <ChatList
+                title={`Chat with ${singleTeacher.fname} ${singleTeacher.lname}`}
+                messages={[]} // Initial messages can be passed here
+                userEmail={singleTeacher.email}
+              />
+            </div>
+          )}
         </div>
       ))}
     </div>

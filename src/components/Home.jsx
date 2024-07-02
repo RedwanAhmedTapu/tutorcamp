@@ -12,6 +12,7 @@ import Instructor from "./Instructor";
 import CourseOutlet from "./CourseOutlet";
 import Support from "./Support";
 import JoinCommunity from "./JoinCommunity";
+import ChatApp from "./ChatListForStudent";
 import Footer from "./Footer";
 import CreateRoom from "./CreateRoom";
 import LLMApp from "./Qst";
@@ -73,16 +74,16 @@ const Home = () => {
         variants={containerVariants}
         ref={setRef}
       >
-        <motion.div variants={containerVariants}>
+        <motion.div className="flex flex-col items-start" variants={containerVariants}>
           <motion.h1
-            className="text-slate-900 font-[700] flex flex-col text-[35px] md:text-[60px] leading-[3rem] md:leading-[4.5rem]"
+            className="text-slate-900 font-[700] text-[2.5rem] md:text-[5rem] leading-[3rem] md:leading-[6.5rem] flex flex-col"
             variants={itemLeftVariants}
           >
             Welcome To{" "}
-            <span className="text-sky-500 flex">TutorCamp<p className="text-black">!</p></span>
+            <span className="text-sky-500 flex text-start">TutorCamp<p className="text-black">!</p></span>
           </motion.h1>
           <motion.p
-            className="text-[16px] md:text-[20px] font-[500] text-slate-900 mt-3 w-full md:w-[50%]"
+            className="text-[1.6rem] md:text-[2rem] font-[500] flex text-start text-slate-900 mt-3 w-full md:w-[60%]"
             variants={itemRightVariants}
           >
             Your trusted platform for easy learning. Learn right & Grow!
@@ -107,18 +108,13 @@ const Home = () => {
         <motion.img
           src={HeroSection}
           alt="hero image"
-          className="w-full md:w-[600px]"
+          className="w-full md:w-[40%]"
           variants={imgVariants}
         />
       </motion.header>
+      {/* <ChatApp/> */}
 
-      <div className="absolute left-[12%] top-64 -rotate-12 rounded-3xl bg-gradient-to-r from-violet-600 to-indigo-800 opacity-60 blur-3xl filter dark:opacity-30 lg:h-32 lg:w-[450px] dark:lg:block xl:h-24 xl:w-[10rem]"></div>
-      <div className="absolute left-80 top-64 -rotate-45 rounded-3xl bg-gradient-to-r from-violet-600 to-indigo-800 opacity-60 blur-3xl filter dark:opacity-30 lg:h-32 lg:w-[450px] dark:lg:block xl:h-24 xl:w-[15rem]"></div>
-      <div className="absolute right-32 top-64 -rotate-45 bg-gradient-to-r from-violet-600 to-indigo-800 opacity-60 blur-3xl filter dark:opacity-30 lg:h-32 lg:w-[450px] dark:lg:block xl:h-44 xl:w-[17.6rem] rounded-full"></div>
-
-
-      <CourseOutlet/>
-
+      <CourseOutlet />
       <Instructor />
       <Support />
       <JoinCommunity />

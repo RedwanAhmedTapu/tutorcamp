@@ -12,12 +12,11 @@ const CourseOutlet = () => {
       />
       <div className="w-full md:w-[40%]">
         <h3 className="text-[20px] md:text-[30px] font-[700] text-textColor">
-          You Can Learn, Wherever You Want
+        Learn Anywhere, Anytime
+
         </h3>
         <p className="text-[14px] md:text-[18px]  text-textColor font-[500] mt-3">
-          We provide you the  most experienced
-          instructors so that you can learn the lessons easily even in your own
-          house!
+        With our top-notch instructors, you can master any subject effortlessly from the comfort of your home!
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 my-8">

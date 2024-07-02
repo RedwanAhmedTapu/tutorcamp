@@ -58,7 +58,7 @@ const NavBar = ({ isMenuOpen, toggleMenu }) => {
     <div className="border-general w-screen h-16 fixed top-0 z-40 flex items-center justify-between  bg-slate-100 opacity-90 backdrop-blur-2xl transition-colors duration-500">
       <div className="flex items-center">
         <Link to="/">
-          <div className="w-32 ml-24 max-[1000px]:ml-4 h-16 flex items-center">
+          <div className="w-32 ml-12 max-[1000px]:ml-4 h-16 flex items-center">
             <div className="w-12 h-12 rounded-full overflow-hidden cursor-pointer">
               <img
                 src={Brain}

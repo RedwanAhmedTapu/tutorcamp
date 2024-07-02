@@ -9,24 +9,43 @@ const IntroVideos = () => {
   const [selectedCategory, setSelectedCategory] = useState("All categories");
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState("");
-  const subjects = ["Bangla", "English", "ICT", "Higher Math", "Chemistry", "Biology"];
+  const subjects = [
+    "Bangla",
+    "English",
+    "ICT",
+    "Higher Math",
+    "Chemistry",
+    "Biology",
+  ];
   const [circlePosition, setCirclePosition] = useState(0);
   const subjectRefs = useRef([]);
   const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
-    const universities = [...new Set(allTeachers.map((teacher) => teacher.institution))];
+    const universities = [
+      ...new Set(allTeachers.map((teacher) => teacher.institution)),
+    ];
     setFilteredCategories(universities);
   }, [allTeachers]);
 
   useEffect(() => {
-    const filtered = allTeachers.flatMap((teacher) =>
+    console.log("All Teachers:", allTeachers);
+    let filtered = allTeachers.flatMap((teacher) =>
       teacher.subjects
         .filter((subject) => subject.toLowerCase().includes(searchTerm))
         .map((subject) => ({ subject, videos: teacher.videos }))
     );
+
+    if (selectedSubject) {
+      filtered = filtered.filter(
+        (video) => video.subject === selectedSubject.toLowerCase()
+      );
+    }
+
     setFilteredVideos(filtered);
-  }, [searchTerm, allTeachers]);
+  }, [searchTerm, allTeachers, selectedSubject]);
+  console.log(filteredVideos);
+  console.log(selectedSubject);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value.toLowerCase());
@@ -53,12 +72,17 @@ const IntroVideos = () => {
     const newPosition = Math.min(Math.max(0, clientX - rect.left), rect.width);
     setCirclePosition(newPosition);
 
-    const subjectIndex = Math.round((newPosition / rect.width) * (subjects.length - 1));
+    const subjectIndex = Math.round(
+      (newPosition / rect.width) * (subjects.length - 1)
+    );
     const subjectDiv = subjectRefs.current[subjectIndex];
     if (subjectDiv) {
       const subjectRect = subjectDiv.getBoundingClientRect();
-      if (newPosition >= subjectRect.left - rect.left && newPosition <= subjectRect.right - rect.left) {
-        setSelectedSubject(subjects[subjectIndex]);
+      if (
+        newPosition >= subjectRect.left - rect.left &&
+        newPosition <= subjectRect.right - rect.left
+      ) {
+        setSelectedSubject(subjects[subjectIndex].replace(/\s+/g, ""));
       }
     }
   };
@@ -159,29 +183,46 @@ const IntroVideos = () => {
           ))}
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredVideos
-          .filter((video) => video.subject === selectedSubject)
-          .map((video, index) => (
-            <div key={index} className="p-4 bg-gray-800 rounded-lg shadow-lg">
-              <h2 className="text-lg font-semibold text-white mb-2">{video.subject}</h2>
-              {video.videos.map((vid, idx) => (
-                <div key={idx} className="mt-4">
-                  <h3 className="text-lg font-medium text-gray-200">{vid.title}</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4 ">
+        {filteredVideos.map((video, index) => (
+          <div
+            key={index}
+            className="p-4 bg-gray-800 rounded-lg shadow-lg flex_col_center gap-x-4 overflow-y-scroll"
+          >
+            <h2 className="text-lg  flex self-start font-semibold text-white mb-2">
+              {video.subject}
+            </h2>
+            {video.videos.length > 0 ? (
+              video.videos.map((vid, idx) => (
+                <div key={idx} className="mt-4 md:w-[80%] h-auto">
+                  <h3 className="text-lg font-medium text-gray-200">
+                    {vid.title}
+                  </h3>
                   <p className="text-sm text-gray-400">{vid.description}</p>
                   {/* Example of rendering iframe for embed link */}
-                  <div className="relative pb-56.25%">
+                  <div className="w-full h-64">
                     <iframe
-                      className="absolute top-0 left-0 w-full h-full rounded-lg"
+                      className="w-full h-full rounded-lg"
                       src={vid.embedLink}
-                      title={vid.title}
+                      title={`Video for ${video.subject}`}
+                      frameBorder="0"
                       allowFullScreen
-                    />
+                    ></iframe>
                   </div>
                 </div>
-              ))}
-            </div>
-          ))}
+              ))
+            ) : (
+              <p className="text-2xl text-slate-300 font-[500]">
+                {video.subject} related no video founds
+              </p>
+            )}
+          </div>
+        ))}
+        {filteredVideos.length === 0 && (
+          <p className="text-2xl text-slate-900 font-[500]">
+            No videos found for the selected filters
+          </p>
+        )}
       </div>
     </div>
   );
