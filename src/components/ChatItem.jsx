@@ -1,5 +1,11 @@
 import React from "react";
 
+const extractNameFromEmail = (email) => {
+  const localPart = email.split('@')[0];
+  const name = localPart.replace(/[^a-zA-Z]/g, '');
+  return name || 'Unknown';
+};
+
 const ChatItemAvatar = ({ userAvatar, postedOn }) => {
     console.log(postedOn)
   return (
@@ -20,13 +26,14 @@ const ChatItemText = ({ userName, text }) => {
 };
 
 const ChatItem = ({ message }) => {
-    const loggedUserImage=localStorage.getItem("loggedUser")?JSON.parse(localStorage.getItem("loggedUser")).image:null;
+  const userName = extractNameFromEmail(message.userEmail);
+  console.log(userName)
   return (
     <li className={`flex ${message.userEmail === "Dominic" ? "justify-start" : "justify-end"} mb-4`}>
-      {loggedUserImage && (
-        <ChatItemAvatar userAvatar={`${process.env.SERVER_URL}/${loggedUserImage}`} postedOn={message.postedOn} />
-      )}
-      <ChatItemText userName={message.userEmail} text={message.text} />
+       
+        <ChatItemAvatar userAvatar={`${process.env.SERVER_URL}/${message.userImage}`} postedOn={message.postedOn} />
+      
+      <ChatItemText userName={userName} text={message.text} />
     </li>
   );
 };

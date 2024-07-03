@@ -18,7 +18,7 @@ const ChatForm = ({ onNewMessagesPosted }) => {
         name="newMessage"
         value={newMessage}
         onChange={(e) => setNewMessage(e.target.value)}
-        className="flex-1 py-2 px-4 border border-gray-300 rounded-full focus:outline-none focus:border-blue-400"
+        className="flex-1 py-2 px-1 md:px-4 w-16 border border-gray-300 rounded-full focus:outline-none focus:border-blue-400"
         placeholder="Enter your text"
       />
       <button

@@ -8,17 +8,19 @@ import { useNavigate } from "react-router-dom";
 const ChatListForStudent = (recipient) => {
   const socket = useSocket();
   const [chatMessages, setChatMessages] = useState([]);
+  const [socketId, setSocketId] = useState("");
   const userEmail = localStorage.getItem("loggedUser")
     ? JSON.parse(localStorage.getItem("loggedUser")).email
+    : null;
+  const userImage = localStorage.getItem("loggedUser")
+    ? JSON.parse(localStorage.getItem("loggedUser")).image
     : null;
 
   const navigate = useNavigate();
 
-  console.log(recipient,"rec")
+  console.log(userEmail,"rec")
   useEffect(() => {
-    if (userEmail === "null") {
-        navigate("/login")
-    }
+   
     const fetchMessages = async () => {
       const response = await axiosInstance.get("/api/messages", {
         params: { userEmail, recipientEmail:recipient.userEmail },
@@ -26,8 +28,12 @@ const ChatListForStudent = (recipient) => {
       setChatMessages(response.data);
     };
     fetchMessages();
+    socket.emit("register",(userEmail));
 
-    socket.on("newMessage", (message) => {
+    socket.on("newMessage", (data) => {
+      const {newMessage:message,recipientSocketId}=data;
+      setSocketId(recipientSocketId);
+      console.log(data,"data")
       setChatMessages((prevMessages) => [...prevMessages, message]);
     });
 
@@ -52,17 +58,19 @@ const ChatListForStudent = (recipient) => {
         minute: '2-digit',
         second: '2-digit',
       }),
+      userImage
     };
     socket.emit("newMessage", newMessage);
   };
 
   return (
     <div className="bg-white rounded-lg shadow-md max-w-2xl mx-auto">
-      <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
+      <div className="flex flex-col  gay-y-2 justify-start  px-4 py-3 border-b border-gray-200">
         <h4 className="text-lg font-semibold">{recipient.title}</h4>
+        <h4 className="text-lg font-semibold">{socketId?<div className="bg-green-400 w-2 h-2 rounded-full text-start"></div>:<p className="text-xl text-red-500 font-[400]">inactive</p>}</h4>
       </div>
      
-      <div className="px-4 py-2 h-80 overflow-y-auto">
+      <div className="px-4 py-2 h-80 overflow-y-auto chatdivScroller">
         <ul className="conversation-list">
           {chatMessages.map((message) => (
             <ChatItem key={message._id} message={message} />

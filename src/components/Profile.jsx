@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
-import ChatList from './ChatListForStudent'; // Make sure the path is correct
+import React, { useState } from "react";
+import ChatList from "./ChatListForStudent"; // Make sure the path is correct
+import { useNavigate } from "react-router-dom";
 
 const Profile = ({ allTeachers }) => {
   const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const loggedUser = localStorage.getItem("loggedUser")
+    ? JSON.parse(localStorage.getItem("loggedUser")).email
+    : null;
+
+    const navigate=useNavigate();
 
   const handleChatIconClick = (teacher) => {
     if (selectedTeacher && selectedTeacher.email === teacher.email) {
@@ -13,7 +19,9 @@ const Profile = ({ allTeachers }) => {
   };
 
   if (!allTeachers || allTeachers.length === 0) {
-    return <p className="text-center text-gray-500 mt-20">No teachers found.</p>;
+    return (
+      <p className="text-center text-gray-500 mt-20">No teachers found.</p>
+    );
   }
 
   return (
@@ -34,7 +42,13 @@ const Profile = ({ allTeachers }) => {
               <p className="text-gray-600">{singleTeacher.userType}</p>
             </div>
             <button
-              onClick={() => handleChatIconClick(singleTeacher)}
+              onClick={() => {
+                if(!loggedUser){
+                  navigate("/login")
+
+                }
+                handleChatIconClick(singleTeacher);
+              }}
               className="text-blue-500 hover:text-blue-700 focus:outline-none"
               aria-label="Message"
             >
@@ -75,7 +89,10 @@ const Profile = ({ allTeachers }) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {singleTeacher.videos && singleTeacher.videos.length > 0 ? (
                 singleTeacher.videos.map((video, videoIndex) => (
-                  <div key={videoIndex} className="bg-white shadow-lg rounded-lg p-4">
+                  <div
+                    key={videoIndex}
+                    className="bg-white shadow-lg rounded-lg p-4"
+                  >
                     <h3 className="text-lg font-semibold text-gray-800 mb-2">
                       {video.subject}
                     </h3>
