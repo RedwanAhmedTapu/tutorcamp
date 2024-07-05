@@ -89,6 +89,25 @@
 .chatdivScroller::-moz-scrollbar-thumb:hover {
   background: #6e7ff3; /* Color when hovering over the scrollbar thumb */
 }
+/* Add this CSS to your styles file or inside a <style> tag in your component */
+
+.chat-item {
+  display: flex;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.chat-item:nth-child(odd) {
+  justify-content: flex-start;
+ 
+}
+
+.chat-item:nth-child(even) {
+  justify-content: flex-end;
+ 
+}
+
 
   .head_text {
     @apply mt-5 text-3xl font-extrabold leading-[1.15] bg-gradient-to-br from-slate-400 to-slate-50 bg-clip-text text-transparent text-center text-[3rem] min-[1000px]:text-6xl;

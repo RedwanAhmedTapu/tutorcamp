@@ -18,6 +18,7 @@ const TeacherDashboard = ({ userEmail }) => {
   const [profile, setProfile] = useState(false);
   const [chatWith, setChatWith] = useState(null);
   const [initialMessages, setInitialMessages] = useState([]);
+  const [unreadMessages, setUnreadMessages] = useState({});
 
   const { allTeachers, allStudents } = useUserContext().state;
   const loggedTeacher = JSON.parse(localStorage.getItem("loggedUser"));
@@ -36,6 +37,7 @@ const TeacherDashboard = ({ userEmail }) => {
           setProfilePic(teacher.profileImage);
           setIdImage(teacher.idImage);
           setUniversity(teacher.institution);
+          JSON.stringify({ ...loggedTeacher, image: teacher.profileImage });
         }
       }
       try {
@@ -50,6 +52,23 @@ const TeacherDashboard = ({ userEmail }) => {
 
     fetchVideos();
   }, [loggedTeacher.email, allTeachers]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("message", (message) => {
+      if (message.sender !== chatWith) {
+        setUnreadMessages((prev) => ({
+          ...prev,
+          [message.sender]: (prev[message.sender] || 0) + 1,
+        }));
+      }
+    });
+
+    return () => {
+      socket.off("message");
+    };
+  }, [socket, chatWith]);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -160,6 +179,10 @@ const TeacherDashboard = ({ userEmail }) => {
 
   const handleChatClick = async (studentEmail) => {
     setChatWith(studentEmail);
+    setUnreadMessages((prev) => ({
+      ...prev,
+      [studentEmail]: 0,
+    }));
 
     try {
       const response = await axiosInstance.get(
@@ -172,9 +195,9 @@ const TeacherDashboard = ({ userEmail }) => {
   };
 
   const getStudentNameFromEmail = (email) => {
-    const regex = /^[^@]+/;
-    const match = email.match(regex);
-    return match ? match[0] : email;
+    const localPart = email.split("@")[0];
+    const name = localPart.replace(/[^a-zA-Z]/g, "");
+    return name || "Unknown";
   };
 
   return (
@@ -334,32 +357,55 @@ const TeacherDashboard = ({ userEmail }) => {
         </div>
         <div className="mt-8">
           <h2 className="text-2xl font-bold mb-4">Students</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {allStudents.map((student) => (
-              <div
-                key={student.email}
-                className="bg-white shadow-lg rounded-lg p-4 flex justify-between items-center"
-              >
-                <span className="text-lg">
-                  {getStudentNameFromEmail(student.email)}
-                </span>
-                <button
-                  onClick={() => handleChatClick(student.email)}
-                  className="bg-blue-500 text-black p-2 rounded-md"
-                >
-                  Message
-                </button>
+          <div className="flex flex-col md:flex-row">
+            <div className="w-full md:w-1/4 bg-white shadow-lg p-4 mb-4 md:mb-0 md:mr-4">
+              <h3 className="text-xl font-bold mb-2">Connected Students</h3>
+              <div className="flex flex-col space-y-2">
+                {allStudents.map((student) => (
+                  <div
+                    key={student.email}
+                    className="flex justify-between items-center p-2 border border-gray-300 rounded-md"
+                  >
+                    {/* <div className="flex items-center space-x-2">
+                      <span className="relative inline-block">
+                        <img
+                          src={student.profileImage}
+                          alt={getStudentNameFromEmail(student.email)}
+                          className="w-8 h-8 rounded-full"
+                        />
+                        {unreadMessages[student.email] > 0 && (
+                          <span className="absolute bottom-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+                            {unreadMessages[student.email]}
+                          </span>
+                        )}
+                      </span>
+                      <span>{getStudentNameFromEmail(student.email)}</span>
+                    </div> */}
+                    <button
+                      onClick={() => handleChatClick(student.email)}
+                      className={`p-2 w-full rounded-md ${
+                        student.isActive
+                          ? "bg-green-500 text-white"
+                          : "bg-gray-500 text-white"
+                      }`}
+                    >
+                     {getStudentNameFromEmail(student.email)}
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+            <div className="flex-1 p-4">
+              {chatWith && (
+                <ChatList
+                  title={`Chat with ${getStudentNameFromEmail(chatWith)}`}
+                  messages={initialMessages} // Initial messages can be passed here
+                  userEmail={chatWith}
+                />
+              )}
+            </div>
           </div>
         </div>
-        {chatWith && (
-          <ChatList
-            title={`Chat with ${chatWith}`}
-            messages={initialMessages} // Initial messages can be passed here
-            userEmail={chatWith}
-          />
-        )}
       </div>
     </div>
   );

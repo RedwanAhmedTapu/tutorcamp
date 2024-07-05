@@ -1,6 +1,7 @@
 // axiosInstance.js
 import axios from 'axios';
 
+
 const SERVER_URL="https://tutorcampbackend.onrender.com"
 // const SERVER_URL="http://localhost:5000"
 
@@ -39,11 +40,11 @@ axiosInstance.interceptors.response.use(
   },
   error => {
     // Handle response error here
-    if (error.response && error.response.status === 401) {
+    if (error.response && error.response.status === 401 || error.response.status===400) {
       // Example: Handle unauthorized access
       // Redirect to login page or show a message
       console.error('Unauthorized, redirecting to login...');
-      window.location.href = '/login';
+      window.location.href = `#/login`;
     }
     return Promise.reject(error);
   }

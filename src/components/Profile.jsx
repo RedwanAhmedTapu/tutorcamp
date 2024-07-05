@@ -8,7 +8,7 @@ const Profile = ({ allTeachers }) => {
     ? JSON.parse(localStorage.getItem("loggedUser")).email
     : null;
 
-    const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const handleChatIconClick = (teacher) => {
     if (selectedTeacher && selectedTeacher.email === teacher.email) {
@@ -18,6 +18,10 @@ const Profile = ({ allTeachers }) => {
     }
   };
 
+  const handleCloseChat = () => {
+    setSelectedTeacher(null);
+  };
+
   if (!allTeachers || allTeachers.length === 0) {
     return (
       <p className="text-center text-gray-500 mt-20">No teachers found.</p>
@@ -25,9 +29,41 @@ const Profile = ({ allTeachers }) => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-12 h-[35rem] relative top-20 space-y-8 overflow-y-scroll">
+    <div className="max-w-6xl mx-auto p-2 md:p-12 h-[35rem] relative top-20 space-y-8 overflow-y-scroll">
+      
       {allTeachers.map((singleTeacher, index) => (
         <div key={index} className="bg-white shadow-lg rounded-lg p-6">
+          {selectedTeacher && selectedTeacher.email === singleTeacher.email && (
+            <div className="relative">
+              <div className="absolute top-0 right-0 mt-2 mr-2">
+                <button
+                  onClick={handleCloseChat}
+                  className="text-gray-500 hover:text-gray-900 text-sm focus:outline-none"
+                  aria-label="Close"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <ChatList
+                title={` ${singleTeacher.fname} ${singleTeacher.lname}`}
+                messages={[]} // Initial messages can be passed here
+                userEmail={singleTeacher.email}
+              />
+            </div>
+          )}
           <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-4 mb-6">
             <img
               src={`${process.env.SERVER_URL}/../${singleTeacher.profileImage}`}
@@ -43,9 +79,8 @@ const Profile = ({ allTeachers }) => {
             </div>
             <button
               onClick={() => {
-                if(!loggedUser){
-                  navigate("/login")
-
+                if (!loggedUser) {
+                  navigate("/login");
                 }
                 handleChatIconClick(singleTeacher);
               }}
@@ -112,15 +147,7 @@ const Profile = ({ allTeachers }) => {
               )}
             </div>
           </div>
-          {selectedTeacher && selectedTeacher.email === singleTeacher.email && (
-            <div className="mt-6">
-              <ChatList
-                title={`Chat with ${singleTeacher.fname} ${singleTeacher.lname}`}
-                messages={[]} // Initial messages can be passed here
-                userEmail={singleTeacher.email}
-              />
-            </div>
-          )}
+        
         </div>
       ))}
     </div>
