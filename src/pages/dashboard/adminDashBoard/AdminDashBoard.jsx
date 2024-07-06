@@ -31,7 +31,7 @@ const AdminDashboard = () => {
 
   const handleVerifyTeacher = async (email) => {
     try {
-      const response = await axiosInstance.post(`/admin/verify/teacher/${email}`);
+      const response = await axiosInstance.post(`/admin/verify-teacher/${email}`);
       const updatedTeacher = response.data;
       setAllTeachers(allTeachers.map((teacher) =>
         teacher.email === email ? updatedTeacher : teacher
@@ -52,7 +52,7 @@ const AdminDashboard = () => {
               <div key={index} className="bg-white shadow-lg rounded-lg p-6 mb-6">
                 <div className="flex flex-col items-center">
                   <img
-                    src={`http://localhost:5000/${student.profileImage}`}
+                    src={`${process.env.SERVER_URL}/${student.profileImage}`}
                     alt={student.name}
                     className="w-24 h-24 rounded-full mb-4"
                   />
@@ -74,7 +74,7 @@ const AdminDashboard = () => {
               <div key={index} className="bg-white shadow-lg rounded-lg p-6 mb-6">
                 <div className="flex flex-col items-center">
                   <img
-                    src={`http://localhost:5000/${teacher.profileImage}`}
+                    src={`${process.env.SERVER_URL}/${teacher.profileImage}`}
                     alt={teacher.name}
                     className="w-24 h-24 rounded-full mb-4"
                   />
@@ -82,7 +82,7 @@ const AdminDashboard = () => {
                   <p className="text-gray-700">{teacher.email}</p>
                   <p className="text-gray-500 mt-2">{teacher.institution}</p>
                   <img
-                    src={`http://localhost:5000/${teacher.idImage}`}
+                    src={`${process.env.SERVER_URL}/${teacher.idImage}`}
                     alt="ID"
                     className="w-full h-auto mt-4"
                   />

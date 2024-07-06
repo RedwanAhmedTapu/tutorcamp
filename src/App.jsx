@@ -8,7 +8,7 @@ import LobbyScreen from "./components/Vide";
 import RoomPage from "./components/Room";
 import VideoMeetingWrapper from "./pages/VideoMeeting";
 import TeacherDashboard from "./pages/dashboard/teacherDashBoard/TeacherDashBoard";
-import  StudentDashBoard from "./pages/dashboard/studentDashBoard/StudentDashBoard";
+import StudentDashBoard from "./pages/dashboard/studentDashBoard/StudentDashBoard";
 import AdminDashboard from "./pages/dashboard/adminDashBoard/AdminDashBoard";
 import SearchTeacher from "./pages/SearchTeacher";
 import IntroVideos from "./pages/IntroVideos";
@@ -17,33 +17,51 @@ import { SocketProvider } from "./context/SocketProvider";
 import { PeerProvider } from "./context/PeerProvider"; // Correct import
 import { UserProvider } from "./context/UserContext";
 import PrivateRoute from "./helper/PrivateRoute"; // Import PrivateRoute
+import ShowNavbar from "./helper/ShowNavbar";
 
 const App = () => {
   const base = "/";
-  
+
   return (
     <>
       <Router basename={base}>
-        <Nav />
+        <ShowNavbar>
+          <Nav />
+        </ShowNavbar>
         <SocketProvider>
           {/* Use PeerProvider, not peerProvider */}
           <UserProvider>
-          <PeerProvider> 
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/dashboard/teacher-dashoard" element={<PrivateRoute element={TeacherDashboard} />} />
-              <Route path="/dashboard/student-dashoard" element={<PrivateRoute element={StudentDashBoard} />} />
-              <Route path="/dashboard/admin-dashoard" element={<PrivateRoute element={AdminDashboard} />} />
-              <Route path="/teacher/search-teacher" element={<SearchTeacher/>} />
-              <Route path="/teacher/intro-videos" element={<IntroVideos/>} />
-              <Route path="/room/:roomId" element={ <RoomPage/> }/>
-              <Route path="/:roomId" element={<VideoMeetingWrapper/>} />
-              <Route path="/solution" element={<SolutionComponent />} />
-              <Route path="/sub/:subID" element={<ChapterWiseDescription />} />
-            </Routes>
-          </PeerProvider>
+            <PeerProvider>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/login" element={<Login />} />
+                <Route
+                  path="/dashboard/teacher-dashoard"
+                  element={<PrivateRoute element={TeacherDashboard} />}
+                />
+                <Route
+                  path="/dashboard/student-dashoard"
+                  element={<PrivateRoute element={StudentDashBoard} />}
+                />
+                <Route
+                  path="/dashboard/admin-dashoard"
+                  element={<PrivateRoute element={AdminDashboard} />}
+                />
+                <Route
+                  path="/teacher/search-teacher"
+                  element={<SearchTeacher />}
+                />
+                <Route path="/teacher/intro-videos" element={<IntroVideos />} />
+                <Route path="/room/:roomId" element={<RoomPage />} />
+                <Route path="/:roomId" element={<VideoMeetingWrapper />} />
+                <Route path="/solution" element={<SolutionComponent />} />
+                <Route
+                  path="/sub/:subID"
+                  element={<ChapterWiseDescription />}
+                />
+              </Routes>
+            </PeerProvider>
           </UserProvider>
         </SocketProvider>
       </Router>

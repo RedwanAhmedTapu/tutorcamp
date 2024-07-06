@@ -1,13 +1,27 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import Draggable from "react-draggable";
 import axiosInstance from "../../../helper/api/axiosInstance";
 import { useUserContext } from "../../../context/UserContext";
 import TotalTeacherStudent from "./component/TotalTeacherStudent";
+import CreateRoom from "../../../components/CreateRoom";
 import Profile from "./component/Profile";
 import ChatList from "../../../components/ChatListForTeacher";
 import { useSocket } from "../../../context/SocketProvider";
+import { FiRefreshCw } from "react-icons/fi";
+import { MdVideoCall } from "react-icons/md";
+
 
 const TeacherDashboard = ({ userEmail }) => {
-  const [subjects] = useState(["highermath", "biology"]);
+  const [subjects] = useState([
+    "highermath",
+    "biology",
+    "physics",
+    "chemistry",
+    "ict",
+    "bangla",
+    "english",
+  ]);
   const [selectedSubject, setSelectedSubject] = useState("");
   const [videoLink, setVideoLink] = useState("");
   const [videos, setVideos] = useState([]);
@@ -19,6 +33,7 @@ const TeacherDashboard = ({ userEmail }) => {
   const [chatWith, setChatWith] = useState(null);
   const [initialMessages, setInitialMessages] = useState([]);
   const [unreadMessages, setUnreadMessages] = useState({});
+  const [showCreateRoom, setShowCreateRoom] = useState(false);
 
   const { allTeachers, allStudents } = useUserContext().state;
   const loggedTeacher = JSON.parse(localStorage.getItem("loggedUser"));
@@ -53,22 +68,36 @@ const TeacherDashboard = ({ userEmail }) => {
     fetchVideos();
   }, [loggedTeacher.email, allTeachers]);
 
-  useEffect(() => {
-    if (!socket) return;
+  const fetchUnreadMessages = async () => {
+    try {
+      const unreadCounts = {};
 
-    socket.on("message", (message) => {
-      if (message.sender !== chatWith) {
-        setUnreadMessages((prev) => ({
-          ...prev,
-          [message.sender]: (prev[message.sender] || 0) + 1,
-        }));
+      for (const student of allStudents) {
+        const studentEmail = student.email;
+        const response = await axiosInstance.get("/api/messages", {
+          params: {
+            userEmail: studentEmail,
+            recipientEmail: loggedTeacher.email, //for unseen messages checking I am the reciever and student sender
+          },
+        });
+        console.log(response, "res");
+
+        const messages = response.data;
+        console.log(messages, "mfd");
+        unreadCounts[studentEmail] = messages.filter(
+          (msg) =>
+            msg.seen === false && msg.recipientEmail === loggedTeacher.email
+        ).length;
       }
-    });
 
-    return () => {
-      socket.off("message");
-    };
-  }, [socket, chatWith]);
+      setUnreadMessages(unreadCounts);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    fetchUnreadMessages();
+  }, [loggedTeacher.email, allStudents]);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -179,10 +208,6 @@ const TeacherDashboard = ({ userEmail }) => {
 
   const handleChatClick = async (studentEmail) => {
     setChatWith(studentEmail);
-    setUnreadMessages((prev) => ({
-      ...prev,
-      [studentEmail]: 0,
-    }));
 
     try {
       const response = await axiosInstance.get(
@@ -193,6 +218,15 @@ const TeacherDashboard = ({ userEmail }) => {
       console.error(error);
     }
   };
+
+  // Refresh handler
+  const handleRefresh = () => {
+    fetchUnreadMessages();
+  };
+  const handleShowCreateRoom = () => {
+    setShowCreateRoom(!showCreateRoom);
+  };
+
 
   const getStudentNameFromEmail = (email) => {
     const localPart = email.split("@")[0];
@@ -272,22 +306,33 @@ const TeacherDashboard = ({ userEmail }) => {
           </div>
           <button
             type="submit"
-            className="bg-blue-500 text-black p-2 rounded-md"
+            className="w-full bg-gray-500 text-white p-2 rounded-md"
           >
             Update Info
           </button>
         </form>
       </div>
       <div className="flex-1 p-4">
-        <div className="mb-4">
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <TotalTeacherStudent />
+        <div className="mb-4 flex flex-col md:flex-row justify-start items-center gap-x-4">
+          <h1 className="text-3xl text-gray-500 font-bold">Dashboard</h1>
+          <div className="flex  items-center">
+            <Link to="/">
+              <h1 className="text-[1rem] md:text-xl text-gray-500 font-[500] hover:text-indigo-400">
+                /home
+              </h1>
+            </Link>
+            <h1 className="text-[1rem] md:text-xl text-indigo-500 font-[500]">
+              /student/student-dashboard
+            </h1>
+          </div>
         </div>
+        <TotalTeacherStudent />
+
         <p
-          className="text-slate-900 p-4 mb-2 text-xl bg-slate-300 w-fit cursor-pointer"
+          className="text-slate-600 p-4 mb-2 text-xl font-[700]  hover:text-slate-800   w-fit cursor-pointer"
           onClick={profileToggling}
         >
-          {profile ? "Close Profile" : "See Profile"}
+          {profile ? "Close Profile" : "See public view"}
         </p>
         {profile && (
           <div className="bg-white shadow-lg rounded-lg p-4 mb-4-auto py-4">
@@ -302,13 +347,17 @@ const TeacherDashboard = ({ userEmail }) => {
               <select
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-full p-2 border gap-y-2  border-gray-300 rounded-md"
               >
                 <option value="" disabled>
                   Select a subject
                 </option>
                 {subjects.map((subject, index) => (
-                  <option key={index} value={subject}>
+                  <option
+                    key={index}
+                    value={subject}
+                    className="w-96 h-24 text-white text-2xl bg-gray-600 hover:bg-gray-500 shadow-lg"
+                  >
                     {subject}
                   </option>
                 ))}
@@ -325,7 +374,7 @@ const TeacherDashboard = ({ userEmail }) => {
             </div>
             <button
               type="submit"
-              className="bg-blue-500 text-black p-2 rounded-md"
+              className="w-64  bg-slate-500 text-white p-2 rounded-md"
             >
               Add Video
             </button>
@@ -360,53 +409,68 @@ const TeacherDashboard = ({ userEmail }) => {
           <div className="flex flex-col md:flex-row">
             <div className="w-full md:w-1/4 bg-white shadow-lg p-4 mb-4 md:mb-0 md:mr-4">
               <h3 className="text-xl font-bold mb-2">Connected Students</h3>
-              <div className="flex flex-col space-y-2">
-                {allStudents.map((student) => (
-                  <div
-                    key={student.email}
-                    className="flex justify-between items-center p-2 border border-gray-300 rounded-md"
-                  >
-                    {/* <div className="flex items-center space-x-2">
-                      <span className="relative inline-block">
-                        <img
-                          src={student.profileImage}
-                          alt={getStudentNameFromEmail(student.email)}
-                          className="w-8 h-8 rounded-full"
-                        />
-                        {unreadMessages[student.email] > 0 && (
-                          <span className="absolute bottom-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
-                            {unreadMessages[student.email]}
-                          </span>
-                        )}
-                      </span>
-                      <span>{getStudentNameFromEmail(student.email)}</span>
-                    </div> */}
-                    <button
-                      onClick={() => handleChatClick(student.email)}
-                      className={`p-2 w-full rounded-md ${
-                        student.isActive
-                          ? "bg-green-500 text-white"
-                          : "bg-gray-500 text-white"
-                      }`}
+              <ul>
+                <div className="flex flex-col space-y-2">
+                  {allStudents.map((student) => (
+                    <div
+                      key={student.email}
+                      className="flex justify-between items-center p-2 border border-gray-300 rounded-md"
                     >
-                     {getStudentNameFromEmail(student.email)}
-                    </button>
-                  </div>
-                ))}
-              </div>
+                      <button
+                        onClick={() => handleChatClick(student.email)}
+                        className={`p-2 w-full rounded-md ${
+                          student.isActive
+                            ? "bg-green-500 text-white"
+                            : "bg-gray-500 text-white"
+                        }`}
+                      >
+                        {getStudentNameFromEmail(student.email)}
+                      </button>
+                      {unreadMessages[student.email] > 0 && (
+                        <div className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                          {unreadMessages[student.email]}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </ul>
             </div>
             <div className="flex-1 p-4">
-              {chatWith && (
+              <div className="flex items-center gap-x-4">
+              <button onClick={handleRefresh} className="ml-4 text-slate-500">
+                <FiRefreshCw size={24} />
+              </button>
+              <MdVideoCall
+              size={24}
+              className="text-xl cursor-pointer"
+              onClick={handleShowCreateRoom}
+            />
+            </div>
+              
+              {chatWith ? (
                 <ChatList
                   title={`Chat with ${getStudentNameFromEmail(chatWith)}`}
                   messages={initialMessages} // Initial messages can be passed here
                   userEmail={chatWith}
                 />
+              ) : (
+                <p className="text-gray-500">
+                  Select a student to start chatting
+                </p>
               )}
             </div>
           </div>
         </div>
       </div>
+      {showCreateRoom && (
+        <Draggable>
+          <div className="absolute -bottom-[100%] self-center  md:top-[40%] md:left-[40%] w-64  md:w-96 h-96 flex justify-center items-center bg-black bg-opacity-50 ">
+           
+              <CreateRoom onClick={handleShowCreateRoom} />
+          </div>
+        </Draggable>
+      )}
     </div>
   );
 };

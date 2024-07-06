@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import axiosInstance from "../../../helper/api/axiosInstance";
 import { useUserContext } from "../../../context/UserContext";
 import Profile from "./components/Profile";
+import ChatList from "../../../components/ChatListForStudent";
+import { useSocket } from "../../../context/SocketProvider";
+import { FiRefreshCw } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 const StudentDashboard = ({ userEmail }) => {
   const [profilePic, setProfilePic] = useState(null);
@@ -9,10 +13,14 @@ const StudentDashboard = ({ userEmail }) => {
   const [university, setUniversity] = useState("");
   const [uploadError, setUploadError] = useState(null);
   const [profile, setProfile] = useState(false);
+  const [chatWith, setChatWith] = useState(null);
+  const [initialMessages, setInitialMessages] = useState([]);
+  const [unreadMessages, setUnreadMessages] = useState({});
 
-  const { allStudents } = useUserContext().state;
+  const { allStudents, allTeachers } = useUserContext().state;
   const loggedStudent = JSON.parse(localStorage.getItem("loggedUser"));
   const [singleStudent, setSingleStudent] = useState(null);
+  const socket = useSocket();
 
   useEffect(() => {
     const fetchStudent = async () => {
@@ -31,6 +39,35 @@ const StudentDashboard = ({ userEmail }) => {
 
     fetchStudent();
   }, [loggedStudent.email, allStudents]);
+
+  const fetchUnreadMessages = async () => {
+    try {
+      const unreadCounts = {};
+
+      for (const teacher of allTeachers) {
+        const teacherEmail = teacher.email;
+        const response = await axiosInstance.get("/api/messages", {
+          params: {
+            userEmail: teacherEmail,
+            recipientEmail: loggedStudent.email,
+          },
+        });
+        const messages = response.data;
+        unreadCounts[teacherEmail] = messages.filter(
+          (msg) =>
+            msg.seen === false && msg.recipientEmail === loggedStudent.email
+        ).length;
+      }
+
+      setUnreadMessages(unreadCounts);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUnreadMessages();
+  }, [loggedStudent.email, allTeachers]);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -91,9 +128,37 @@ const StudentDashboard = ({ userEmail }) => {
     setProfile(!profile);
   };
 
+  const handleChatClick = async (teacherEmail) => {
+    setChatWith(teacherEmail);
+    setUnreadMessages((prev) => ({
+      ...prev,
+      [teacherEmail]: 0,
+    }));
+
+    try {
+      const response = await axiosInstance.get(
+        `/chat/${loggedStudent.email}/${teacherEmail}`
+      );
+      setInitialMessages(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Refresh handler
+  const handleRefresh = () => {
+    fetchUnreadMessages();
+  };
+
+  const getTeacherNameFromEmail = (email) => {
+    const localPart = email.split("@")[0];
+    const name = localPart.replace(/[^a-zA-Z]/g, "");
+    return name || "Unknown";
+  };
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-slate-100">
-      <div className="w-full md:w-1/4 bg-slate-800 text-white shadow-lg p-4">
+      <div className="w-full md:w-1/4 bg-white shadow-lg p-4">
         <h2 className="text-2xl font-bold mb-4">Student Profile</h2>
         <form onSubmit={handleFormSubmit} className="space-y-4">
           <div className="relative w-40 h-40 mb-4 rounded-full overflow-hidden border-4 border-dashed border-gray-300 group">
@@ -102,7 +167,7 @@ const StudentDashboard = ({ userEmail }) => {
                 <img
                   src={
                     singleStudent && singleStudent.profileImage
-                      ? `${process.env.SERVER_URL}/../${singleStudent.profileImage}`
+                      ? `${process.env.SERVER_URL}/${singleStudent.profileImage}`
                       : URL.createObjectURL(profilePic)
                   }
                   alt="Profile Preview"
@@ -132,12 +197,12 @@ const StudentDashboard = ({ userEmail }) => {
           </div>
           {uploadError && <p className="text-red-500">{uploadError}</p>}
           <div>
-            <label className="block text-gray-300">ID Image:</label>
+            <label className="block text-gray-700">ID Image:</label>
             {idImage || (singleStudent && singleStudent.idImage) ? (
               <img
                 src={
                   singleStudent && singleStudent.idImage
-                    ? `${process.env.SERVER_URL}/../${singleStudent.idImage}`
+                    ? `${process.env.SERVER_URL}/${singleStudent.idImage}`
                     : URL.createObjectURL(idImage)
                 }
                 alt="ID Image"
@@ -153,37 +218,91 @@ const StudentDashboard = ({ userEmail }) => {
             )}
           </div>
           <div>
-            <label className="block text-gray-300">Institution Name:</label>
+            <label className="block text-gray-700">Institution Name:</label>
             <input
               type="text"
               value={university}
               onChange={handleUniversityChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-slate-700 text-white"
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             />
           </div>
           <button
             type="submit"
-            className="bg-blue-500 text-white p-2 rounded-md w-full"
+            className="bg-gray-500 w-full text-white p-2 rounded-md"
           >
             Update Info
           </button>
         </form>
       </div>
       <div className="flex-1 p-4">
-        <div className="mb-4">
-          <h1 className="text-3xl font-bold text-slate-900">Student Dashboard</h1>
+        <div className="mb-4 flex flex-col md:flex-row justify-start items-center gap-x-4">
+          <h1 className="text-3xl text-gray-500 font-bold">Dashboard</h1>
+          <div className="flex  items-center">
+            <Link to="/"><h1 className="text-[1rem] md:text-xl text-gray-500 font-[500] hover:text-indigo-400">/home</h1></Link>
+            <h1 className="text-[1rem] md:text-xl text-indigo-500 font-[500]">/student/student-dashboard</h1>
+          </div>
         </div>
         <p
-          className="text-slate-900 p-4 mb-2 text-xl hover:text-dark-blue cursor-pointer"
+          className="text-slate-600 p-4 mb-2 text-xl font-[700] hover:text-slate-800 w-fit cursor-pointer"
           onClick={profileToggling}
         >
-          {profile ? "Hide Profile" : "See Profile"}
+          {profile ? "Close Profile" : "See public view"}
         </p>
         {profile && (
-          <div className="w-full h-auto py-4">
+          <div className="bg-white shadow-lg rounded-lg p-4 mb-4-auto py-4">
             <Profile singleStudent={singleStudent} />
           </div>
         )}
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold mb-4">Teachers</h2>
+          <div className="flex flex-col md:flex-row">
+            <div className="w-full md:w-1/4 bg-white shadow-lg p-4 mb-4 md:mb-0">
+              <h2 className="text-2xl font-bold mb-4">Teacher List</h2>
+              <ul>
+                <div className="flex flex-col space-y-2">
+                  {allTeachers.map((teacher) => (
+                    <div
+                      key={teacher.email}
+                      className="flex justify-between items-center p-2 border border-gray-300 rounded-md"
+                    >
+                      <button
+                        onClick={() => handleChatClick(teacher.email)}
+                        className={`p-2 w-full rounded-md ${
+                          teacher.isActive
+                            ? "bg-green-500 text-white"
+                            : "bg-gray-500 text-white"
+                        }`}
+                      >
+                        {getTeacherNameFromEmail(teacher.email)}
+                      </button>
+                      {unreadMessages[teacher.email] > 0 && (
+                        <div className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                          {unreadMessages[teacher.email]}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </ul>
+            </div>
+            <div className="w-full md:w-3/4 bg-white shadow-lg p-4">
+              <button onClick={handleRefresh} className="ml-4 text-slate-500">
+                <FiRefreshCw size={24} />
+              </button>
+              {chatWith ? (
+                <ChatList
+                  title={`Chat with ${getTeacherNameFromEmail(chatWith)}`}
+                  messages={initialMessages} // Initial messages can be passed here
+                  userEmail={chatWith}
+                />
+              ) : (
+                <p className="text-gray-500">
+                  Select a teacher to start chatting
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

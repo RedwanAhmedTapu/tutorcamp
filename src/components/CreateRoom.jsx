@@ -84,7 +84,7 @@ const CreateRoom = () => {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center bg-slate-300 p-4">
+    <div className="w-full h-full flex flex-col items-center justify-center bg-slate-300 p-4">
       <h1 className="text-4xl font-bold mb-6">Video Conference</h1>
       <div className="mb-4 w-full max-w-md">
         <input
@@ -128,7 +128,7 @@ const CreateRoom = () => {
         isOpen={showModal}
         onRequestClose={closeModal}
         contentLabel="Room Created"
-        className="flex flex-col items-center justify-center bg-white p-4 rounded-md"
+        className="flex flex-col items-center justify-center bg-white p-4 rounded-md z-50"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
       >
         <h2 className="text-2xl font-bold mb-4">Room Created</h2>

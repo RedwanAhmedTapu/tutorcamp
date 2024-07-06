@@ -22,6 +22,7 @@ const ChatListForStudent = (receiver) => {
 
   const navigate = useNavigate();
   const notificationSoundRef = useRef(null);
+  console.log(receiver,"reciver")
 
   useEffect(() => {
     if (!userEmail) {
@@ -67,6 +68,8 @@ const ChatListForStudent = (receiver) => {
       );
     });
 
+    console.log(chatMessages,"chatmessages")
+
     // Cleanup event listeners on component unmount
     return () => {
       socket.emit("user-offline", userEmail);
@@ -87,6 +90,7 @@ const ChatListForStudent = (receiver) => {
   useEffect(() => {
     scrollToBottom();
   }, [chatMessages]);
+  console.log(userEmail,"use")
 
   // Mark messages as seen when user scrolls to bottom
   useEffect(() => {

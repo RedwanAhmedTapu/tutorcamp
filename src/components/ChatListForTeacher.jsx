@@ -23,6 +23,7 @@ const ChatListForTeacher = (receiver) => {
   const navigate = useNavigate();
   const notificationSoundRef = useRef(null); // Ref for audio element
 
+  console.log(receiver,"reciever")
   useEffect(() => {
     if (!userEmail) {
       navigate("/login");
@@ -73,6 +74,38 @@ const ChatListForTeacher = (receiver) => {
       chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
     }
   };
+
+  // Mark messages as seen when user scrolls to bottom
+  useEffect(() => {
+    const markMessagesAsSeen = () => {
+      if (chatScrollRef.current) {
+        const isAtBottom =
+          chatScrollRef.current.scrollTop +
+            chatScrollRef.current.clientHeight >=
+          chatScrollRef.current.scrollHeight - 10; // small buffer
+        if (isAtBottom) {
+          const unseenMessages = chatMessages.filter(
+            (msg) => msg.recipientEmail === userEmail && !msg.seen
+          );
+          console.log(unseenMessages)
+          if (unseenMessages.length > 0) {
+            unseenMessages.forEach((msg) => {
+              socket.emit("message-seen", msg._id);
+            });
+          }
+        }
+      }
+    };
+
+    chatScrollRef.current.addEventListener("scroll", markMessagesAsSeen);
+    return () => {
+      if (chatScrollRef.current) {
+        chatScrollRef.current.removeEventListener("scroll", markMessagesAsSeen);
+      }
+    };
+  }, [chatMessages, socket, userEmail]);
+
+  console.log(chatMessages,"teacherchat")
 
   // Scroll to bottom when chatMessages change
   useEffect(() => {

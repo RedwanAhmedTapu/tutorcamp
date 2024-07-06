@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ChatList from "./ChatListForStudent"; // Make sure the path is correct
 import { useNavigate } from "react-router-dom";
+import {FaRegMessage} from "react-icons/fa6"
 
 const Profile = ({ allTeachers }) => {
   const [selectedTeacher, setSelectedTeacher] = useState(null);
@@ -87,20 +88,7 @@ const Profile = ({ allTeachers }) => {
               className="text-blue-500 hover:text-blue-700 focus:outline-none"
               aria-label="Message"
             >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M7 8h10M7 12h4m-6 8h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
+             <FaRegMessage size={24}/>
             </button>
           </div>
           <div className="mb-6">
