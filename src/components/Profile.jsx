@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import ChatList from "./ChatListForStudent"; // Make sure the path is correct
 import { useNavigate } from "react-router-dom";
-import {FaRegMessage} from "react-icons/fa6"
+import {FaRegMessage} from "react-icons/fa6";
+import { GoUnverified } from "react-icons/go";
+import Verified from "../assets/verified-logo.jpg";
 
 const Profile = ({ allTeachers }) => {
   const [selectedTeacher, setSelectedTeacher] = useState(null);
@@ -78,6 +80,7 @@ const Profile = ({ allTeachers }) => {
               <p className="text-lg text-gray-600">{singleTeacher.email}</p>
               <p className="text-gray-600">{singleTeacher.userType}</p>
             </div>
+            <div className="flex gap-x-4 items-center">
             <button
               onClick={() => {
                 if (!loggedUser) {
@@ -89,7 +92,14 @@ const Profile = ({ allTeachers }) => {
               aria-label="Message"
             >
              <FaRegMessage size={24}/>
+            
             </button>
+            {singleTeacher.verified ? (
+               <div className="w-12 h-12 rounded-full"> <img src={Verified} className="w-full h-full object-cover" /></div>
+              ) : (
+              <div className="text-center text-red-500 font-bold">  <GoUnverified size={28}/></div>
+              )}
+              </div>
           </div>
           <div className="mb-6">
             <h3 className="text-xl font-semibold text-gray-800">Institution</h3>

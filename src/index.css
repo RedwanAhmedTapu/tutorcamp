@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+body{
+  overflow-x: hidden;
+}
 @layer components {
   .cardy {
     background-color: #fff;
@@ -107,6 +110,7 @@
   justify-content: flex-end;
  
 }
+
 
 
   .head_text {

@@ -155,6 +155,9 @@ const StudentDashboard = ({ userEmail }) => {
     const name = localPart.replace(/[^a-zA-Z]/g, "");
     return name || "Unknown";
   };
+  // sorting unreades messages
+  const sortedTeachers = allTeachers.sort((a, b) => unreadMessages[b.email] - unreadMessages[a.email]);
+ 
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-slate-100">
@@ -260,7 +263,7 @@ const StudentDashboard = ({ userEmail }) => {
               <h2 className="text-2xl font-bold mb-4">Teacher List</h2>
               <ul>
                 <div className="flex flex-col space-y-2">
-                  {allTeachers.map((teacher) => (
+                  {sortedTeachers.map((teacher) => (
                     <div
                       key={teacher.email}
                       className="flex justify-between items-center p-2 border border-gray-300 rounded-md"

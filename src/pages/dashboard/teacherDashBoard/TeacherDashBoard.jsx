@@ -1,3 +1,5 @@
+
+import HowToaddVideoImg from "../../../assets/howtoAddvideo.png";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Draggable from "react-draggable";
@@ -30,6 +32,7 @@ const TeacherDashboard = ({ userEmail }) => {
   const [university, setUniversity] = useState("");
   const [uploadError, setUploadError] = useState(null);
   const [profile, setProfile] = useState(false);
+  const [showvideoProcess, setShowvideoProcess] = useState(false);
   const [chatWith, setChatWith] = useState(null);
   const [initialMessages, setInitialMessages] = useState([]);
   const [unreadMessages, setUnreadMessages] = useState({});
@@ -205,6 +208,9 @@ const TeacherDashboard = ({ userEmail }) => {
   const profileToggling = () => {
     setProfile(!profile);
   };
+  const showVideoProcessToggling = () => {
+    setShowvideoProcess(!showvideoProcess);
+  };
 
   const handleChatClick = async (studentEmail) => {
     setChatWith(studentEmail);
@@ -233,6 +239,9 @@ const TeacherDashboard = ({ userEmail }) => {
     const name = localPart.replace(/[^a-zA-Z]/g, "");
     return name || "Unknown";
   };
+  // sorting student based on unreaded messages
+  const sortedStudents = allStudents.sort((a, b) => unreadMessages[b.email] - unreadMessages[a.email]);
+
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gray-100">
@@ -339,6 +348,17 @@ const TeacherDashboard = ({ userEmail }) => {
             <Profile singleTeacher={singleTeacher} />
           </div>
         )}
+        <p
+          className="text-slate-600 p-4 mb-2 text-xl font-[700]  hover:text-slate-800   w-fit cursor-pointer"
+          onClick={showVideoProcessToggling}
+        >
+                  {showvideoProcess ? "Close " : "see how to add video"}
+
+        </p>
+
+        {showvideoProcess&&<div className="bg-slate-800 shadow-lg rounded-lg p-4 mb-4-auto py-4">
+           <img src={HowToaddVideoImg} className="w-auto h-auto "/>
+          </div>}
         <div className="mb-4">
           <h2 className="text-2xl font-bold">Add Demo Video Link</h2>
           <form onSubmit={handleAddVideo} className="space-y-4">
@@ -411,7 +431,7 @@ const TeacherDashboard = ({ userEmail }) => {
               <h3 className="text-xl font-bold mb-2">Connected Students</h3>
               <ul>
                 <div className="flex flex-col space-y-2">
-                  {allStudents.map((student) => (
+                  {sortedStudents.map((student) => (
                     <div
                       key={student.email}
                       className="flex justify-between items-center p-2 border border-gray-300 rounded-md"
