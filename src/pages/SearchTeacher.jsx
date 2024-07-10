@@ -21,15 +21,24 @@ const SearchTeacher = () => {
   }, [allTeachers]);
 
   useEffect(() => {
-    const filtered = allTeachers.filter(
-      (teacher) =>
-        (selectedCategory === "All categories" || teacher.institution === selectedCategory) &&
-        (teacher.subjects.some((subject) => subject.toLowerCase().includes(searchTerm)) ||
-          teacher.institution.toLowerCase().includes(searchTerm)) &&
-        (selectedSubject === "" || teacher.subjects.includes(selectedSubject.toLowerCase()))
-    );
+    const filtered = allTeachers.filter((teacher) => {
+      // Check if the teacher belongs to the selected category
+      const categoryMatch = selectedCategory === "All categories" || teacher.institution === selectedCategory;
+  
+      // Check if the search term matches any of the teacher's subjects or the institution
+      const searchMatch = teacher.subjects.some((subject) => 
+        subject?.toLowerCase().includes(searchTerm.toLowerCase())
+      ) || teacher.institution?.toLowerCase().includes(searchTerm.toLowerCase());
+  
+      // Check if the teacher teaches the selected subject
+      const subjectMatch = selectedSubject === "" || teacher.subjects.map(s => s?.toLowerCase()).includes(selectedSubject.toLowerCase());
+  
+      return categoryMatch && searchMatch && subjectMatch;
+    });
+  
     setFilteredTeachers(filtered);
   }, [searchTerm, selectedCategory, selectedSubject, allTeachers]);
+  
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value.toLowerCase());

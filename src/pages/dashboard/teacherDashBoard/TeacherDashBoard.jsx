@@ -51,10 +51,7 @@ const TeacherDashboard = ({ userEmail }) => {
         );
         setSingleTeacher(teacher);
         if (teacher) {
-          setSelectedSubject(teacher.subjects);
-          setProfilePic(teacher.profileImage);
-          setIdImage(teacher.idImage);
-          setUniversity(teacher.institution);
+         
           JSON.stringify({ ...loggedTeacher, image: teacher.profileImage });
         }
       }
@@ -242,7 +239,7 @@ const TeacherDashboard = ({ userEmail }) => {
   // sorting student based on unreaded messages
   const sortedStudents = allStudents.sort((a, b) => unreadMessages[b.email] - unreadMessages[a.email]);
 
-
+console.log(selectedSubject,"sle")
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gray-100">
       <div className="w-full md:w-1/4 bg-white shadow-lg p-4">
@@ -341,7 +338,7 @@ const TeacherDashboard = ({ userEmail }) => {
           className="text-slate-600 p-4 mb-2 text-xl font-[700]  hover:text-slate-800   w-fit cursor-pointer"
           onClick={profileToggling}
         >
-          {profile ? "Close Profile" : "See public view"}
+          {profile ? <div className="w-44 h-16 flex_center bg-slate-700 text-sm text-white shadow-md rounded-sm">close profile</div> : <div className="w-48  h-16 flex_center bg-slate-700 text-sm text-white shadow-sm rounded-sm">see public view</div>}
         </p>
         {profile && (
           <div className="bg-white shadow-lg rounded-lg p-4 mb-4-auto py-4">
@@ -352,7 +349,7 @@ const TeacherDashboard = ({ userEmail }) => {
           className="text-slate-600 p-4 mb-2 text-xl font-[700]  hover:text-slate-800   w-fit cursor-pointer"
           onClick={showVideoProcessToggling}
         >
-                  {showvideoProcess ? "Close " : "see how to add video"}
+                  {showvideoProcess ? <div className="w-44  h-16 flex_center bg-slate-500 text-sm text-white shadow-md rounded-sm">Close </div> : <div className="w-48  h-16 flex_center bg-slate-500 text-sm text-white shadow-md rounded-sm">see how to add video</div>}
 
         </p>
 

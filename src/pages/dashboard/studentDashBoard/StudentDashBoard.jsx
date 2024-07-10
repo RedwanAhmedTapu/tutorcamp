@@ -249,7 +249,8 @@ const StudentDashboard = ({ userEmail }) => {
           className="text-slate-600 p-4 mb-2 text-xl font-[700] hover:text-slate-800 w-fit cursor-pointer"
           onClick={profileToggling}
         >
-          {profile ? "Close Profile" : "See public view"}
+                    {profile ? <div className="w-44 h-16 flex_center bg-slate-700 text-sm text-white shadow-md rounded-sm">close profile</div> : <div className="w-48  h-16 flex_center bg-slate-700 text-sm text-white shadow-sm rounded-sm">see public view</div>}
+
         </p>
         {profile && (
           <div className="bg-white shadow-lg rounded-lg p-4 mb-4-auto py-4">
