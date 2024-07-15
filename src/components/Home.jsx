@@ -16,11 +16,13 @@ import ChatApp from "./ChatListForStudent";
 import Footer from "./Footer";
 import CreateRoom from "./CreateRoom";
 import LLMApp from "./Qst";
+import ImageUpload from "./ImageUpload";
 
 const Home = () => {
   const controls = useAnimation();
   const [ref, setRef] = useState(null);
   const [inView, setInView] = useState(false);
+  const [solution, setSolution] = useState('');
 
   const containerVariants = {
     hidden: { opacity: 0, y: 80 },
@@ -120,6 +122,20 @@ const Home = () => {
       <JoinCommunity />
       <CardSpotlight />
       <CreateRoom />
+      { <div className="App">
+      <h1>Math Solver</h1>
+      <ImageUpload setSolution={setSolution} />
+      { <div className="flex flex-col items-center justify-center min-h-screen bg-gray-200">
+      <h1 className="text-4xl font-bold mb-8">Math Solver</h1>
+      <ImageUpload setSolution={setSolution} />
+      {solution && (
+        <div className="mt-8 p-4 bg-white rounded-md shadow-md">
+          <h2 className="text-2xl font-semibold mb-4">Solution:</h2>
+          <p className="text-lg">{solution}</p>
+        </div>
+      )}
+    </div>}
+    </div>}
       <Footer />
     </>
   );

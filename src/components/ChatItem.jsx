@@ -1,6 +1,6 @@
 import React from "react";
 import Avatar from "../assets/avatar.jpg";
-import Avata2 from "../assets/Avatar2.jpg"
+import Avatar2 from "../assets/Avatar2.jpg";
 
 const extractNameFromEmail = (email) => {
   const localPart = email.split("@")[0];
@@ -8,8 +8,7 @@ const extractNameFromEmail = (email) => {
   return name || "Unknown";
 };
 
-const ChatItemAvatar = ({ userAvatar, postedOn }) => {
-  // console.log(postedOn);
+const ChatItemAvatar = ({ userAvatar }) => {
   return (
     <div className="flex flex-col items-center">
       <img
@@ -17,63 +16,77 @@ const ChatItemAvatar = ({ userAvatar, postedOn }) => {
         alt="avatar"
         className="w-10 h-10 rounded-full mb-1"
       />
-      {/* <i className="text-xs  text-gray-500">{postedOn}</i> */}
     </div>
   );
 };
 
-const ChatItemText = ({ userName, text, postedOn,seen }) => {
+const ChatItemText = ({ userName, text, postedOn, seen }) => {
   return (
-    <div className="ml-3 bg-gray-100 p-3 rounded-lg shadow-md">
-      <div className="font-semibold text-sm text-gray-700">{userName}</div>
-      <div className="text-sm text-gray-700">{text}</div>
-      <div className="text-sm text-indigo-700">{postedOn}</div>
-      <div className="text-sm text-gray-700">{seen?"seen":""}</div>
+    <div className="ml-3 mt-2 bg-indigo-500 p-4 rounded-lg shadow-lg">
+      <div className="font-semibold text-xs text-cyan-200">You</div>
+      <div className="mt-1 text-sm text-white">{text}</div>
+      <div className="mt-2 text-xs text-slate-300">{postedOn}</div>
+      <div className="mt-1 text-xs text-green-400">{seen ? "Seen" : ""}</div>
     </div>
   );
 };
 
-const ChatItem = ({ message, index }) => {
-  // console.log(message);
-  const userName = extractNameFromEmail(message.userEmail);
-  // console.log(userName);
+const ChatItemTextReceiver = ({ userName, text, postedOn, seen }) => {
   return (
-    <li className="chat-item">
-      {index % 2 !== 0 && (
+    <div className="ml-3 mt-2 bg-orange-200 p-4 rounded-lg shadow-lg">
+      <div className="font-semibold text-xs text-slate-600">{userName}</div>
+      <div className="mt-1 text-sm text-white">{text}</div>
+      <div className="mt-2 text-xs text-teal-600">{postedOn}</div>
+      <div className="mt-1 text-xs text-slate-500">{seen ? "Seen" : ""}</div>
+    </div>
+  );
+};
+
+const ChatItem = ({ message }) => {
+  const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+  const loggedUserEmail = loggedUser ? loggedUser.email : null;
+
+  const isSender = message.userEmail === loggedUserEmail;
+
+  console.log("Logged User Email:", loggedUserEmail);
+  console.log("Message:", message);
+  console.log("Is Sender:", isSender);
+
+  const userName = extractNameFromEmail(isSender ? message.userEmail : message.userEmail);
+
+  return (
+    <li className={` flex gap-y-12 ${isSender ? "justify-end" : "justify-start"}`}>
+      {isSender ? (
         <>
-          <ChatItemText
-            userName={userName}
-            text={message.text}
-            postedOn={message.postedOn}
-            seen={message.seen}
-          />
-
-          <ChatItemAvatar
+            <ChatItemText
+              userName={userName}
+              text={message.text}
+              postedOn={message.postedOn}
+              seen={message.seen}
+            />
+          {/* <ChatItemAvatar
             userAvatar={
               message.userImage
-                ? `${process.env.SERVER_URL}/${message.userImage}`
+                ? `${process.env.REACT_APP_SERVER_URL}/${message.userImage}`
                 : Avatar
             }
-            postedOn={message.postedOn}
-          />
+          /> */}
         </>
-      )}
-      {index % 2 === 0 && (
+      ) : (
         <>
-          <ChatItemAvatar
+          {/* <ChatItemAvatar
             userAvatar={
               message.userImage
-                ? `${process.env.SERVER_URL}/${message.userImage}`
-                : Avata2
+                ? `${process.env.REACT_APP_SERVER_URL}/${message.userImage}`
+                : Avatar2
             }
-            postedOn={message.postedOn}
-          />
-          <ChatItemText
-            userName={userName}
-            text={message.text}
-            postedOn={message.postedOn}
-            seen={message.seen}
-          />
+          /> */}
+            <ChatItemTextReceiver
+              userName={userName}
+              text={message.text}
+              postedOn={message.postedOn}
+              seen={message.seen}
+            />
         </>
       )}
     </li>
