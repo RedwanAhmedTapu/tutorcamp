@@ -143,7 +143,7 @@ const ChatListForStudent = (receiver) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md max-w-4xl mx-auto">
+    <div className="bg-white rounded-lg shadow-md max-w-5xl mx-auto">
       <div className="flex flex-col justify-start px-4 py-3 border-b border-gray-200">
         <h4 className="text-lg font-semibold">{receiver.title}</h4>
         <div>

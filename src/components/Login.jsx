@@ -1,7 +1,10 @@
-import { AiFillApple, AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../helper/api/axiosInstance";
+import {
+  startAuthentication,
+} from "@simplewebauthn/browser";
 
 const Login = () => {
   const [user, setUser] = useState({
@@ -23,22 +26,17 @@ const Login = () => {
     event.preventDefault();
     try {
       const { email, password } = user;
-      console.log(email, password);
       if (email.trim() === "" || password.trim() === "") {
         alert("please fill all the data");
       } else {
         await axiosInstance
           .post("/user/login", user)
           .then((res) => {
-            console.log(res.data);
-
             if (res.data.message === "User not found") {
               alert("wrong password and email");
             } else {
               if (res.data.token) {
                 const { fname, lname, email, image, userType, token } = res.data;
-                console.log(image);
-                console.log({ fname, lname, email, userType });
                 localStorage.setItem(
                   "loggedUser",
                   JSON.stringify({ fname, lname, email, image, userType, token })
@@ -79,7 +77,6 @@ const Login = () => {
   };
 
   const handleVerificationAuth = async (otpData, userEmail) => {
-    console.log("codecamp", `${userEmail + otpData}`);
     try {
       const res = await fetch("/auth/googleAuth-verfication", {
         method: "POST",
@@ -90,8 +87,6 @@ const Login = () => {
       });
 
       const data = await res.json();
-      console.log(data);
-
       if (data.message === "Email verified successfully") {
         navigate(`/select-level?userEmail=${userEmail}`);
       } else if (data.message === "Invalid verification code") {
@@ -115,7 +110,6 @@ const Login = () => {
       });
 
       const data = await res.json();
-      console.log(data);
       if (data) {
         await handleVerificationAuth(data.message, userData.email);
       }
@@ -126,6 +120,53 @@ const Login = () => {
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
+  const handleBiometricAuth = async () => {
+    try {
+      const optionsResponse = await axiosInstance.get(`/webauthn/auth-options?email=${user.email}`);
+      const options = optionsResponse.data;
+  
+      // console.log("Authentication Options:", options);
+  
+      if (!options || !options.challenge || !options.allowCredentials) {
+        throw new Error("Invalid authentication options");
+      }
+  
+      const authResponse = await startAuthentication(options);
+  
+      // console.log("Authentication Response:", authResponse);
+  
+      const verificationResponse = await axiosInstance.post(
+        "/webauthn/auth-verify",
+        { email: user.email, ...authResponse }
+      );
+
+      console.log(verificationResponse)
+  
+      if (verificationResponse.data && verificationResponse.data.verified) {
+        
+          const { fname, lname, email, image, userType, token } = verificationResponse.data;
+          localStorage.setItem(
+            "loggedUser",
+            JSON.stringify({ fname, lname, email, image, userType, token })
+          );
+
+          if (userType === "teacher") {
+            navigate("/dashboard/teacher-dashoard");
+          } else if (userType === "student") {
+            navigate("/dashboard/student-dashoard");
+          } else if (email === "admin@gmail.com") {
+            navigate("/dashboard/admin-dashoard");
+          } else {
+            navigate(`/login`);
+          }
+      } else {
+        alert("Biometric authentication failed");
+      }
+    } catch (error) {
+      console.error("Error during biometric authentication:", error);
+    }
   };
 
   return (
@@ -219,19 +260,19 @@ const Login = () => {
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
-              {/* <span className="px-2 bg-white text-gray-500">or</span> */}
+              <span className="px-2 bg-white text-gray-500">or</span>
             </div>
           </div>
 
-          {/* <div className="mt-6">
+          <div className="mt-6">
             <button
               type="button"
+              onClick={handleBiometricAuth}
               className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
-              <AiFillApple className="w-5 h-5 mr-2" />
-              Sign in with Apple
+              Use Biometric Authentication
             </button>
-          </div> */}
+          </div>
         </div>
       </div>
     </div>

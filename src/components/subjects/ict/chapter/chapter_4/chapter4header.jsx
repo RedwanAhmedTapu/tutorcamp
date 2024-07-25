@@ -1,5 +1,4 @@
 import { Element } from "react-scroll";
-
 import { FaHtml5 } from "react-icons/fa";
 import HTMLStructure from "./HTMLStructure";
 import HTMLElementsAndSyntax from "./HTMLElementsAndSyntax";

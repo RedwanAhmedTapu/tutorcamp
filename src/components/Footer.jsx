@@ -11,7 +11,7 @@ import {
 
 const Footer = () => {
   return (
-    <footer className="w-full max-w-[1600px] mx-auto px-6 bg-slate-900 py-12 text-[#fff]">
+    <footer className="w-full max-w-[1600px] mx-auto px-6 bg-slate-900 dark:bg-[#130e2e] py-12 text-[#fff]">
       <div className="flex justify-between gap-12 flex-col md:flex-row">
         <div className="w-full md:w-[30%]">
          <div className="flex items-center text-start pr-8"><img src={FooterImage} alt="logo" className="w-[3rem]" /> <span className="text-xl text-cyan-500">TutorCamp</span></div> 

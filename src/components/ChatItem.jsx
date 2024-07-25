@@ -22,7 +22,7 @@ const ChatItemAvatar = ({ userAvatar }) => {
 
 const ChatItemText = ({ userName, text, postedOn, seen }) => {
   return (
-    <div className="ml-3 mt-2 bg-indigo-500 p-4 rounded-lg shadow-lg">
+    <div className="ml-3 md:w-96 mt-2 bg-indigo-500 p-4 rounded-lg shadow-lg">
       <div className="font-semibold text-xs text-cyan-200">You</div>
       <div className="mt-1 text-sm text-white">{text}</div>
       <div className="mt-2 text-xs text-slate-300">{postedOn}</div>
@@ -33,7 +33,7 @@ const ChatItemText = ({ userName, text, postedOn, seen }) => {
 
 const ChatItemTextReceiver = ({ userName, text, postedOn, seen }) => {
   return (
-    <div className="ml-3 mt-2 bg-orange-200 p-4 rounded-lg shadow-lg">
+    <div className="md:ml-3 md:w-96 mt-2 bg-orange-200 p-4 rounded-lg shadow-lg">
       <div className="font-semibold text-xs text-slate-600">{userName}</div>
       <div className="mt-1 text-sm text-white">{text}</div>
       <div className="mt-2 text-xs text-teal-600">{postedOn}</div>

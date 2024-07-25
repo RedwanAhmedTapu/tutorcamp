@@ -12,9 +12,9 @@ const Instructor = () => {
   const { allTeachers } = useUserContext().state;
 
   return (
-    <section className="w-full my-8 md:my-16 bg-[#F1F7FF] overflow-hidden">
+    <section className="w-full my-8 md:my-16 bg-[#F1F7FF] dark:bg-[#130e2e] overflow-hidden">
       <div className="w-full max-w-[1600px] mx-auto px-6 py-12 md:py-24">
-        <h2 className="text-[20px] md:text-[30px] text-textColor font-[700] text-center">
+        <h2 className="text-[20px] md:text-[30px] text-textColor font-[700] text-center dark:text-yellow-300">
            Instructors
         </h2>
 
@@ -70,7 +70,7 @@ const Instructor = () => {
         </div>
 
         <div className="text-center mt-12">
-          <button className="py-3 px-6 bg-violet-700 rounded-md text-[#fff]">
+          <button className="py-3 px-6 bg-violet-700 dark:bg-amber-500 rounded-md text-[#fff]">
             View More
           </button>
         </div>

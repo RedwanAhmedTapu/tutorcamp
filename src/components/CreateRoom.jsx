@@ -84,8 +84,8 @@ const CreateRoom = () => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center bg-slate-300 p-4">
-      <h1 className="text-4xl font-bold mb-6">Video Conference</h1>
+    <div className="w-full h-full flex flex-col items-center justify-center bg-slate-300 dark:bg-[#130e2e] p-4">
+      <h1 className="text-4xl font-bold mb-6 dark:text-white">Video Conference</h1>
       <div className="mb-4 w-full max-w-md">
         <input
           type="email"
@@ -93,7 +93,7 @@ const CreateRoom = () => {
           placeholder="Enter your email"
           onChange={(e) => setEmail(e.target.value)}
           value={email}
-          className="w-full p-2 mb-4 border border-gray-300 rounded-md"
+          className="w-full p-2 mb-4 border dark:bg-white border-gray-300 rounded-md"
           disabled
         />
         <button

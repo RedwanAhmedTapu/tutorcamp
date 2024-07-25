@@ -123,13 +123,13 @@ const CardSpotlight = () => {
 
   return (
     <div
-      className="flex flex-row items-center justify-center w-full h-screen max-[750px]:h-[30rem]  max-[750px]:w-screen bg-slate-200 max-[750px]:px-2 px-8 flex-wrap max-[999px]:px-2"
+      className="flex flex-row items-center justify-center w-full h-screen max-[750px]:h-[30rem]  max-[750px]:w-screen bg-slate-200 dark:bg-[#130e2e] max-[750px]:px-2 px-8 flex-wrap max-[999px]:px-2"
       ref={containerRef}
     >
       {cardsData.map((card, index) => (
         <div
           key={index}
-          className="relative w-[91%] h-[70%] max-[750px]:w-full   rounded-xl p-px before:absolute before:w-32 before:h-32 before:-left-40 before:-top-40 before:bg-slate-400 before:rounded-full before:opacity-0 before:pointer-events-none before:transition-opacity before:duration-500 before:translate-x-[var(--mouse-x)] before:translate-y-[var(--mouse-y)] before:group-hover:opacity-100 before:z-10 before:blur-[100px] after:absolute after:w-44 after:h-44 after:-left-48 after:-top-48 after:bg-indigo-500 after:rounded-full after:opacity-0 after:pointer-events-none after:transition-opacity after:duration-500 after:translate-x-[var(--mouse-x)] after:translate-y-[var(--mouse-y)] after:hover:opacity-10 after:z-30 after:blur-[100px] overflow-hidden space-x-2"
+          className="relative w-[91%] h-[70%] max-[750px]:w-full   rounded-xl p-px before:absolute before:w-32 before:h-32 before:-left-40 before:-top-40 before:bg-slate-900 before:rounded-full before:opacity-0 before:pointer-events-none before:transition-opacity before:duration-500 before:translate-x-[var(--mouse-x)] before:translate-y-[var(--mouse-y)] before:group-hover:opacity-100 before:z-10 before:blur-[100px] after:absolute after:w-44 after:h-44 after:-left-48 after:-top-48 after:bg-indigo-600 after:rounded-full after:opacity-0 after:pointer-events-none after:transition-opacity after:duration-500 after:translate-x-[var(--mouse-x)] after:translate-y-[var(--mouse-y)] after:hover:opacity-80 after:z-30 after:blur-[150px] overflow-hidden space-x-2"
         >
           <div className="relative bg-slate-900 w-full h-full   rounded-[inherit] z-20 overflow-hidden">
             <div

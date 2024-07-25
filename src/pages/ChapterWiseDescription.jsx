@@ -1,16 +1,20 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams,useLocation } from "react-router-dom";
 import { Link } from "react-scroll";
 import { AiFillCaretRight } from "react-icons/ai";
 import { CiMenuFries } from "react-icons/ci";
 import { menuItems } from "../data/chapterList";
 import Ict from "./subject/Ict";
+import Javascript from "./subject/Javascript";
+import Github from "./subject/Github";
 import HtmlCssCodeEditor from "../components/HtmlCssCodeEditor";
 
 const ChapterwiseDescription = () => {
   const { subID } = useParams();
   const [openChapter, setOpenChapter] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  const location=useLocation();
 
   const selectedMenuItems = menuItems.filter((menu) => menu.title === subID);
 
@@ -216,12 +220,13 @@ const ChapterwiseDescription = () => {
       
       </div>
       <div
-          className={` fixed top-16  max-[999px]:w-[100%] w-[80%]      h-full right-0 bg-slate-950 overflow-scroll ${
+          className={` fixed top-16 max-[999px]:w-[100%] w-[80%] h-full right-0 bg-slate-950 overflow-scroll ${
             isSidebarOpen ? '' : 'w-full  h-full ml-0  '
           }`}
           id="content-container"
         >
-          <Ict />
+          
+         {location.pathname=="/sub/ICT"?<Ict/>:location.pathname=="/sub/javascript"?<Javascript/>:<Github/>}
         </div>
     </>
   );

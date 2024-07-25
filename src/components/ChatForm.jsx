@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { FiSend } from "react-icons/fi";
 
 const ChatForm = ({ onNewMessagesPosted }) => {
   const [newMessage, setNewMessage] = useState("");
@@ -23,9 +24,9 @@ const ChatForm = ({ onNewMessagesPosted }) => {
       />
       <button
         type="submit"
-        className="px-6 py-2 rounded-full bg-indigo-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
+        className="px-6 py-2 text-lg  text-indigo-600  hover:text-indigo-500 "
       >
-        Send
+        <FiSend/>
       </button>
     </form>
   );

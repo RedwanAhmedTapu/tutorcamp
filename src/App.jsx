@@ -18,6 +18,7 @@ import { PeerProvider } from "./context/PeerProvider"; // Correct import
 import { UserProvider } from "./context/UserContext";
 import PrivateRoute from "./helper/PrivateRoute"; // Import PrivateRoute
 import ShowNavbar from "./helper/ShowNavbar";
+import Footer from "./components/Footer";
 
 const App = () => {
   const base = "/";
@@ -64,6 +65,9 @@ const App = () => {
             </PeerProvider>
           </UserProvider>
         </SocketProvider>
+        <ShowNavbar>
+          <Footer />
+        </ShowNavbar>
       </Router>
     </>
   );

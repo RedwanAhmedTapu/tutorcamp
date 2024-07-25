@@ -3,6 +3,7 @@ import { AiFillApple, AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import CountdownTimer from "./CountdownTimer";
 import axiosInstance from "../helper/api/axiosInstance";
+import { startRegistration } from "@simplewebauthn/browser";
 
 const Signup = () => {
   const [user, setUser] = useState({
@@ -37,6 +38,38 @@ const Signup = () => {
       });
     }
   };
+  // biometric registration
+  const handleBiometricReg = async () => {
+    try {
+      const optionsResponse = await axiosInstance.get(`/webauthn/reg-options?email=${user.email}`);
+      const options = optionsResponse.data;
+  
+      console.log("Registration Options:", options);
+  
+      // Check if options contain the necessary fields
+      if (!options || !options.challenge || !options.user || !options.user.id) {
+        throw new Error("Invalid registration options");
+      }
+  
+      const regResponse = await startRegistration(options);
+  
+      console.log("Registration Response:", regResponse);
+  
+      const verificationResponse = await axiosInstance.post(
+        "/webauthn/reg-verify",
+        { email: user.email, ...regResponse }
+      );
+  
+      if (verificationResponse.data && verificationResponse.data.verified) {
+        alert("Biometric registration successful");
+      } else {
+        alert("Biometric registration failed");
+      }
+    } catch (error) {
+      console.error("Error during biometric registration:", error);
+    }
+  };
+  
 
   const handleSubmit = async () => {
     try {
@@ -55,6 +88,7 @@ const Signup = () => {
         const data = response.data;
 
         if (data.message === "User registered successfully") {
+          await handleBiometricReg();
           navigate("/login");
         } else {
           alert(data.message);
@@ -147,11 +181,11 @@ const Signup = () => {
   return (
     <>
       <div
-        className={`flex items-center justify-center w-full h-screen absolute top-10 bottom-0 bg-white ${
+        className={`flex items-center justify-center w-full h-screen sm:p-0 p-4  bg-white dark:bg-[#130e2e] ${
           isOtp ? "blur" : ""
         }`}
       >
-        <div className="w-full max-w-2xl flex flex-col self-center h-full px-6 py-10 bg-white rounded-lg shadow-md gap-y-6">
+        <div className=" w-full  md:w-[80%] min-h-min flex flex-col self-center  px-6 py-10 bg-white  rounded-lg shadow-md gap-y-6">
           <div className="flex flex-col md:flex-row justify-between w-full gap-x-4">
             <div className="flex flex-col gap-y-1 w-full md:w-[50%]">
               <label className="text-gray-800">First Name</label>
@@ -248,7 +282,7 @@ const Signup = () => {
             </div>
           )}
           <div className="flex flex-col gap-y-8">
-            <div className="flex_center w-full h-12 gap-x-2 border-2 border-gray-300 rounded-lg">
+            {/* <div className="flex_center w-full h-12 gap-x-2 border-2 border-gray-300 rounded-lg"> */}
               {/* Google OAuth or other authentication methods can be added here */}
             </div>
             {/* <div className="flex_center w-full h-12 gap-x-2 border-2 border-gray-300 rounded-lg">
@@ -257,7 +291,7 @@ const Signup = () => {
                 &nbsp;Sign In With Apple
               </p>
             </div> */}
-          </div>
+          {/* </div> */}
           <div className="flex justify-between">
             <div className="flex_center gap-x-2">
               <input

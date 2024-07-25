@@ -1,23 +1,17 @@
-import {useState,useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import ChatList from "../../../../components/ChatListForStudent";
 import { useUserContext } from "../../../../context/UserContext";
 import axiosInstance from "../../../../helper/api/axiosInstance";
-
-
 import { FiRefreshCw } from "react-icons/fi";
 
-
-
-const TeacherList = ({userEmail}) => {
-    const [chatWith, setChatWith] = useState(null);
+const TeacherList = ({ userEmail }) => {
+  const [chatWith, setChatWith] = useState(null);
   const [initialMessages, setInitialMessages] = useState([]);
   const [unreadMessages, setUnreadMessages] = useState({});
-
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { allStudents, allTeachers } = useUserContext().state;
   const loggedStudent = JSON.parse(localStorage.getItem("loggedUser"));
-
-
 
   const fetchUnreadMessages = async () => {
     try {
@@ -47,6 +41,7 @@ const TeacherList = ({userEmail}) => {
   useEffect(() => {
     fetchUnreadMessages();
   }, [loggedStudent.email, allTeachers]);
+
   const handleChatClick = async (teacherEmail) => {
     setChatWith(teacherEmail);
     setUnreadMessages((prev) => ({
@@ -64,7 +59,6 @@ const TeacherList = ({userEmail}) => {
     }
   };
 
-  // Refresh handler
   const handleRefresh = () => {
     fetchUnreadMessages();
   };
@@ -74,64 +68,76 @@ const TeacherList = ({userEmail}) => {
     const name = localPart.replace(/[^a-zA-Z]/g, "");
     return name || "Unknown";
   };
-  // sorting unreades messages
+
   const sortedTeachers = allTeachers.sort((a, b) => unreadMessages[b.email] - unreadMessages[a.email]);
- 
+
+  const filteredTeachers = sortedTeachers.filter((teacher) =>
+    getTeacherNameFromEmail(teacher.email)
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
   return (
     <>
       <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-4">Teachers</h2>
-          <div className="flex flex-col md:flex-row">
-            <div className="w-full md:w-1/4 bg-white shadow-lg p-4 mb-4 md:mb-0">
-              <h2 className="text-2xl font-bold mb-4">Teacher List</h2>
-              <ul>
-                <div className="flex flex-col space-y-2">
-                  {sortedTeachers.map((teacher) => (
-                    <div
-                      key={teacher.email}
-                      className="flex justify-between items-center p-2 border border-gray-300 rounded-md"
+        <h2 className="text-2xl font-bold mb-4">Teachers</h2>
+        <div className="flex flex-col md:flex-row">
+          <div className="w-full md:w-1/4 bg-white shadow-lg p-4 mb-4 md:mb-0">
+            <h2 className="text-2xl font-bold mb-4">Teacher List</h2>
+            <input
+              type="text"
+              placeholder="Search teachers..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full p-2 mb-4 border rounded"
+            />
+            <ul>
+              <div className="flex flex-col space-y-2">
+                {filteredTeachers.map((teacher) => (
+                  <div
+                    key={teacher.email}
+                    className="flex justify-between items-center p-2 border border-gray-300 rounded-md"
+                  >
+                    <button
+                      onClick={() => handleChatClick(teacher.email)}
+                      className={`p-2 w-full rounded-md ${
+                        teacher.isActive
+                          ? "bg-green-500 text-white"
+                          : "bg-green-500 text-white"
+                      }`}
                     >
-                      <button
-                        onClick={() => handleChatClick(teacher.email)}
-                        className={`p-2 w-full rounded-md ${
-                          teacher.isActive
-                            ? "bg-green-500 text-white"
-                            : "bg-gray-500 text-white"
-                        }`}
-                      >
-                        {getTeacherNameFromEmail(teacher.email)}
-                      </button>
-                      {unreadMessages[teacher.email] > 0 && (
-                        <div className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                          {unreadMessages[teacher.email]}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </ul>
-            </div>
-            <div className="w-full md:w-3/4 bg-white shadow-lg p-4">
-              <button onClick={handleRefresh} className="ml-4 text-slate-500">
-                <FiRefreshCw size={24} />
-              </button>
-              {chatWith ? (
-                <ChatList
-                  title={`Chat with ${getTeacherNameFromEmail(chatWith)}`}
-                  messages={initialMessages} // Initial messages can be passed here
-                  userEmail={chatWith}
-                />
-              ) : (
-                <p className="text-gray-500">
-                  Select a teacher to start chatting
-                </p>
-              )}
-            </div>
+                      {getTeacherNameFromEmail(teacher.email)}
+                    </button>
+                    {unreadMessages[teacher.email] > 0 && (
+                      <div className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                        {unreadMessages[teacher.email]}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </ul>
+          </div>
+          <div className="w-full md:w-3/4 bg-white shadow-lg p-4">
+            <button onClick={handleRefresh} className="ml-4 text-slate-500">
+              <FiRefreshCw size={24} />
+            </button>
+            {chatWith ? (
+              <ChatList
+                title={` ${getTeacherNameFromEmail(chatWith)}`}
+                messages={initialMessages}
+                userEmail={chatWith}
+              />
+            ) : (
+              <p className="text-gray-500">
+                Select a teacher to start chatting
+              </p>
+            )}
           </div>
         </div>
-    
+      </div>
     </>
-  )
-}
+  );
+};
 
-export default TeacherList
+export default TeacherList;

@@ -28,14 +28,23 @@ const ImageUpload = ({ setSolution }) => {
   const uploadImage = async (imageBlob) => {
     const formData = new FormData();
     formData.append('file', imageBlob, 'cropped-image.png');
-
+  
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value); // Log formData entries
+    }
+  
     try {
-      const response = await axios.post('/api/upload', formData);
+      const response = await axios.post('http://localhost:5000/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       setSolution(response.data.solution);
     } catch (error) {
       console.error('Error uploading image:', error);
     }
   };
+  
 
   const getCroppedImage = async () => {
     const canvas = document.createElement('canvas');
@@ -74,16 +83,16 @@ const ImageUpload = ({ setSolution }) => {
   };
 
   return (
-    <div className="flex flex-col items-center p-4 bg-gray-100 rounded-md shadow-md">
+    <div className="flex flex-col items-center p-4 bg-gray-100 dark:bg-[#130e2e] rounded-md shadow-md">
       {!image && (
         <>
-          <div {...getRootProps()} className="p-4 bg-white border border-dashed border-gray-300 rounded-md cursor-pointer">
+          <div {...getRootProps()} className="p-4 bg-white dark:bg-[#130e2e] border border-dashed border-gray-300 dark:text-white rounded-md cursor-pointer">
             <input {...getInputProps()} />
-            <p>Drag & drop an image here, or click to select one</p>
+            <p className='dark:text-white'>Drag & drop an image here, or click to select one</p>
           </div>
           <button
             onClick={() => setShowWebcam(true)}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+            className="mt-4 px-4 py-2 bg-blue-500 dark:bg-white text-white dark:text-slate-900 rounded-md"
           >
             Take a Photo
           </button>
@@ -91,16 +100,16 @@ const ImageUpload = ({ setSolution }) => {
       )}
 
       {showWebcam && (
-        <div className="relative">
+        <div className="relative dark:bg-[#130e2e]">
           <Webcam
             audio={false}
             ref={webcamRef}
             screenshotFormat="image/jpeg"
-            className="w-full rounded-md"
+            className="w-full rounded-md dark:bg-red-600"
           />
           <button
             onClick={capturePhoto}
-            className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-blue-500 text-white rounded-md"
+            className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-blue-500 text-yellow-500 rounded-md"
           >
             Capture
           </button>
@@ -109,7 +118,7 @@ const ImageUpload = ({ setSolution }) => {
 
       {image && showCropper && (
         <>
-          <div className="relative w-full h-64">
+          <div className="relative w-full h-64 dark:bg-[#130e2e]">
             <Cropper
               image={image}
               crop={crop}
