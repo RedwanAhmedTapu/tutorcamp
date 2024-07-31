@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const Array = () => {
   const [arrayList, setArrayList] = useState([
@@ -10,292 +10,215 @@ const Array = () => {
     "Guava",
     "Grape",
   ]);
-  const [text, setText] = useState("result will appear here");
+  const [text, setText] = useState("ফলাফল এখানে দেখাবে");
   const [changedItem, setChangedItem] = useState(null);
-  //   useEffect(()=>{
 
-  //   })
-  const listOfFruits = [
-    "Apple",
-    "Orange",
-    "Mango",
-    "Lichi",
-    "Banana",
-    "Guava",
-    "Grape",
-  ];
   const ArrayMethodList = [
-    "pop()",
-    `push("olive")`,
-    "shift()",
-    `unshift("chilli")`,
-    "slice(2,4)",
-    "splice(2,4)",
-    "slice(4)",
-    "splice(4)",
-    `arr[3]="Coconut"`,
-    `indexOf("Mango")`,
-    `indexOf("Rose")`,
+    { method: "pop()", description: "শেষ উপাদানটি রিমুভ করে" },
+    { method: `push("olive")`, description: "শেষে একটি উপাদান যোগ করে" },
+    { method: "shift()", description: "প্রথম উপাদানটি রিমুভ দেয়" },
+    { method: `unshift("chilli")`, description: "শুরুর দিকে একটি উপাদান যোগ করে" },
+    { method: "slice(2,4)", description: "নির্দিষ্ট অংশ কেটে আনে এবং মূল অ্যারে এর কোন পরিবর্তন করে না" },
+    { method: "splice(2,4)", description: "নির্দিষ্ট অংশ রিমুভ করে এবং মূল অ্যারে এর পরিবর্তন করে। যেমন এখানে startingIndex 2 আর কতগুলো উপাদান কাটতে হবে তা হল 4| তাই এটি ইনডেক্স ২ থেকে মোট চারটি উপদান কাতবে।  " },
+    { method: "slice(4)", description: "চারটি উপাদানের পরে কেটে আনে" },
+    { method: "splice(4)", description: "এটি চার নম্বর ইনডেক্স থেকে শুরু করে পরবর্তী সব কেটে নিবে" },
+    { method: `arr[3]="Coconut"`, description: "তৃতীয় ইনডেক্স এর  উপাদানটি পরিবর্তন করে" },
+    { method: `indexOf("Mango")`, description: "Mango উপদানটির  ইন্ডেক্স খুঁজে আনে" },
+    { method: `indexOf("Rose")`, description: "Rose উপদানটির ইন্ডেক্স খুঁজে আনে (না পাওয়া গেলে -1 return করে )" },
   ];
-  //   const negativeIndex = [-7, -6, -5, -4, -3, -2, -1];
-  // update array
-  const updatearray = () => {
+
+  const updateArray = () => {
     arrayList[3] = "Coconut";
     setChangedItem(arrayList[3]);
-    setText(` replaces the index 3.i.e indexe 3 element is updated .`);
+    setText(` তৃতীয় উপাদান পরিবর্তন করে। অর্থাৎ তৃতীয় উপাদান আপডেট করা হয়েছে।`);
   };
-  //   pop
+
   const popMethod = (prevArrayList) => {
     if (prevArrayList.length > 0) {
-      let updatedItem;
-      if (prevArrayList.length == 1) {
-        updatedItem = prevArrayList.splice(-1);
-      }
-      updatedItem = prevArrayList.splice(0, prevArrayList.length - 1);
-      //   const poppeditem = prevArrayList.pop();
-      //   const updatedItem = prevArrayList.filter((elem) => elem != poppeditem);
-      //   console.log(poppeditem, "nn");
-      //   console.log(updatedItem, "pop");
+      const updatedItem = prevArrayList.slice(0, prevArrayList.length - 1);
       setArrayList(updatedItem);
       setChangedItem(`${prevArrayList.pop()}`);
-      setText(
-        ` is poped or deleted from the last index.so we can say that pop()  remove the last element`
-      );
+      setText(` শেষ উপাদানটি রিমুভ করা  হয়েছে। অর্থাৎ pop() শেষ উপাদানটি রিমুভ করে `);
     } else {
-      setText("no items are available to pop");
+      setText("কোনও আইটেম নেই  রিমুভ করার মত ");
     }
   };
 
-  //   push
   const pushMethod = () => {
-    // listOfFruits.push("redwan");
     setArrayList((prev) => [...prev, "olive"]);
-    setChangedItem(`redwan`);
-    setText(
-      ` is pushed at the last index.so we can say that push("redwan")  add the  element to the last index`
-    );
+    setChangedItem(`olive`);
+    setText(` শেষের দিকে যোগ করা হয়েছে। অর্থাৎ push("olive") শেষের দিকে একটি উপাদান যোগ করে।`);
   };
-  //   shift
-  //   let savedList;
 
   const shiftMethod = (prevArrayList) => {
-    // savedList = prevArrayList.filter((elem) => elem != "");
     if (prevArrayList.length > 0) {
-      let updatedItem;
-      if (prevArrayList.length == 1) {
-        updatedItem = prevArrayList.splice(-1);
-      }
-      updatedItem = prevArrayList.splice(1);
-
-      //   const shifteditem = prevArrayList.shift();
-      //   console.log(savedList.indexOf(shifteditem), "index");
-      //   let updatedItem;
-      //   for (let i = 0; i <= savedList.length; i++) {
-      //     if (savedList[0] == savedList[i + 1]) {
-
-      //   updatedItem = savedList.splice(0,1);
-      //       console.log(updatedItem,"up")
-
-      //       break;
-      //     } else {
-      //       updatedItem = savedList.filter((elem) => elem != shifteditem);
-      //       break;
-      //     }
-      //   }
-
-      //   console.log(shifteditem, "nn");
-      //   console.log(updatedItem, "shift");
+      const updatedItem = prevArrayList.slice(1);
       setArrayList(updatedItem);
       setChangedItem(`${prevArrayList.shift()}`);
-      setText(
-        ` is shifted or deleted from the first index.so we can say that shift()  remove the first element`
-      );
+      setText(` প্রথম উপাদানটি  রিমুভ করা  হয়েছে। অর্থাৎ shift() প্রথম উপাদানটি রিমুভ করে `);
     } else {
-      setText("no items are available to shift");
+      setText("কোনও আইটেম নেই রিমুভ করার মত ");
     }
   };
-  //   unshift
+
   const unshiftMethod = () => {
     setArrayList((prev) => ["chilli", ...prev]);
-    setChangedItem(`waffa`);
-    setText(
-      ` is unshifted at the first index.so we can say that unshift("waffa")  add the  element to the first index`
-    );
+    setChangedItem(`chilli`);
+    setText(` শুরুর দিকে যোগ করা হয়েছে। অর্থাৎ unshift("chilli") শুরুর দিকে একটি উপাদান যোগ করে।`);
   };
 
-  //   slice method
   const sliceMethod = (prevArrayList) => {
     if (prevArrayList.length > 2) {
       const slicedList = prevArrayList.slice(2, 4);
-      console.log(slicedList, "slice");
       setArrayList(prevArrayList);
       setChangedItem(slicedList);
-      setText(
-        ` is sliced from the original array .slice(2,4) slice the element starting from  index 2 to 3.`
-      );
+      setText(` মূল অ্যারে থেকে কেটে আনা হয়েছে। slice(2,4) ইন্ডেক্স ২ থেকে ৩ পর্যন্ত উপাদানগুলো কেটে আনে।`);
     } else {
       setChangedItem("");
-      setText(` the array length is not enough for slicing.`);
+      setText(` কেটে নেওয়ার জন্য অ্যারেতে যথেষ্ট উপাদান নেই।`);
     }
   };
 
-  //   splice method
   const spliceMethod = (prevArrayList) => {
     if (prevArrayList.length >= 6) {
-      //   console.log(prevArrayList.splice(2, 4), "slice");
-
       const splicedList = prevArrayList.splice(2, 4);
-
       setArrayList(prevArrayList);
       setChangedItem(splicedList);
-      setText(
-        ` is spliced from the original array .splice(2,4) here 2 is starting index and 4  is how much of elements to be removed`
-      );
+      setText(` মূল অ্যারে থেকে সরিয়ে দেওয়া হয়েছে। splice(2,4) ইন্ডেক্স ২ থেকে ৪টি উপাদান সরিয়ে দেয়।`);
     } else {
       setChangedItem(``);
-
-      setText(
-        `can not perform this method now.cause you want to splice from index 2 and upto 4 elements.but you have not enough elments to be spliced from 2 index`
-      );
+      setText(`এখন এই পদ্ধতি ব্যবহার করা যাবে না। অ্যারেটির length যথেষ্ট  নয় ৪টি উপাদান সরানোর জন্য।`);
     }
   };
 
-  //   slice method 2
   const sliceMethod_2 = () => {
-    listOfFruits.slice(4);
-    console.log(listOfFruits.slice(4), "slice");
-
     setArrayList(listOfFruits);
   };
-  //   splice method 2
+
   const spliceMethod_2 = (prevArrayList) => {
     if (prevArrayList.length > 4) {
       const splicedData = prevArrayList.splice(4);
-
       setArrayList(prevArrayList);
       setChangedItem(splicedData);
-      setText(
-        ` is spliced from the original array.splice(startIndex) slice the  element from startIndexed element to last element`
-      );
+      setText(` মূল অ্যারে থেকে সরিয়ে দেওয়া হয়েছে। splice(startIndex) স্টার্ট ইনডেক্স থেকে পরবর্তী সব  উপাদান সরিয়ে দেয়।`);
+    } else {
+      setChangedItem("");
+      setText(` ইন্ডেক্স ৪ থেকে সরানোর জন্য অ্যারেতে যথেষ্ট উপাদান নেই।`);
     }
-    setChangedItem("");
-
-    setText(
-      ` array length is not enough for splicing.cause splice(4) will  splice from index number 4 to last indexed element but here now the last index is 3.`
-    );
   };
-  // indexOf
+
   const indexOfMethod = () => {
-    // listOfFruits.push("redwan");
     const index = arrayList.indexOf("Mango");
     setChangedItem(index);
-    setText(`is the index of element Mango.`);
+    setText(` যা Mango উপাদানটির  ইন্ডেক্স।`);
   };
+
   const indexOfMethod_2 = () => {
-    // listOfFruits.push("redwan");
     const index = arrayList.indexOf("Rose");
     setChangedItem(index);
-    setText(`is returned cause no named Rose element in the array.`);
+    setText(`  রিটার্ন  হয়েছে কারণ অ্যারেতে কোনও উপাদান Rose নামে নেই।`);
   };
+
   return (
     <>
-      <div className="flex flex-col   h-96">
-        <div className="  flex h-1/3 flex-row items-center">
-          <div className="text-cyan-600 text-xl md:text-3xl">Items:</div>&nbsp;
-          {arrayList.map((curList, index) => {
-            return (
-              <>
-                <div className="w-44 md:w-96 h-16 text-white  divide-slate-300 bg-violet-50 p-[0.2rem] md:p-1  ">
-                  <div className="bg-teal-700 h-full text-[0.5rem] md:text-xl flex_center  ">
-                    {curList}
-                  </div>
-                  <div className=" h-full text-[0.5rem] md:text-xl flex_center  ">
-                    {index}
-                  </div>
+      <div className="flex flex-col h-auto p-4">
+      <h1 className="text-3xl  text-white font-bold mb-4">জাভাস্ক্রিপ্ট অ্যারে  </h1>
+
+        <div className="flex flex-col md:flex-row md:items-center">
+          <div className="text-cyan-600 text-lg md:text-2xl mb-2 md:mb-0">Items:</div>
+          <div className="flex flex-col md:h-28 md:flex-row md:flex-wrap space-y-2 md:space-y-0 md:space-x-2">
+            {arrayList.map((curList, index) => (
+              <div key={index} className="flex items-center bg-violet-50 p-2 rounded-md shadow-md w-full md:w-32 h-12 text-sm md:text-base">
+                <div className="bg-teal-700 h-full w-2/3 flex items-center justify-center text-white rounded-l-md">
+                  {curList}
                 </div>
-              </>
-            );
-          })}
-        </div>
-
-        <div className="h-1/3 cursor-pointer">
-          <h3 className="text-teal-500 text-2xl">Result:</h3>
-          <p className="text-red-500 text-2xl">
-            {changedItem == "undefined" || changedItem == null
-              ? ""
-              : `${changedItem}`}
-            <span className="text-white text-xl">{text}</span>
-          </p>
-        </div>
-        <div className="h-1/3 cursor-pointer">
-          <h3 className="text-teal-500 text-center">Perform Array Operation</h3>
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-y-4 mt-12">
-            {ArrayMethodList.map((curMethod, index) => {
-              return (
-                <>
-                  <div
-                    className={` text-white bg-slate-500 rounded-sm flex_center   ${
-                      index == 8 ||  index == 9 ||  index == 10 || index == 1 || index == 3
-                        ? "w-auto text-xs  "
-                        : " text-sm  w-20"
-                    } md:w-24 h-12 `}
-                    key={index}
-                    onClick={() => {
-                      switch (index) {
-                        case 0:
-                          popMethod(arrayList);
-                          break;
-                        case 1:
-                          pushMethod();
-                          break;
-                        case 2:
-                          shiftMethod(arrayList);
-                          break;
-                        case 3:
-                          unshiftMethod();
-                          break;
-                        case 4:
-                          sliceMethod(arrayList);
-                          break;
-                        case 5:
-                          spliceMethod(arrayList);
-                          break;
-                        case 6:
-                          sliceMethod_2();
-                          break;
-                        case 7:
-                          spliceMethod_2(arrayList);
-                          break;
-                        case 8:
-                          updatearray();
-
-                          break;
-                        case 9:
-                          indexOfMethod();
-                          break;
-
-                        default:
-                          indexOfMethod_2();
-                          break;
-                      }
-                    }}
-                  >
-                    {curMethod}
-                  </div>
-                </>
-              );
-            })}
+                <div className="bg-white h-full w-1/3 flex items-center justify-center rounded-r-md">
+                  {index}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
+
+        <div className="mt-4 md:mt-2">
+          <h3 className="text-teal-500 text-lg md:text-xl">Result:</h3>
+          <p className="text-red-500 text-base md:text-lg">
+            {changedItem == "undefined" || changedItem == null ? "" : `${changedItem}`}
+            <span className="text-white text-base md:text-lg">{text}</span>
+          </p>
+        </div>
+        
+        <div className="mt-4 md:mt-2">
+          <h3 className="text-teal-500 text-lg md:text-xl text-center">Perform Array Operation</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4">
+            {ArrayMethodList.map((curMethod, index) => (
+              <div
+                className="bg-slate-500 text-white rounded-md flex items-center justify-center h-10 text-xs md:text-sm cursor-pointer"
+                key={index}
+                onClick={() => {
+                  switch (index) {
+                    case 0:
+                      popMethod(arrayList);
+                      break;
+                    case 1:
+                      pushMethod();
+                      break;
+                    case 2:
+                      shiftMethod(arrayList);
+                      break;
+                    case 3:
+                      unshiftMethod();
+                      break;
+                    case 4:
+                      sliceMethod(arrayList);
+                      break;
+                    case 5:
+                      spliceMethod(arrayList);
+                      break;
+                    case 6:
+                      sliceMethod_2();
+                      break;
+                    case 7:
+                      spliceMethod_2(arrayList);
+                      break;
+                    case 8:
+                      updateArray();
+                      break;
+                    case 9:
+                      indexOfMethod();
+                      break;
+                    default:
+                      indexOfMethod_2();
+                      break;
+                  }
+                }}
+              >
+                {curMethod.method}
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <div className="mt-4 ">
+          <h3 className="text-teal-500 text-lg md:text-xl">Array Method Descriptions:</h3>
+          <table className="min-w-full bg-slate-950 border border-gray-200">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 border-b-2 text-teal-600 border-gray-200 text-left">Method</th>
+                <th className="px-4 py-2 border-b-2 text-teal-600 border-gray-200 text-left">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ArrayMethodList.map((methodObj, index) => (
+                <tr key={index} className="hover:bg-gray-600">
+                  <td className="px-4 py-2 border-b text-white border-gray-200">{methodObj.method}</td>
+                  <td className="px-4 py-2 border-b text-white border-gray-200">{methodObj.description}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-      {/* <div className="">
-        <tbody>
-          <tr>
-
-          </tr>
-        </tbody>
-
-      </div> */}
     </>
   );
 };

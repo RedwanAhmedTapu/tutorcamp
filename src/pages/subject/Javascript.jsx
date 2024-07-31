@@ -2,7 +2,9 @@
 const Javascript = () => {
   return (
     <>
+
     <JavaScriptHomePage/>
+
     </>
   )
 }

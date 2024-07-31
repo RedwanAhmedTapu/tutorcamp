@@ -1,0 +1,85 @@
+import React from "react";
+
+const CommentTutorial = () => {
+  // Code text for formatting
+  const singleLineComment = `//`;
+  const multiLineStart = `/*`;
+  const multiLineEnd = `*/`;
+
+  return (
+    <div className="p-6 bg-gray-800 text-white">
+      <h1 className="text-3xl font-bold mb-4">JavaScript Comment </h1>
+
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-2">1. একক-লাইন Comment</h2>
+        <p>
+          একক-লাইন Comment <code>{singleLineComment}</code> দ্বারা শুরু হয়। এটি একটি লাইনের Comment যোগ করতে ব্যবহৃত হয়।
+        </p>
+        <div className="bg-gray-900 p-4 rounded-md mt-2">
+          <pre>
+            <code className="whitespace-pre-line">
+              <span className="text-yellow-600">{singleLineComment}</span> এই একটি একক-লাইন Comment
+              <br />
+              <span className="text-white font-semibold">const x = 10;</span>
+            </code>
+          </pre>
+        </div>
+        <p className="mt-2">
+          একক-লাইন মন্তব্যের মাধ্যমে একটি লাইনে Comment করা হয় যা কোডের বাকি অংশের জন্য কার্যকরীভাবে কোনো প্রভাব ফেলে না।
+        </p>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-2">2. বহু-লাইন Comment</h2>
+        <p>
+          বহু-লাইন Comment <code>{multiLineStart}</code> এবং <code>{multiLineEnd}</code> দ্বারা ঘেরা থাকে। এটি একাধিক লাইনের জন্য Comment করতে ব্যবহৃত হয়।
+        </p>
+        <div className="bg-gray-900 p-4 rounded-md mt-2">
+          <pre>
+            <code className="whitespace-pre-line">
+              <span className="text-yellow-600">{multiLineStart}</span>
+              <br />
+              &nbsp;&nbsp;এই মন্তব্যটি একাধিক লাইনে বিস্তৃত।
+              <br />
+              &nbsp;&nbsp;এটি কোডের বিশদ ব্যাখ্যার জন্য ব্যবহার করা হয়।
+              <br />
+              <span className="text-yellow-600">{multiLineEnd}</span>
+              <br />
+              <span className="text-white font-semibold">const y = 20;</span>
+            </code>
+          </pre>
+        </div>
+        <p className="mt-2">
+          বহু-লাইন Comment একাধিক লাইনের জন্য Comment করার সুযোগ দেয়, যা কোডের অংশের মধ্যে বিশদ ব্যাখ্যা প্রদান করতে সহায়ক।
+        </p>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-2">3. মন্তব্যের সেরা অনুশীলন</h2>
+        <ul className="list-disc ml-6">
+          <li>
+            মন্তব্যগুলি পরিষ্কার এবং সংক্ষিপ্ত হওয়া উচিত। কোডের উদ্দেশ্য বা জটিলতার একটি সংক্ষিপ্ত ব্যাখ্যা প্রদান করা উচিত।
+          </li>
+          <li>
+            অপ্রয়োজনীয় Comment এড়ানো উচিত যা কোড পড়ার সময় বিভ্রান্তি সৃষ্টি করতে পারে।
+          </li>
+          <li>
+            কোড পরিবর্তনের সময় মন্তব্যও আপডেট করুন যাতে তারা সঠিক এবং প্রাসঙ্গিক থাকে।
+          </li>
+          <li>
+            মন্তব্যগুলি কোডের লজিক বর্ণনা করতে সাহায্য করতে পারে, কিন্তু কোডের নিজস্ব স্পষ্টতা সর্বদা প্রাধান্য পাওয়া উচিত।
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-semibold mb-2">summary</h2>
+        <p>
+          JavaScript-এ Comment কোডে ব্যাখ্যা যোগ করার জন্য ব্যবহৃত হয়। একক-লাইন Comment <code>{singleLineComment}</code> দ্বারা শুরু হয় এবং বহু-লাইন Comment <code>{multiLineStart}</code> এবং <code>{multiLineEnd}</code> দ্বারা ঘেরা থাকে। মন্তব্যগুলি পরিষ্কার, প্রাসঙ্গিক এবং আপডেট থাকা উচিত।
+        </p>
+      </section>
+    </div>
+  );
+};
+
+export default CommentTutorial;

@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useParams,useLocation } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { Link } from "react-scroll";
 import { AiFillCaretRight } from "react-icons/ai";
 import { CiMenuFries } from "react-icons/ci";
 import { menuItems } from "../data/chapterList";
 import Ict from "./subject/Ict";
-import Javascript from "./subject/Javascript";
+import JavaScript from "./subject/JavaScript";
+
 import Github from "./subject/Github";
 import HtmlCssCodeEditor from "../components/HtmlCssCodeEditor";
 
@@ -14,7 +15,7 @@ const ChapterwiseDescription = () => {
   const [openChapter, setOpenChapter] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const location=useLocation();
+  const location = useLocation();
 
   const selectedMenuItems = menuItems.filter((menu) => menu.title === subID);
 
@@ -26,13 +27,32 @@ const ChapterwiseDescription = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  let ContentComponent;
+
+  switch (location.pathname) {
+    case "/sub/ICT":
+      ContentComponent = Ict;
+      break;
+    case "/sub/javaScript":
+      ContentComponent = JavaScript;
+      break;
+    default:
+      ContentComponent = Github;
+      break;
+  }
+
+
   return (
     <>
       <div className="w-[100%] flex justify-end items-center fixed text-white   blur-0 top-16 min-[999px]:hidden h-12  z-20">
         <CiMenuFries className="w-12 h-12 text-white" onClick={toggleSidebar} />
       </div>
       <div className="w-full flex   mdUp:hidden ">
-        <div className={`w-[20%] max-[700px]:w-[50%] max-[450px]:w-[70%] max-[998px]:w-[30%]  h-full fixed   max-[999px]:top-[4.1rem] top-16 left-0 bg-slate-950 opacity-90 overflow-y-auto z-10 ${isSidebarOpen ? "  " : "hidden"}`}>
+        <div
+          className={`w-[20%] max-[700px]:w-[50%] max-[450px]:w-[70%] max-[998px]:w-[30%]  h-full fixed   max-[999px]:top-[4.1rem] top-16 left-0 bg-slate-950 opacity-90 overflow-y-auto z-10 ${
+            isSidebarOpen ? "  " : "hidden"
+          }`}
+        >
           <div className="text-white p-2">
             {selectedMenuItems.map((item, index) => (
               <div key={index} className="mb-4">
@@ -123,10 +143,11 @@ const ChapterwiseDescription = () => {
             ))}
           </div>
         </div>
-      
       </div>
       <div className="w-full flex  max-[1000px]:hidden  ">
-        <div className={`w-[20%] max-[700px]:w-[50%] max-[450px]:w-[70%] max-[998px]:w-[30%]  h-full fixed   max-[999px]:top-[4.1rem] top-16 left-0 bg-slate-950 opacity-90 overflow-y-auto z-10 `}>
+        <div
+          className={`w-[20%] max-[700px]:w-[50%] max-[450px]:w-[70%] max-[998px]:w-[30%]  h-full fixed   max-[999px]:top-[4.1rem] top-16 left-0 bg-slate-950 opacity-90 overflow-y-auto z-10 `}
+        >
           <div className="text-white p-2">
             {selectedMenuItems.map((item, index) => (
               <div key={index} className="mb-4">
@@ -217,17 +238,15 @@ const ChapterwiseDescription = () => {
             ))}
           </div>
         </div>
-      
       </div>
       <div
-          className={` fixed top-16 max-[999px]:w-[100%] w-[80%] h-full right-0 bg-slate-950 overflow-scroll ${
-            isSidebarOpen ? '' : 'w-full  h-full ml-0  '
-          }`}
-          id="content-container"
-        >
-          
-         {location.pathname=="/sub/ICT"?<Ict/>:location.pathname=="/sub/javascript"?<Javascript/>:<Github/>}
-        </div>
+        className={` fixed top-16 max-[999px]:w-[100%] w-[80%] h-full right-0 bg-slate-950 overflow-scroll ${
+          isSidebarOpen ? "" : "w-full  h-full ml-0  "
+        }`}
+        id="content-container"
+      >
+       <ContentComponent />
+      </div>
     </>
   );
 };

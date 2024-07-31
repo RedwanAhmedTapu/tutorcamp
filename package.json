@@ -46,6 +46,7 @@
     "react-simple-code-editor": "^0.13.1",
     "react-speech": "^1.0.2",
     "react-spring": "^9.7.3",
+    "react-syntax-highlighter": "^15.5.0",
     "react-webcam": "^7.2.0",
     "reactflow": "^11.11.3",
     "recordrtc": "^5.6.2",
