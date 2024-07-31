@@ -57,94 +57,176 @@ import AsyncAwaitTutorial from "./chapter_4/AsyncAwait";
 import PromiseTutorial from "./chapter_4/Promise";
 import RegexTutorial from "./chapter_4/Regex";
 
-const components = {
-  environment_setup: EnvironmentSetUp,
-  developer_console: DeveloperConsole,
-  variable: VariableTutorial,
-  comment: CommentTutorial,
-  operator: OperatorsTutorial,
-  conditional_statement: ConditionalStatementsTutorial,
-  loop: Loop,
-  array: Array,
-  object: Object,
-  function: FunctionTutorial,
-  expression: StatementExpressionTutorial,
-  dry_principal: DRYPrincipleTutorial,
-  Ecmascript: ECMAScriptTutorial,
-  hoisting: HoistingTutorial,
-  behind_the_seen: BehindTheScenesTutorial,
-  scope: ScopeTutorial,
-  closure: ClosureTutorial,
-  IIFE: IIFETutorial,
-  this: ThisKeywordTutorial,
-  call: CallMethodTutorial,
-  apply: ApplyMethodTutorial,
-  bind: BindMethodTutorial,
-  // obj_in_js: Obj,
-  constructorr: ConstructorTutorial,
-  neww: NewKeywordTutorial,
-  inheritances: InheritanceTutorial,
-  stricts: StrictModeTutorial,
-  template_literal: TemplateLiteralsTutorial,
-  strings: StringOperations,
-  arrows: ArrowFunctionTutorial,
-  destructuring: DestructuringTutorial,
-  hoc:HigherOrderTutorial,
-  map_: MapTutorial,
-  set_: SetTutorial,
-  spread_operator: SpreadOperatorTutorial,
-  rest_: RestParameterTutorial,
-
-  default_: DefaultParameterTutorial,
-  class_: ClassTutorial,
-  class_inheritance: ClassInheritanceTutorial,
-  Es6_: ES6EnvironmentTutorial,
-  mapfunction: MapFunctionTutorial,
-  filterfunction: FilterFunctionTutorial,
-  reducefunction: ReduceFunctionTutorial,
-  object_loop: ObjectLoopTutorial,
-  dot_notation: DotNotationTutorial,
-  bracket_notation: BracketNotationTutorial,
-  // math_object: MathObjectTutorial,
-  // date_object: DateObjectTutorial,
-  logical_operator: LogicalOperatorsTutorial,
-  ternary_operator: TernaryOperatorTutorial,
-  regex: RegexTutorial,
-  error_handling: ErrorHandlingTutorial,
-  asynchronus: AsyncTutorial,
-  callback: CallbackExample,
-  promises: PromiseTutorial,
-  awaits: AsyncAwaitTutorial,
-  // Add other mappings here
-};
-
 const JavaScriptHomePage = () => {
-  const renderTopics = (topics) => {
-    return topics.map((topic) => {
-      const Component = components[topic.id.replace("#", "")];
-      return (
-        <Element name={topic.id} key={topic.id}>
-          {Component ? <Component /> : <p>{topic.topicName}</p>}
-        </Element>
-      );
-    });
-  };
-
   return (
     <div className="w-full h-auto flex flex-col gap-y-8 p-8 bg-gray-900 overflow-x-hidden">
       <div className="w-20 h-20 text-yellow-400 self-center">
         <FaJs className="w-full h-full" />
       </div>
       <p className="text-yellow-500 text-3xl text-center">JavaScript</p>
-      {menuItems
-        .filter((item) => item.title === "javaScript")
-        .map((item) =>
-          item.chapters.map((chapter) => (
-            <div key={chapter.name}>
-              {renderTopics(chapter.topics)}
-            </div>
-          ))
-        )}
+
+      {/* Manually render each chapter's topics */}
+      <div>
+        <Element name="environment_setup">
+          <EnvironmentSetUp />
+        </Element>
+        <Element name="developer_console">
+          <DeveloperConsole />
+        </Element>
+        <Element name="variable">
+          <VariableTutorial />
+        </Element>
+        <Element name="comment">
+          <CommentTutorial />
+        </Element>
+        <Element name="operator">
+          <OperatorsTutorial />
+        </Element>
+        <Element name="conditional_statement">
+          <ConditionalStatementsTutorial />
+        </Element>
+        <Element name="loop">
+          <Loop />
+        </Element>
+        <Element name="array">
+          <Array />
+        </Element>
+        <Element name="object">
+          <Object />
+        </Element>
+        <Element name="function">
+          <FunctionTutorial />
+        </Element>
+        <Element name="expression">
+          <StatementExpressionTutorial />
+        </Element>
+        <Element name="dry_principal">
+          <DRYPrincipleTutorial />
+        </Element>
+        <Element name="Ecmascript">
+          <ECMAScriptTutorial />
+        </Element>
+        <Element name="hoisting">
+          <HoistingTutorial />
+        </Element>
+        <Element name="behind_the_seen">
+          <BehindTheScenesTutorial />
+        </Element>
+        <Element name="scope">
+          <ScopeTutorial />
+        </Element>
+        <Element name="closure">
+          <ClosureTutorial />
+        </Element>
+        <Element name="IIFE">
+          <IIFETutorial />
+        </Element>
+        <Element name="this">
+          <ThisKeywordTutorial />
+        </Element>
+        <Element name="call">
+          <CallMethodTutorial />
+        </Element>
+        <Element name="apply">
+          <ApplyMethodTutorial />
+        </Element>
+        <Element name="bind">
+          <BindMethodTutorial />
+        </Element>
+        <Element name="constructorr">
+          <ConstructorTutorial />
+        </Element>
+        <Element name="neww">
+          <NewKeywordTutorial />
+        </Element>
+        <Element name="inheritances">
+          <InheritanceTutorial />
+        </Element>
+        <Element name="stricts">
+          <StrictModeTutorial />
+        </Element>
+        <Element name="template_literal">
+          <TemplateLiteralsTutorial />
+        </Element>
+        <Element name="strings">
+          <StringOperations />
+        </Element>
+        <Element name="arrows">
+          <ArrowFunctionTutorial />
+        </Element>
+        <Element name="destructuring">
+          <DestructuringTutorial />
+        </Element>
+        <Element name="hoc">
+          <HigherOrderTutorial />
+        </Element>
+        <Element name="map_">
+          <MapTutorial />
+        </Element>
+        <Element name="set_">
+          <SetTutorial />
+        </Element>
+        <Element name="spread_operator">
+          <SpreadOperatorTutorial />
+        </Element>
+        <Element name="rest_">
+          <RestParameterTutorial />
+        </Element>
+        <Element name="default_">
+          <DefaultParameterTutorial />
+        </Element>
+        <Element name="class_">
+          <ClassTutorial />
+        </Element>
+        <Element name="class_inheritance">
+          <ClassInheritanceTutorial />
+        </Element>
+        <Element name="Es6_">
+          <ES6EnvironmentTutorial />
+        </Element>
+        <Element name="mapfunction">
+          <MapFunctionTutorial />
+        </Element>
+        <Element name="filterfunction">
+          <FilterFunctionTutorial />
+        </Element>
+        <Element name="reducefunction">
+          <ReduceFunctionTutorial />
+        </Element>
+        <Element name="object_loop">
+          <ObjectLoopTutorial />
+        </Element>
+        <Element name="dot_notation">
+          <DotNotationTutorial />
+        </Element>
+        <Element name="bracket_notation">
+          <BracketNotationTutorial />
+        </Element>
+        <Element name="logical_operator">
+          <LogicalOperatorsTutorial />
+        </Element>
+        <Element name="ternary_operator">
+          <TernaryOperatorTutorial />
+        </Element>
+        <Element name="regex">
+          <RegexTutorial />
+        </Element>
+        <Element name="error_handling">
+          <ErrorHandlingTutorial />
+        </Element>
+        <Element name="asynchronus">
+          <AsyncTutorial />
+        </Element>
+        <Element name="callback">
+          <CallbackExample />
+        </Element>
+        <Element name="promises">
+          <PromiseTutorial />
+        </Element>
+        <Element name="awaits">
+          <AsyncAwaitTutorial />
+        </Element>
+      </div>
     </div>
   );
 };
