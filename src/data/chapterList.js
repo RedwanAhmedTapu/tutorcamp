@@ -226,21 +226,21 @@ export const menuItems = [
       {
         name: "Chapter 5",
         topics: [
-          { topicName: "DOM manipulation", id: "#topic1_1" },
-          { topicName: "element selection", id: "#topic1_2" },
-          { topicName: "playing with element", id: "#topic2_2" },
-          { topicName: "event", id: "#topic2_2" },
+          { topicName: "DOM manipulation", id: "manipulation" },
+          { topicName: "element selection", id: "selection" },
+          { topicName: "playing with element", id: "playing" },
+          { topicName: "event", id: "event" },
 
         ],
       },
       {
         name: "Chapter 6(project)",
         topics: [
-          { topicName: "to-do list", id: "#topic2_2" },
-          { topicName: "calculator", id: "#topic2_1" },
-          { topicName: "tic-tac-toe", id: "#topic2_2" },
-          { topicName: "snake", id: "#topic2_2" },
-          { topicName: "ludu", id: "#topic2_2" },
+          { topicName: "to-do list", id: "to_do" },
+          { topicName: "calculator", id: "calculator" },
+          { topicName: "tic-tac-toe", id: "tic_tac" },
+          { topicName: "snake", id: "snake" },
+          { topicName: "ludu", id: "ludu" },
 
 
         ],

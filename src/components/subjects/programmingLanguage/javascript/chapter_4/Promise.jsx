@@ -62,14 +62,14 @@ const PromiseTutorial = () => {
 
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-2">প্রমিস কিভাবে কাজ করে?</h2>
-        <p className="mb-4">
+        <div className="mb-4">
           একটি প্রমিস তিনটি স্টেটে থাকে:
           <ul className="list-disc list-inside">
             <li><span className="font-semibold">Pending</span>: প্রমিসটি এখনও সমাধান হয়নি।</li>
             <li><span className="font-semibold">Fulfilled</span>: প্রমিসটি সফলভাবে সমাধান হয়েছে এবং মান প্রদান করেছে।</li>
             <li><span className="font-semibold">Rejected</span>: প্রমিসটি ব্যর্থ হয়েছে এবং একটি ত্রুটি প্রদান করেছে।</li>
           </ul>
-        </p>
+        </div>
       </section>
 
       <section className="mb-8">
