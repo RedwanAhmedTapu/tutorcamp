@@ -9,4 +9,4 @@ const Ict = () => {
   )
 }
 
-export default Ict
+export default Ict;

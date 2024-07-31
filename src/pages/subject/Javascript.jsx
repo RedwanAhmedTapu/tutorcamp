@@ -1,5 +1,5 @@
  import JavaScriptHomePage from "../../components/subjects/programmingLanguage/javascript/JavaScriptHomePage";
-const Javascript = () => {
+const JavaScript = () => {
   return (
     <>
 
@@ -9,4 +9,4 @@ const Javascript = () => {
   )
 }
 
-export default Javascript;
+export default JavaScript;
