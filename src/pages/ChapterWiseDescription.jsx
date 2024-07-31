@@ -33,9 +33,7 @@ const ChapterwiseDescription = () => {
     case "/sub/ICT":
       ContentComponent = Ict;
       break;
-    case "/sub/javaScript":
-      ContentComponent = Javascript;
-      break;
+    
     default:
       ContentComponent = Github;
       break;
