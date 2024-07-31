@@ -9,4 +9,8 @@ const JavaScript = () => {
   )
 }
 
+<<<<<<< HEAD
 export default JavaScript;
+=======
+export default JavaScript;
+>>>>>>> 816caf27eae9170fc609a682ee4a2205e0501732
