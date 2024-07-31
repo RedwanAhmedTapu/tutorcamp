@@ -123,7 +123,7 @@ const JavaScriptHomePage = () => {
     return topics.map((topic) => {
       const Component = components[topic.id.replace("#", "")];
       return (
-        <Element name={topic.id.replace("#", "")} key={topic.id}>
+        <Element name={topic.id} key={topic.id}>
           {Component ? <Component /> : <p>{topic.topicName}</p>}
         </Element>
       );

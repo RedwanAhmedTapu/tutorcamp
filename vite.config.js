@@ -22,6 +22,18 @@ export default ({ mode }) => {
         ...env,
         VITE_SERVER_URL: JSON.stringify(serverUrl) // Ensure server URL is a string
       },
+    },
+    build: {
+      chunkSizeWarningLimit: 2000, // Adjust the limit as needed
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              return 'vendor';
+            }
+          }
+        }
+      }
     }
   });
 };
