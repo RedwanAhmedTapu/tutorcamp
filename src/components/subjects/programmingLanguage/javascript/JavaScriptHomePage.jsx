@@ -6,7 +6,7 @@ import { menuItems } from "../../../../data/chapterList";
 // Import your components here
 import EnvironmentSetUp from "./chapter_1/Environment_setUp";
 import DeveloperConsole from "./chapter_1/Developer_console";
-import VariableTutorial from "./chapter_1/variable";
+import VariableTutorial from "./chapter_1/Variable";
 import CommentTutorial from "./chapter_1/Comment";
 import OperatorsTutorial from "./chapter_1/Operator";
 import ConditionalStatementsTutorial from "./chapter_1/ConditionalStatement";
@@ -16,7 +16,7 @@ import Object from "./chapter_1/Object";
 import FunctionTutorial from "./chapter_1/Function";
 import StatementExpressionTutorial from "./chapter_1/Statement&Expression";
 import DRYPrincipleTutorial from "./chapter_1/Dryprincipal";
-import ECMAScriptTutorial from "./chapter_1/ECMAScript";
+import ECMAScriptTutorial from "./chapter_1/EcmaScript";
 import HoistingTutorial from "./chapter_1/Hoisting";
 import BehindTheScenesTutorial from "./chapter_1/BehindTheSeen";
 import ScopeTutorial from "./chapter_1/Scope";
