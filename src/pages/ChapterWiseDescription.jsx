@@ -5,7 +5,7 @@ import { AiFillCaretRight } from "react-icons/ai";
 import { CiMenuFries } from "react-icons/ci";
 import { menuItems } from "../data/chapterList";
 import Ict from "./subject/Ict";
-import Javascript from "./subject/JavaScript";
+import Javascript from "./subject/Javascript";
 
 import Github from "./subject/Github";
 import HtmlCssCodeEditor from "../components/HtmlCssCodeEditor";
@@ -33,7 +33,7 @@ const ChapterwiseDescription = () => {
     case "/sub/ICT":
       ContentComponent = Ict;
       break;
-    case "/sub/javaScript":
+    case "/sub/javascript":
       ContentComponent = Javascript;
       break;
     default:

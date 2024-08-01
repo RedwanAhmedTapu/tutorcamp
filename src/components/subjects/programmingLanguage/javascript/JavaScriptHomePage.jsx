@@ -2,6 +2,7 @@ import React from "react";
 import { Element } from "react-scroll";
 import { FaJs } from "react-icons/fa";
 import { menuItems } from "../../../../data/chapterList";
+
 // Import your components here
 import EnvironmentSetUp from "./chapter_1/Environment_setUp";
 import DeveloperConsole from "./chapter_1/Developer_console";
@@ -56,6 +57,7 @@ import AsyncTutorial from "./chapter_4/Asynchronus";
 import AsyncAwaitTutorial from "./chapter_4/AsyncAwait";
 import PromiseTutorial from "./chapter_4/Promise";
 import RegexTutorial from "./chapter_4/Regex";
+// Add additional imports if necessary
 
 const components = {
   environment_setup: EnvironmentSetUp,
@@ -80,7 +82,6 @@ const components = {
   call: CallMethodTutorial,
   apply: ApplyMethodTutorial,
   bind: BindMethodTutorial,
-  // obj_in_js: Obj,
   constructorr: ConstructorTutorial,
   neww: NewKeywordTutorial,
   inheritances: InheritanceTutorial,
@@ -94,7 +95,6 @@ const components = {
   set_: SetTutorial,
   spread_operator: SpreadOperatorTutorial,
   rest_: RestParameterTutorial,
-
   default_: DefaultParameterTutorial,
   class_: ClassTutorial,
   class_inheritance: ClassInheritanceTutorial,
@@ -105,8 +105,6 @@ const components = {
   object_loop: ObjectLoopTutorial,
   dot_notation: DotNotationTutorial,
   bracket_notation: BracketNotationTutorial,
-  // math_object: MathObjectTutorial,
-  // date_object: DateObjectTutorial,
   logical_operator: LogicalOperatorsTutorial,
   ternary_operator: TernaryOperatorTutorial,
   regex: RegexTutorial,
@@ -121,7 +119,17 @@ const components = {
 const JavaScriptHomePage = () => {
   const renderTopics = (topics) => {
     return topics.map((topic) => {
-      const Component = components[topic.id.replace("#", "")];
+      const Component = components[topic.id];
+
+      if (!Component) {
+        console.error(`Component not found for id: ${topic.id}`);
+        return (
+          <Element name={topic.id} key={topic.id}>
+            <div className="text-red-500">Component not found: {topic.topicName}</div>
+          </Element>
+        );
+      }
+
       return (
         <Element name={topic.id} key={topic.id}>
           <Component />
@@ -137,7 +145,7 @@ const JavaScriptHomePage = () => {
       </div>
       <p className="text-yellow-500 text-3xl text-center">JavaScript</p>
       {menuItems
-        .filter((item) => item.title === "javaScript")
+        .filter((item) => item.title === "javascript")
         .map((item) =>
           item.chapters.map((chapter) => (
             <div key={chapter.name}>{renderTopics(chapter.topics)}</div>

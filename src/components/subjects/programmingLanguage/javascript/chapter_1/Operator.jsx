@@ -226,8 +226,8 @@ const OperatorsTutorial = () => {
             </tr>
             <tr>
               <td className="p-2">তুলনামূলক</td>
-              <td className="p-2">></td>
-              <td className="p-2">10 > 5</td>
+              <td className="p-2">{greaterThan}</td>
+              <td className="p-2">10 {greaterThan} 5</td>
               <td className="p-2">true</td>
               <td className="p-2">বড়</td>
             </tr>
@@ -240,8 +240,8 @@ const OperatorsTutorial = () => {
             </tr>
             <tr>
               <td className="p-2">তুলনামূলক</td>
-              <td className="p-2">>=</td>
-              <td className="p-2">10 >= 5</td>
+              <td className="p-2">{greaterThan}=</td>
+              <td className="p-2">10 {greaterThan}= 5</td>
               <td className="p-2">true</td>
               <td className="p-2">বড় বা সমান</td>
             </tr>
@@ -321,7 +321,7 @@ const OperatorsTutorial = () => {
             <tr>
               <td className="p-2">টারনারি</td>
               <td className="p-2">?</td>
-              <td className="p-2">let result = (5 > 3) ? 'Yes' : 'No'</td>
+              <td className="p-2">let result = (5 {greaterThan} 3) ? 'Yes' : 'No'</td>
               <td className="p-2">'Yes'</td>
               <td className="p-2">শর্তের ভিত্তিতে মান নির্ধারণ</td>
             </tr>

@@ -368,7 +368,7 @@ const HSC = ({ onSelect }) => {
 const Versity = ({ onSelect }) => {
   const subjectData = [
     { title: "Web Development", list: ["HTML", "CSS3"] },
-    { title: "Programming Language ", list: ["javaScript","python"] },
+    { title: "Programming Language ", list: ["javascript","python"] },
     { title: "NLP", list: ["NLP"] },
     { title: "Tools", list: ["Git & Github"] },
     

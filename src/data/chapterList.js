@@ -143,7 +143,7 @@ export const menuItems = [
     ],
   },
   {
-    title: "javaScript",
+    title: "javascript",
     chapters: [
       {
         name: "Chapter 1",
