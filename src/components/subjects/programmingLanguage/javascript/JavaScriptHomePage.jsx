@@ -6,7 +6,7 @@ import { menuItems } from "../../../../data/chapterList";
 // Import your components here
 import EnvironmentSetUp from "./chapter_1/Environment_setUp";
 import DeveloperConsole from "./chapter_1/Developer_console";
-import VariableTutorial from "./chapter_1/Variable";
+import VariableTutorial from "./chapter_1/variable";
 import CommentTutorial from "./chapter_1/Comment";
 import OperatorsTutorial from "./chapter_1/Operator";
 import ConditionalStatementsTutorial from "./chapter_1/ConditionalStatement";
