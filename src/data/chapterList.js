@@ -113,7 +113,10 @@ export const menuItems = [
             id: "ip-domain-url-disparity",
           },
           { topicName: "ওয়েবসাইটের প্রকারভেদ", id: "classification" },
-          { topicName: "স্ট্যাটিক-ডাইনামিক ওয়েবসাইট এর পার্থক্য  ", id: "static-dynamic-disparity" },
+          {
+            topicName: "স্ট্যাটিক-ডাইনামিক ওয়েবসাইট এর পার্থক্য  ",
+            id: "static-dynamic-disparity",
+          },
           { topicName: "ওয়েবসাইটের কাঠামো", id: "structure" },
           { topicName: "HTML এর ধারণা", id: "html-concept" },
           { topicName: "HTML এলিমেন্টসমূহ", id: "syntax" },
@@ -179,7 +182,7 @@ export const menuItems = [
           { topicName: "function constructor", id: "constructorr" },
           { topicName: "new keyword", id: "neww" },
           { topicName: "inheritance", id: "inheritances" },
-          { topicName: "strict", id: "stricts" }
+          { topicName: "strict", id: "stricts" },
         ],
       },
       {
@@ -230,7 +233,6 @@ export const menuItems = [
           { topicName: "element selection", id: "selection" },
           { topicName: "playing with element", id: "playing" },
           { topicName: "event", id: "event" },
-
         ],
       },
       {
@@ -241,71 +243,157 @@ export const menuItems = [
           { topicName: "tic-tac-toe", id: "tic_tac" },
           { topicName: "snake", id: "snake" },
           { topicName: "ludu", id: "ludu" },
-
-
         ],
-        },
-    
- ] }, {
-  title: "Git & Github",
-  chapters: [
-    {
-      name: "Git",
-      topics: [
-        { topicName: "git & github", id: "#topic1_1" },
-        { topicName: "why github?", id: "#topic1_2" },
-        { topicName: "github setup", id: "#topic1_1" },
-        { topicName: "github configure", id: "#topic1_1" },
-        { topicName: "github repository setup", id: "#topic1_1" },
-        { topicName: "status check", id: "#topic1_2" },
-        { topicName: "staging & commit", id: "#topic1_2" },
-        { topicName: "commit after modifying file", id: "#topic1_2" },
-        { topicName: "again commit after modifying", id: "#topic1_2" },
-        { topicName: "commit log check", id: "#topic1_2" },
-        { topicName: "prev. version", id: "#topic1_2" },
-        { topicName: "create branch", id: "#topic1_2" },
-        { topicName: "branch checkout", id: "#topic1_2" },
-        { topicName: "branch modification", id: "#topic1_2" },
-        { topicName: "merging in main branch", id: "#topic1_2" },
-        { topicName: "commit disparity", id: "#topic1_2" },
-
-
-      ],
-    },
-    {
-      name: "Github",
-      topics: [
-        { topicName: "github link", id: "#topic1_1" },
-        { topicName: "github push", id: "#topic1_2" },
-        { topicName: "SSH key setup", id: "#topic1_2" },
-        { topicName: "pull request", id: "#topic1_2" },
-        { topicName: "clone", id: "#topic1_2" },
-      ],
-    },
-    {
-      name: "contribution",
-      topics: [
-        { topicName: "searching project", id: "#topic1_1" },
-        { topicName: "project fork", id: "#topic1_2" },
-        { topicName: "contribute", id: "#topic1_2" },
-       
-      ],
-    },
-    {
-      name: "explore git",
-      topics: [
-        { topicName: "git restore", id: "#topic1_1" },
-        { topicName: "git stash", id: "#topic1_2" },
-        { topicName: "git reset", id: "#topic1_2" },
-        { topicName: "git revert", id: "#topic1_2" },
-        { topicName: "git rebase", id: "#topic1_2" },
-        { topicName: "git squashing", id: "#topic1_2" },
-        { topicName: "git squashing", id: "#topic1_2" },
-        { topicName: "merge conflict", id: "#topic1_2" },
-       
-      ],
-    },
-  ]
-},
+      },
+    ],
+  },
+  {
+    title: "ReactJS",
+    chapters: [
+      {
+        name: "Chapter 1",
+        topics: [
+          { topicName: "Introduction to React", id: "intro_react" },
+          { topicName: "JSX", id: "jsx" },
+          { topicName: "Components & Props", id: "components_props" },
+          { topicName: "State & Lifecycle", id: "state_lifecycle" },
+          { topicName: "Handling Events", id: "handling_events" },
+          { topicName: "Conditional Rendering", id: "conditional_rendering" },
+          { topicName: "Lists & Keys", id: "lists_keys" },
+          { topicName: "Forms", id: "forms" },
+          { topicName: "Lifting State Up", id: "lifting_state" },
+          {
+            topicName: "Composition vs Inheritance",
+            id: "composition_inheritance",
+          },
+          { topicName: "React API", id: "react_api" },
+          { topicName: "React Hooks", id: "react_hooks" },
+          { topicName: "Context API", id: "context_api" },
+          { topicName: "Error Boundaries", id: "error_boundaries" },
+          { topicName: "Higher-Order Components", id: "hoc" },
+          { topicName: "React Router", id: "react_router" },
+        ],
+      },
+      {
+        name: "Chapter 2",
+        topics: [
+          { topicName: "React Fragments", id: "fragments" },
+          { topicName: "Portals", id: "portals" },
+          { topicName: "Refs & the DOM", id: "refs_dom" },
+          {
+            topicName: "Uncontrolled Components",
+            id: "uncontrolled_components",
+          },
+          { topicName: "Controlled Components", id: "controlled_components" },
+          { topicName: "Code Splitting", id: "code_splitting" },
+          { topicName: "Suspense & Lazy Loading", id: "suspense_lazy" },
+          { topicName: "React.memo", id: "react_memo" },
+          { topicName: "PropTypes", id: "prop_types" },
+          { topicName: "Redux Basics", id: "redux_basics" },
+        ],
+      },
+      {
+        name: "Chapter 3",
+        topics: [
+          { topicName: "React & TypeScript", id: "react_typescript" },
+          { topicName: "React Testing", id: "react_testing" },
+          {
+            topicName: "Performance Optimization",
+            id: "performance_optimization",
+          },
+          { topicName: "Custom Hooks", id: "custom_hooks" },
+          { topicName: "React Design Patterns", id: "design_patterns" },
+          { topicName: "Server-Side Rendering", id: "ssr" },
+          { topicName: "Static Site Generation", id: "ssg" },
+          { topicName: "Next.js Overview", id: "nextjs_overview" },
+        ],
+      },
+      {
+        name: "Chapter 4",
+        topics: [
+          {
+            topicName: "Advanced State Management",
+            id: "advanced_state_management",
+          },
+          { topicName: "Context API Advanced", id: "context_api_advanced" },
+          { topicName: "React with GraphQL", id: "react_graphql" },
+          { topicName: "React Native Introduction", id: "react_native_intro" },
+          {
+            topicName: "React Native Components",
+            id: "react_native_components",
+          },
+          {
+            topicName: "React Native Navigation",
+            id: "react_native_navigation",
+          },
+          {
+            topicName: "React Native State Management",
+            id: "react_native_state_management",
+          },
+        ],
+      },
+      {
+        name: "Chapter 5",
+        topics: [
+          { topicName: "Project: To-Do List", id: "project_todo" },
+          { topicName: "Project: Weather App", id: "project_weather_app" },
+          { topicName: "Project: E-commerce Site", id: "project_ecommerce" },
+          { topicName: "Project: Blog Platform", id: "project_blog" },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Git & Github",
+    chapters: [
+      {
+        name: "Git",
+        topics: [
+          { topicName: "git & github", id: "git" },
+          { topicName: "git setup", id: "git_setup" },
+          { topicName: "git configure", id: "git_configure" },
+          { topicName: "github repository ", id: "repo_set" },
+          { topicName: "status check", id: "status" },
+          { topicName: "staging & commit", id: "staging" },
+          { topicName: "commit log check", id: "git_log" },
+          { topicName: "prev. version", id: "prev_commit" },
+          { topicName: "create branch & switch", id: "create_branch" },
+          { topicName: "branch modification", id: "branch_modification" },
+          { topicName: "merging in main branch", id: "merge_branch" },
+          { topicName: "commit disparity", id: "commit_disparity" },
+        ],
+      },
+      {
+        name: "Github",
+        topics: [
+          { topicName: "github link", id: "#topic1_1" },
+          { topicName: "github push", id: "#topic1_2" },
+          { topicName: "SSH key setup", id: "#topic1_2" },
+          { topicName: "pull request", id: "#topic1_2" },
+          { topicName: "clone", id: "#topic1_2" },
+        ],
+      },
+      {
+        name: "contribution",
+        topics: [
+          { topicName: "searching project", id: "searching_project" },
+          { topicName: "project fork", id: "project_fork" },
+          { topicName: "contribute", id: "contribute" },
+        ],
+      },
+      {
+        name: "explore git",
+        topics: [
+          { topicName: "git restore", id: "git_restore" },
+          { topicName: "git stash", id: "git_stash" },
+          { topicName: "git reset", id: "git_reset" },
+          { topicName: "git revert", id: "git_revert" },
+          { topicName: "git rebase", id: "git_rebase" },
+          { topicName: "git squashing", id: "git_squashing" },
+          { topicName: "merge conflict", id: "merge_conflict" },
+        ],
+      },
+    ],
+  },
   // Add more menu items as needed
 ];
