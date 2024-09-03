@@ -24,7 +24,7 @@ import GitRebaseTutorial from "./chapter_4/GitRebaseTutorial";
 import Git_Reset_Tutorial from "./chapter_4/Git_Reset_Tutorial";
 import GitStashTutorial from "./chapter_4/GitStashTutorial";
 import GitSquashTutorial from "./chapter_4/GitSquashingTutorial";
-import GitRevertTutorial from "./chapter_4/GitReverttutorial";
+import GitRevertTutorial from "./chapter_4/GitRevertTutorial";
 const components = {
   git:GitTutorial,
   git_setup:GiSetupTutorial,
