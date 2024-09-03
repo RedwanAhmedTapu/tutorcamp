@@ -1,6 +1,6 @@
 import React from 'react';
 
-const GitResetTutorial = () => {
+const Git_Reset_Tutorial = () => {
   return (
     <div className="w-full max-w-5xl mx-auto p-4 text-white rounded-md bg-gray-800">
       <h2 className="text-2xl font-bold mb-4">Git Reset: কিভাবে ব্যবহার করবেন</h2>
@@ -61,4 +61,4 @@ const GitResetTutorial = () => {
   );
 };
 
-export default GitResetTutorial;
+export default Git_Reset_Tutorial;

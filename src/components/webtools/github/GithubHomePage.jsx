@@ -20,8 +20,8 @@ import ProjectForkTutorial from "./chapter_3/ProjectForkTutorial";
 import ContributeTutorial from "./chapter_3/ContributeTutorial";
 import MergeConflictTutorial from "./chapter_4/MergeConflictTutorial";
 import GitRestoreTutorial from "./chapter_4/GitRestoreTutorial";
-import GitResetTutorial from "./chapter_4/gitResetTutorial";
 import GitRebaseTutorial from "./chapter_4/GitRebaseTutorial";
+import Git_Reset_Tutorial from "./chapter_4/Git_Reset_Tutorial";
 import GitStashTutorial from "./chapter_4/GitStashTutorial";
 import GitSquashTutorial from "./chapter_4/GitSquashingTutorial";
 import GitRevertTutorial from "./chapter_4/GitReverttutorial";
@@ -44,7 +44,7 @@ const components = {
   merge_conflict:MergeConflictTutorial,
   git_restore:GitRestoreTutorial,
   git_stash:GitStashTutorial,
-  git_reset:GitResetTutorial,
+  git_reset:Git_Reset_Tutorial,
   git_revert:GitRevertTutorial,
   git_rebase:GitRebaseTutorial,
   git_squashing:GitSquashTutorial,
