@@ -19,57 +19,66 @@ import { UserProvider } from "./context/UserContext";
 import PrivateRoute from "./helper/PrivateRoute"; // Import PrivateRoute
 import ShowNavbar from "./helper/ShowNavbar";
 import Footer from "./components/Footer";
+import PaymentSuccess from "./components/PaymentSuccess";
+import PaymentFail from "./components/PaymentFail";
 
 const App = () => {
   const base = "/";
 
   return (
-    <>
-      <Router basename={base}>
+    <Router basename={base}>
+      <div className="flex flex-col min-h-screen">
         <ShowNavbar>
           <Nav />
         </ShowNavbar>
-        <SocketProvider>
-          {/* Use PeerProvider, not peerProvider */}
-          <UserProvider>
-            <PeerProvider>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/login" element={<Login />} />
-                <Route
-                  path="/dashboard/teacher-dashoard"
-                  element={<PrivateRoute element={TeacherDashboard} />}
-                />
-                <Route
-                  path="/dashboard/student-dashoard"
-                  element={<PrivateRoute element={StudentDashBoard} />}
-                />
-                <Route
-                  path="/dashboard/admin-dashoard"
-                  element={<PrivateRoute element={AdminDashboard} />}
-                />
-                <Route
-                  path="/teacher/search-teacher"
-                  element={<SearchTeacher />}
-                />
-                <Route path="/teacher/intro-videos" element={<IntroVideos />} />
-                <Route path="/room/:roomId" element={<RoomPage />} />
-                <Route path="/:roomId" element={<VideoMeetingWrapper />} />
-                <Route path="/solution" element={<SolutionComponent />} />
-                <Route
-                  path="/sub/:subID"
-                  element={<ChapterWiseDescription />}
-                />
-              </Routes>
-            </PeerProvider>
-          </UserProvider>
-        </SocketProvider>
+
+        {/* Content area with flex-grow to expand and push the footer down */}
+        <div className="flex-grow">
+          <SocketProvider>
+            <UserProvider>
+              <PeerProvider>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/payment-success" element={<PaymentSuccess />} />
+                  <Route path="/payment-fail" element={<PaymentFail />} />
+                  <Route
+                    path="/dashboard/teacher-dashoard"
+                    element={<PrivateRoute element={TeacherDashboard} />}
+                  />
+                  <Route
+                    path="/dashboard/student-dashoard"
+                    element={<PrivateRoute element={StudentDashBoard} />}
+                  />
+                  <Route
+                    path="/dashboard/admin-dashoard"
+                    element={<PrivateRoute element={AdminDashboard} />}
+                  />
+                  <Route
+                    path="/teacher/search-teacher"
+                    element={<SearchTeacher />}
+                  />
+                  <Route path="/teacher/intro-videos" element={<IntroVideos />} />
+                  <Route path="/room/:roomId" element={<RoomPage />} />
+                  <Route path="/:roomId" element={<VideoMeetingWrapper />} />
+                  <Route path="/solution" element={<SolutionComponent />} />
+                  <Route
+                    path="/sub/:subID"
+                    element={<ChapterWiseDescription />}
+                  />
+                </Routes>
+              </PeerProvider>
+            </UserProvider>
+          </SocketProvider>
+        </div>
+
+        {/* Footer always at the bottom */}
         <ShowNavbar>
           <Footer />
         </ShowNavbar>
-      </Router>
-    </>
+      </div>
+    </Router>
   );
 };
 

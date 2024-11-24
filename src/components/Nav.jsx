@@ -280,6 +280,8 @@ const HSCSubjects = [
 const VersitySubjects = ["Coming Soon..."];
 
 const SSC = ({ onSelect }) => {
+  const [hoveredSubject, setHoveredSubject] = useState(null); // Track hovered subject
+
   const subjects = [
     "Physics",
     "Chemistry",
@@ -305,6 +307,8 @@ const SSC = ({ onSelect }) => {
             to={`/sub/${subject}`}
             key={index}
             onClick={() => onSelect(null)}
+            hoveredSubject={hoveredSubject}
+            setHoveredSubject={setHoveredSubject}
           >
             <div className="navSubtext ">{subject}</div>
           </Link>
@@ -314,14 +318,14 @@ const SSC = ({ onSelect }) => {
   );
 };
 
-const SubjectList = ({ subjects, onSelect }) => {
-  const [isHovered, setIsHovered] = useState(false);
+const SubjectList = ({ subjects, onSelect, hoveredSubject, setHoveredSubject }) => {
+  const isHovered = hoveredSubject === subjects.title; // Check if this subject is hovered
 
   return (
     <div
       className="relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onClick={() => setIsHovered(false)}
+      onMouseEnter={() => setHoveredSubject(subjects.title)} // Set current subject as hovered
+      onMouseLeave={() => setHoveredSubject(null)} // Clear hover on mouse leave
     >
       <div className="navSubtext">{subjects.title}</div>
       {isHovered && (
@@ -339,7 +343,10 @@ const SubjectList = ({ subjects, onSelect }) => {
   );
 };
 
+
 const HSC = ({ onSelect }) => {
+  const [hoveredSubject, setHoveredSubject] = useState(null); // Track hovered subject
+
   const subjectData = [
     { title: "Physics", list: ["Physics-1st", "Physics-2nd"] },
     { title: "Chemistry", list: ["Chemistry-1st", "Chemistry-2nd"] },
@@ -358,7 +365,10 @@ const HSC = ({ onSelect }) => {
     >
       <div className="full h-full grid grid-cols-2 gap-2 p-2">
         {subjectData.map((subject, index) => (
-          <SubjectList key={index} subjects={subject} onSelect={onSelect} />
+          <SubjectList key={index} subjects={subject} onSelect={onSelect}
+          
+          hoveredSubject={hoveredSubject}
+          setHoveredSubject={setHoveredSubject}/>
         ))}
       </div>
     </motion.div>
@@ -366,14 +376,15 @@ const HSC = ({ onSelect }) => {
 };
 
 const Versity = ({ onSelect }) => {
+  const [hoveredSubject, setHoveredSubject] = useState(null); // Track hovered subject
+
   const subjectData = [
-    { title: "Web Development", list: ["HTML", "CSS3"] },
-    { title: "Programming Language ", list: ["C","python"] },
-    { title: "Web Development ", list: ["HTML","CSS3","javascript","ReactJS"] },
+    { title: "Programming Language", list: ["C", "Python"] },
+    { title: "Web Development", list: ["HTML", "CSS3", "javascript", "ReactJS", "Hosting"] },
     { title: "NLP", list: ["NLP"] },
     { title: "Tools", list: ["Git & Github"] },
-    
   ];
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -381,9 +392,15 @@ const Versity = ({ onSelect }) => {
       transition={{ duration: 0.5 }}
       className="text-white"
     >
-     <div className="full h-full grid grid-cols-2 gap-2 p-2">
+      <div className="full h-full grid grid-cols-2 gap-2 p-2">
         {subjectData.map((subject, index) => (
-          <SubjectList key={index} subjects={subject} onSelect={onSelect} />
+          <SubjectList 
+            key={index} 
+            subjects={subject} 
+            onSelect={onSelect}
+            hoveredSubject={hoveredSubject}
+            setHoveredSubject={setHoveredSubject}
+          />
         ))}
       </div>
     </motion.div>

@@ -18,6 +18,13 @@ const TeacherProfile = () => {
           (teacher) => teacher.email === loggedTeacher.email
         );
         setSingleTeacher(teacher);
+        if(singleTeacher.profileImage){
+          console.log("first")
+          const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+      loggedUser.image = singleTeacher.profileImage; // Assuming profileImage is the updated field
+
+      localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
+        }
       }
     };
 
@@ -52,6 +59,11 @@ const TeacherProfile = () => {
       );
       const updatedTeacher = updatedTeacherResponse.data;
       setSingleTeacher(updatedTeacher);
+      // Update loggedUser in local storage
+      const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+      loggedUser.image = updatedTeacher.profileImage; // Assuming profileImage is the updated field
+
+      localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
       console.log(response.data);
     } catch (error) {
       console.error("Error while uploading the data:", error);

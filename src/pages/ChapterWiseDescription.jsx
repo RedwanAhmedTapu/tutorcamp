@@ -6,9 +6,12 @@ import { CiMenuFries } from "react-icons/ci";
 import { menuItems } from "../data/chapterList";
 import Ict from "./subject/Ict";
 import Javascript from "./subject/Javascript";
+import Css from "./subject/Css";
+import WebHosting from "./subject/WebHosting";
 
 import Github from "./subject/Github";
 import HtmlCssCodeEditor from "../components/HtmlCssCodeEditor";
+import Reactjs from "./subject/Reactjs";
 
 const ChapterwiseDescription = () => {
   const { subID } = useParams();
@@ -35,6 +38,18 @@ const ChapterwiseDescription = () => {
       break;
     case "/sub/javascript":
       ContentComponent = Javascript;
+      break;
+    case "/sub/CSS3":
+      ContentComponent = Css;
+      break;
+    case "/sub/Hosting":
+      ContentComponent = WebHosting;
+      break;
+    case "/sub/ReactJS":
+      ContentComponent = Reactjs;
+      break;
+    case "/sub/Git & Github":
+      ContentComponent = Reactjs;
       break;
     default:
       ContentComponent = Github;

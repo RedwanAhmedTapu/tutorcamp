@@ -18,6 +18,13 @@ const StudentProfileForm = () => {
           (student) => student.email === loggedStudent.email
         );
         setSingleStudent(student);
+        if(student.profileImage){
+          console.log("first")
+          const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+      loggedUser.image = student.profileImage; // Assuming profileImage is the updated field
+
+      localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
+        }
         if (student) {
           setProfilePic(student.profileImage);
           setIdImage(student.idImage);
@@ -53,6 +60,12 @@ const StudentProfileForm = () => {
       );
       const updatedStudent = updatedStudentResponse.data;
       setSingleStudent(updatedStudent);
+      if(updatedStudent){
+        const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+        loggedUser.image = updatedStudent.profileImage; // Assuming profileImage is the updated field
+  
+        localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
+      }
 
       console.log(response.data);
     } catch (error) {

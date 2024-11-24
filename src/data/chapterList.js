@@ -146,6 +146,80 @@ export const menuItems = [
     ],
   },
   {
+    "title": "CSS3",
+    "chapters": [
+      {
+        "name": "Chapter 1",
+        "topics": [
+          { "topicName": "Introduction to CSS", "id": "intro_css" },
+          { "topicName": "Selectors & Specificity", "id": "selectors_specificity" },
+          { "topicName": "Colors & Backgrounds", "id": "colors_backgrounds" },
+          { "topicName": "Box Model", "id": "box_model" },
+          { "topicName": "Typography", "id": "typography" },
+          { "topicName": "Flexbox", "id": "flex_box" },
+          { "topicName": "Grid Layout", "id": "grid_layout" },
+          { "topicName": "Positioning", "id": "positioning" },
+          { "topicName": "Z-Index & Stacking Context", "id": "z_index_stacking" },
+          { "topicName": "Display & Visibility", "id": "display_visibility" },
+          { "topicName": "CSS Variables", "id": "variables" },
+          { "topicName": "CSS Animations", "id": "css_animations" },
+          { "topicName": "CSS Transitions", "id": "css_transitions" },
+          { "topicName": "Pseudo-classes & Pseudo-elements", "id": "pseudo_classes_elements" }
+        ]
+      },
+      {
+        "name": "Chapter 2",
+        "topics": [
+          { "topicName": "Advanced Selectors", "id": "advanced_selectors" },
+          { "topicName": "Media Queries", "id": "media_queries" },
+          { "topicName": "CSS Grid Advanced", "id": "css_grid_advanced" },
+          { "topicName": "CSS Flexbox Advanced", "id": "css_flexbox_advanced" },
+          { "topicName": "CSS Functions", "id": "css_functions" },
+          { "topicName": "CSS Units & Measurements", "id": "css_units_measurements" },
+          { "topicName": "Transformations", "id": "transformations" },
+          { "topicName": "Filter & Blend Modes", "id": "filter_blend_modes" },
+          { "topicName": "CSS Shapes", "id": "css_shapes" },
+          { "topicName": "Browser Support & Vendor Prefixes", "id": "browser_support_prefixes" }
+        ]
+      },
+      {
+        "name": "Chapter 3",
+        "topics": [
+          { "topicName": "Preprocessors: Sass & LESS", "id": "preprocessors" },
+          { "topicName": "CSS Methodologies: BEM & OOCSS", "id": "css_methodologies" },
+          { "topicName": "CSS Frameworks Overview", "id": "css_frameworks" },
+          { "topicName": "Tailwind CSS Basics", "id": "tailwind_css_basics" },
+          { "topicName": "CSS-in-JS", "id": "css_in_js" },
+          { "topicName": "Styled Components", "id": "styled_components" },
+          { "topicName": "Responsive Web Design Principles", "id": "responsive_web_design_principles" },
+          { "topicName": "Cross-Browser Compatibility", "id": "cross_browser_compatibility" }
+        ]
+      },
+      {
+        "name": "Chapter 4",
+        "topics": [
+          { "topicName": "Performance Optimization", "id": "performance_optimization_css" },
+          { "topicName": "CSS Architecture", "id": "css_architecture" },
+          { "topicName": "Debugging CSS", "id": "debugging_css" },
+          { "topicName": "CSS Design Patterns", "id": "css_design_patterns" },
+          { "topicName": "Scalable and Modular CSS", "id": "scalable_modular_css" },
+          { "topicName": "CSS Grid Advanced Techniques", "id": "grid_advanced_techniques" },
+          { "topicName": "Modern CSS Features", "id": "modern_css_features" }
+        ]
+      },
+      {
+        "name": "Chapter 5",
+        "topics": [
+          { "topicName": "Project: Portfolio Website", "id": "project_portfolio" },
+          { "topicName": "Project: Responsive Landing Page", "id": "project_landing_page" },
+          { "topicName": "Project: CSS Art & Illustrations", "id": "project_css_art" },
+          { "topicName": "Project: CSS Animations & Interactions", "id": "project_css_animations" }
+        ]
+      }
+    ]
+  }
+  ,
+  {
     title: "javascript",
     chapters: [
       {
@@ -395,5 +469,16 @@ export const menuItems = [
       },
     ],
   },
+  {
+    "title": "Hosting",
+    "chapters": [
+      {
+        "name": "vps hosting",
+        "topics": [
+          { "topicName": "mern on vps", "id": "mern_vps" },
+         
+        ]
+      },]}
+    
   // Add more menu items as needed
 ];

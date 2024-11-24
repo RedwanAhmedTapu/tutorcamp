@@ -2,9 +2,13 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "../context/SocketProvider";
 import Modal from "react-modal";
+import axiosInstance from "../helper/api/axiosInstance";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import PaymentComponent from "./PaymentComponent";
 
 // Set the app element for react-modal
-Modal.setAppElement('#root');
+Modal.setAppElement("#root");
 
 const CreateRoom = () => {
   const socket = useSocket();
@@ -14,8 +18,11 @@ const CreateRoom = () => {
       ""
   );
   const [room, setRoom] = useState("");
+  const [showPaymentcard, setShowPaymentcard] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [expirationDate, setExpirationDate] = useState(null);
+  const [isExpired, setIsExpired] = useState(false);
   const navigate = useNavigate();
 
   const generateRandomString = () => {
@@ -41,7 +48,45 @@ const CreateRoom = () => {
     return result.slice(0, 12);
   };
 
+  // Check subscription status on mount
+  const subscriptionCheck = async () => {
+    if (email) {
+      axiosInstance
+        .get(`/api/subscription/status/${email}`)
+        .then((response) => {
+          const { expirationDate: expDate, message } = response.data;
+          console.log(response, ",ess");
+
+          if (
+            message.trim() === "No subscription found" ||
+            new Date(expDate) < new Date()
+          ) {
+            setExpirationDate(expDate ? new Date(expDate) : null); // Handle null expiration dates
+            setIsExpired(true);
+            setShowPaymentcard(true);
+            toast.warning(
+              "Your subscription has expired or no subscription found. Please renew."
+            );
+          } else {
+            setExpirationDate(new Date(expDate));
+            setIsExpired(false);
+            setShowModal(true);
+            setShowPaymentcard(false);
+          }
+
+          console.log(response.data, "Subscription Status Response");
+        })
+        .catch((error) => {
+          console.error("Error fetching subscription status:", error);
+          toast.error("Unable to check subscription status. Please try again.");
+        });
+    }
+  };
+
   const createRoom = useCallback(() => {
+    if (!email) {
+      navigate("/login");
+    }
     const inputString = generateRandomString();
     const formattedString = formatString(inputString);
     setRoom(formattedString); // Set the room state with the formatted room string
@@ -49,6 +94,9 @@ const CreateRoom = () => {
   }, []);
 
   const handleJoinRoom = useCallback(async () => {
+    if (!email) {
+      navigate("/login");
+    }
     if (email) {
       if (room) {
         socket.emit("room-join", { room, email });
@@ -77,7 +125,7 @@ const CreateRoom = () => {
       setCopied(true);
     });
   };
-
+  console.log(isExpired);
   const closeModal = () => {
     setShowModal(false);
     setCopied(false);
@@ -85,7 +133,9 @@ const CreateRoom = () => {
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center bg-slate-300 dark:bg-[#130e2e] p-4">
-      <h1 className="text-4xl font-bold mb-6 dark:text-white">Video Conference</h1>
+      <h1 className="text-4xl font-bold mb-6 dark:text-white">
+        Video Conference
+      </h1>
       <div className="mb-4 w-full max-w-md">
         <input
           type="email"
@@ -99,7 +149,7 @@ const CreateRoom = () => {
         <button
           onClick={() => {
             createRoom();
-            setShowModal(true);
+            subscriptionCheck();
           }}
           className="w-full p-2 bg-green-500 text-white rounded-md hover:bg-blue-600 mb-4"
         >
@@ -113,7 +163,7 @@ const CreateRoom = () => {
           name="room"
           placeholder="Enter your room"
           onChange={(e) => setRoom(e.target.value)}
-          value={room}
+          value={isExpired ? "" : room}
           className="w-full p-2 mb-4 border border-gray-300 rounded-md"
         />
         <button
@@ -125,7 +175,7 @@ const CreateRoom = () => {
       </div>
 
       <Modal
-        isOpen={showModal}
+        isOpen={showModal && !isExpired}
         onRequestClose={closeModal}
         contentLabel="Room Created"
         className="flex flex-col items-center justify-center bg-white p-4 rounded-md z-50"
@@ -133,7 +183,9 @@ const CreateRoom = () => {
       >
         <h2 className="text-2xl font-bold mb-4">Room Created</h2>
         <p className="mb-4">Room ID: {room}</p>
-        <p className="mb-4 text-orange-500">Share The roomID with your student </p>
+        <p className="mb-4 text-orange-500">
+          Share The roomID with your student{" "}
+        </p>
         <button
           onClick={handleCopy}
           className="p-2 bg-gray-300 text-black rounded-md hover:bg-gray-400 mb-4"
@@ -147,6 +199,13 @@ const CreateRoom = () => {
           Go to Room
         </button>
       </Modal>
+      {showPaymentcard && (
+        <PaymentComponent
+          email={email}
+          expirationDate={expirationDate}
+          isExpired={isExpired}
+        />
+      )}
     </div>
   );
 };
