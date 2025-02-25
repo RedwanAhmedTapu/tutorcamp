@@ -82,7 +82,7 @@ const SearchTeacher = () => {
   };
 
   return (
-    <div className="p-2 md:p-6 max-w-4xl mx-auto relative top-16">
+    <div className="p-2 md:p-6 max-w-4xl mx-auto relative h-auto">
       <div className="mb-6 w-full">
         <div className="flex flex-col md:flex-row items-center">
           <div className="relative w-full md:w-auto mb-4 md:mb-0 md:mr-4">

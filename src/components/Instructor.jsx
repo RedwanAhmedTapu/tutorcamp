@@ -69,11 +69,11 @@ const Instructor = () => {
           </Swiper>
         </div>
 
-        <div className="text-center mt-12">
+        {/* <div className="text-center mt-12">
           <button className="py-3 px-6 bg-violet-700 dark:bg-amber-500 rounded-md text-[#fff]">
             View More
           </button>
-        </div>
+        </div> */}
       </div>
     </section>
   );

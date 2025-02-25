@@ -191,7 +191,7 @@ const Home = () => {
       <JoinCommunity />
       <CardSpotlight />
       <CreateRoom />
-      {
+      {/* {
         <motion.div className="App">
           <h1 className="dark:text-white self-center">Math Solver</h1>
           <ImageUpload setSolution={setSolution} />
@@ -206,7 +206,7 @@ const Home = () => {
             </motion.div>
           }
         </motion.div>
-      }
+      } */}
     </>
   );
 };

@@ -76,9 +76,9 @@ const NavBar = ({ isMenuOpen, toggleMenu }) => {
       </div>
 
       <Tabs isMenuOpen={isMenuOpen} />
-      <div className="max-[1000px]:hidden">
+      {/* <div className="max-[1000px]:hidden">
         <DarkLightMode />
-      </div>
+      </div> */}
 
       <div className="w-24 mr-8 h-16 flex_col_center">
         <div className="mdUp:hidden  flex  self-center">

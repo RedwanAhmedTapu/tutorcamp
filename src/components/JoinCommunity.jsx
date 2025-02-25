@@ -16,7 +16,7 @@ const JoinCommunity = () => {
           <p className="text-[14px] md:text-[18px] font-[500] text-textColor mt-3 mb-8 dark:text-white">
           Our mission is to deliver top-quality education and opportunities for improvement. Enroll today, form your own study group, and thrive together while building a supportive community.
           </p>
-          <Link to="/signup"><button className="py-3 px-6 bg-violet-700 dark:bg-neutral-500 dark:text-white rounded-md text-[#905b5b]">
+          <Link to="/signup"><button className="py-3 px-6 bg-violet-700 dark:bg-neutral-500 dark:text-white rounded-md text-white">
             Register Now
           </button></Link>
         </div>
