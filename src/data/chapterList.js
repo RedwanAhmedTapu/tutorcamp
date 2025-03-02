@@ -146,79 +146,111 @@ export const menuItems = [
     ],
   },
   {
-    "title": "CSS3",
-    "chapters": [
+    title: "CSS3",
+    chapters: [
       {
-        "name": "Chapter 1",
-        "topics": [
-          { "topicName": "Introduction to CSS", "id": "intro_css" },
-          { "topicName": "Selectors & Specificity", "id": "selectors_specificity" },
-          { "topicName": "Colors & Backgrounds", "id": "colors_backgrounds" },
-          { "topicName": "Box Model", "id": "box_model" },
-          { "topicName": "Typography", "id": "typography" },
-          { "topicName": "Flexbox", "id": "flex_box" },
-          { "topicName": "Grid Layout", "id": "grid_layout" },
-          { "topicName": "Positioning", "id": "positioning" },
-          { "topicName": "Z-Index & Stacking Context", "id": "z_index_stacking" },
-          { "topicName": "Display & Visibility", "id": "display_visibility" },
-          { "topicName": "CSS Variables", "id": "variables" },
-          { "topicName": "CSS Animations", "id": "css_animations" },
-          { "topicName": "CSS Transitions", "id": "css_transitions" },
-          { "topicName": "Pseudo-classes & Pseudo-elements", "id": "pseudo_classes_elements" }
-        ]
+        name: "Chapter 1",
+        topics: [
+          { topicName: "Introduction to CSS", id: "intro_css" },
+          { topicName: "Selectors & Specificity", id: "selectors_specificity" },
+          { topicName: "Colors & Backgrounds", id: "colors_backgrounds" },
+          { topicName: "Box Model", id: "box_model" },
+          { topicName: "Typography", id: "typography" },
+          { topicName: "Flexbox", id: "flex_box" },
+          { topicName: "Grid Layout", id: "grid_layout" },
+          { topicName: "Positioning", id: "positioning" },
+          { topicName: "Z-Index & Stacking Context", id: "z_index_stacking" },
+          { topicName: "Display & Visibility", id: "display_visibility" },
+          { topicName: "CSS Variables", id: "variables" },
+          { topicName: "CSS Animations", id: "css_animations" },
+          { topicName: "CSS Transitions", id: "css_transitions" },
+          {
+            topicName: "Pseudo-classes & Pseudo-elements",
+            id: "pseudo_classes_elements",
+          },
+        ],
       },
       {
-        "name": "Chapter 2",
-        "topics": [
-          { "topicName": "Advanced Selectors", "id": "advanced_selectors" },
-          { "topicName": "Media Queries", "id": "media_queries" },
-          { "topicName": "CSS Grid Advanced", "id": "css_grid_advanced" },
-          { "topicName": "CSS Flexbox Advanced", "id": "css_flexbox_advanced" },
-          { "topicName": "CSS Functions", "id": "css_functions" },
-          { "topicName": "CSS Units & Measurements", "id": "css_units_measurements" },
-          { "topicName": "Transformations", "id": "transformations" },
-          { "topicName": "Filter & Blend Modes", "id": "filter_blend_modes" },
-          { "topicName": "CSS Shapes", "id": "css_shapes" },
-          { "topicName": "Browser Support & Vendor Prefixes", "id": "browser_support_prefixes" }
-        ]
+        name: "Chapter 2",
+        topics: [
+          { topicName: "Advanced Selectors", id: "advanced_selectors" },
+          { topicName: "Media Queries", id: "media_queries" },
+          { topicName: "CSS Grid Advanced", id: "css_grid_advanced" },
+          { topicName: "CSS Flexbox Advanced", id: "css_flexbox_advanced" },
+          { topicName: "CSS Functions", id: "css_functions" },
+          {
+            topicName: "CSS Units & Measurements",
+            id: "css_units_measurements",
+          },
+          { topicName: "Transformations", id: "transformations" },
+          { topicName: "Filter & Blend Modes", id: "filter_blend_modes" },
+          { topicName: "CSS Shapes", id: "css_shapes" },
+          {
+            topicName: "Browser Support & Vendor Prefixes",
+            id: "browser_support_prefixes",
+          },
+        ],
       },
       {
-        "name": "Chapter 3",
-        "topics": [
-          { "topicName": "Preprocessors: Sass & LESS", "id": "preprocessors" },
-          { "topicName": "CSS Methodologies: BEM & OOCSS", "id": "css_methodologies" },
-          { "topicName": "CSS Frameworks Overview", "id": "css_frameworks" },
-          { "topicName": "Tailwind CSS Basics", "id": "tailwind_css_basics" },
-          { "topicName": "CSS-in-JS", "id": "css_in_js" },
-          { "topicName": "Styled Components", "id": "styled_components" },
-          { "topicName": "Responsive Web Design Principles", "id": "responsive_web_design_principles" },
-          { "topicName": "Cross-Browser Compatibility", "id": "cross_browser_compatibility" }
-        ]
+        name: "Chapter 3",
+        topics: [
+          { topicName: "Preprocessors: Sass & LESS", id: "preprocessors" },
+          {
+            topicName: "CSS Methodologies: BEM & OOCSS",
+            id: "css_methodologies",
+          },
+          { topicName: "CSS Frameworks Overview", id: "css_frameworks" },
+          { topicName: "Tailwind CSS Basics", id: "tailwind_css_basics" },
+          { topicName: "CSS-in-JS", id: "css_in_js" },
+          { topicName: "Styled Components", id: "styled_components" },
+          {
+            topicName: "Responsive Web Design Principles",
+            id: "responsive_web_design_principles",
+          },
+          {
+            topicName: "Cross-Browser Compatibility",
+            id: "cross_browser_compatibility",
+          },
+        ],
       },
       {
-        "name": "Chapter 4",
-        "topics": [
-          { "topicName": "Performance Optimization", "id": "performance_optimization_css" },
-          { "topicName": "CSS Architecture", "id": "css_architecture" },
-          { "topicName": "Debugging CSS", "id": "debugging_css" },
-          { "topicName": "CSS Design Patterns", "id": "css_design_patterns" },
-          { "topicName": "Scalable and Modular CSS", "id": "scalable_modular_css" },
-          { "topicName": "CSS Grid Advanced Techniques", "id": "grid_advanced_techniques" },
-          { "topicName": "Modern CSS Features", "id": "modern_css_features" }
-        ]
+        name: "Chapter 4",
+        topics: [
+          {
+            topicName: "Performance Optimization",
+            id: "performance_optimization_css",
+          },
+          { topicName: "CSS Architecture", id: "css_architecture" },
+          { topicName: "Debugging CSS", id: "debugging_css" },
+          { topicName: "CSS Design Patterns", id: "css_design_patterns" },
+          { topicName: "Scalable and Modular CSS", id: "scalable_modular_css" },
+          {
+            topicName: "CSS Grid Advanced Techniques",
+            id: "grid_advanced_techniques",
+          },
+          { topicName: "Modern CSS Features", id: "modern_css_features" },
+        ],
       },
       {
-        "name": "Chapter 5",
-        "topics": [
-          { "topicName": "Project: Portfolio Website", "id": "project_portfolio" },
-          { "topicName": "Project: Responsive Landing Page", "id": "project_landing_page" },
-          { "topicName": "Project: CSS Art & Illustrations", "id": "project_css_art" },
-          { "topicName": "Project: CSS Animations & Interactions", "id": "project_css_animations" }
-        ]
-      }
-    ]
-  }
-  ,
+        name: "Chapter 5",
+        topics: [
+          { topicName: "Project: Portfolio Website", id: "project_portfolio" },
+          {
+            topicName: "Project: Responsive Landing Page",
+            id: "project_landing_page",
+          },
+          {
+            topicName: "Project: CSS Art & Illustrations",
+            id: "project_css_art",
+          },
+          {
+            topicName: "Project: CSS Animations & Interactions",
+            id: "project_css_animations",
+          },
+        ],
+      },
+    ],
+  },
   {
     title: "javascript",
     chapters: [
@@ -317,6 +349,115 @@ export const menuItems = [
           { topicName: "tic-tac-toe", id: "tic_tac" },
           { topicName: "snake", id: "snake" },
           { topicName: "ludu", id: "ludu" },
+        ],
+      },
+    ],
+  },
+  {
+    title: "DSA",
+    chapters: [
+      {
+        name: "Introduction to DSA",
+        topics: [
+          { topicName: "What is DSA?", id: "dsa_intro" },
+          { topicName: "Importance of DSA", id: "importance_dsa" },
+          { topicName: "Time & Space Complexity", id: "complexity" },
+          { topicName: "Big O Notation", id: "big_o" },
+          { topicName: "Recursion", id: "recursion" },
+        ],
+      },
+      {
+        name: "Data Structures (I)",
+        topics: [
+          { topicName: "Arrays", id: "arrays" },
+          { topicName: "Linked Lists", id: "linked_lists" },
+          { topicName: "Stacks", id: "stacks" },
+          { topicName: "Queues", id: "queues" },
+          { topicName: "Hash Tables", id: "hash_tables" },
+        ],
+      },
+      {
+        name: "Data Structures (II)",
+        topics: [
+          { topicName: "Trees", id: "trees" },
+          { topicName: "Binary Trees", id: "binary_trees" },
+          { topicName: "Binary Search Trees", id: "bst" },
+          { topicName: "Heaps", id: "heaps" },
+          { topicName: "Graphs", id: "graphs" },
+        ],
+      },
+      {
+        name: "Tree-based DSA (I)",
+        topics: [
+          { topicName: "Tree Traversals", id: "tree_traversals" },
+          { topicName: "AVL Trees", id: "avl_trees" },
+          { topicName: "Red-Black Trees", id: "red_black_trees" },
+          { topicName: "B-Trees", id: "b_trees" },
+        ],
+      },
+      {
+        name: "Tree-based DSA (II)",
+        topics: [
+          { topicName: "Segment Trees", id: "segment_trees" },
+          { topicName: "Fenwick Trees", id: "fenwick_trees" },
+          { topicName: "Trie", id: "trie" },
+        ],
+      },
+      {
+        name: "Graph-based DSA",
+        topics: [
+          { topicName: "Graph Representation", id: "graph_representation" },
+          { topicName: "BFS & DFS", id: "bfs_dfs" },
+          { topicName: "Shortest Path Algorithms", id: "shortest_path" },
+          { topicName: "Minimum Spanning Tree", id: "mst" },
+          { topicName: "Topological Sorting", id: "topological_sort" },
+        ],
+      },
+      {
+        name: "Sorting and Searching Algorithms",
+        topics: [
+          { topicName: "Bubble Sort", id: "bubble_sort" },
+          { topicName: "Selection Sort", id: "selection_sort" },
+          { topicName: "Insertion Sort", id: "insertion_sort" },
+          { topicName: "Merge Sort", id: "merge_sort" },
+          { topicName: "Quick Sort", id: "quick_sort" },
+          { topicName: "Heap Sort", id: "heap_sort" },
+          { topicName: "Binary Search", id: "binary_search" },
+          { topicName: "Linear Search", id: "linear_search" },
+        ],
+      },
+      {
+        name: "Greedy Algorithms",
+        topics: [
+          {
+            topicName: "Introduction to Greedy Algorithms",
+            id: "greedy_intro",
+          },
+          { topicName: "Fractional Knapsack", id: "fractional_knapsack" },
+          { topicName: "Activity Selection", id: "activity_selection" },
+          { topicName: "Huffman Coding", id: "huffman_coding" },
+        ],
+      },
+      {
+        name: "Dynamic Programming",
+        topics: [
+          { topicName: "Introduction to DP", id: "dp_intro" },
+          { topicName: "Memoization", id: "memoization" },
+          { topicName: "Tabulation", id: "tabulation" },
+          { topicName: "0/1 Knapsack", id: "knapsack" },
+          { topicName: "Longest Common Subsequence", id: "lcs" },
+          { topicName: "Matrix Chain Multiplication", id: "matrix_chain" },
+          { topicName: "Coin Change Problem", id: "coin_change" },
+        ],
+      },
+      {
+        name: "Other Algorithms",
+        topics: [
+          { topicName: "Backtracking", id: "backtracking" },
+          { topicName: "Divide and Conquer", id: "divide_conquer" },
+          { topicName: "Sliding Window", id: "sliding_window" },
+          { topicName: "Two Pointer Technique", id: "two_pointer" },
+          { topicName: "Bit Manipulation", id: "bit_manipulation" },
         ],
       },
     ],
@@ -470,15 +611,14 @@ export const menuItems = [
     ],
   },
   {
-    "title": "Hosting",
-    "chapters": [
+    title: "Hosting",
+    chapters: [
       {
-        "name": "vps hosting",
-        "topics": [
-          { "topicName": "mern on vps", "id": "mern_vps" },
-         
-        ]
-      },]}
-    
+        name: "vps hosting",
+        topics: [{ topicName: "mern on vps", id: "mern_vps" }],
+      },
+    ],
+  },
+
   // Add more menu items as needed
 ];

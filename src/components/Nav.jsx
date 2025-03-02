@@ -382,6 +382,7 @@ const Versity = ({ onSelect }) => {
     { title: "Programming Language", list: ["C", "Python"] },
     { title: "Web Development", list: ["HTML", "CSS3", "javascript", "ReactJS", "Hosting"] },
     { title: "NLP", list: ["NLP"] },
+    { title: "DSA", list: ["DSA"] },
     { title: "Tools", list: ["Git & Github"] },
   ];
 

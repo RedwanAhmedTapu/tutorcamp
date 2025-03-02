@@ -12,6 +12,7 @@ import WebHosting from "./subject/WebHosting";
 import Github from "./subject/Github";
 import HtmlCssCodeEditor from "../components/HtmlCssCodeEditor";
 import Reactjs from "./subject/Reactjs";
+import Dsa from "./subject/Dsa";
 
 const ChapterwiseDescription = () => {
   const { subID } = useParams();
@@ -50,6 +51,9 @@ const ChapterwiseDescription = () => {
       break;
     case "/sub/Git & Github":
       ContentComponent = Reactjs;
+      break;
+    case "/sub/DSA":
+      ContentComponent = Dsa;
       break;
     default:
       ContentComponent = Github;

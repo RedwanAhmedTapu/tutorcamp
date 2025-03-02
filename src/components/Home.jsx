@@ -18,6 +18,7 @@ import LLMApp from "./Qst";
 import ImageUpload from "./ImageUpload";
 import BrandSlider from "./Slider";
 import SliderBelowCard from "./SliderBelowCard";
+import BinarySearchVisualizer from "./BinarySearchVisualizer";
 
 const Home = () => {
   const controls = useAnimation();
@@ -191,6 +192,7 @@ const Home = () => {
       <JoinCommunity />
       <CardSpotlight />
       <CreateRoom />
+      <BinarySearchVisualizer/>
       {/* {
         <motion.div className="App">
           <h1 className="dark:text-white self-center">Math Solver</h1>
