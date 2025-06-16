@@ -10,7 +10,7 @@ export const useSocket = () => {
 
 export const SocketProvider = (props) => {
   // Create socket memoized, so it only initializes once
-  const socket = useMemo(() => io('https://tutorcampbackend.onrender.com' || 'http://localhost:5000'), []);
+  const socket = useMemo(() => io('http://localhost:5000'), []);
   if (!socket.connected) {
     socket.connect();
   }

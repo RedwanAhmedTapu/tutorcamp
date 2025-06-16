@@ -1,4 +1,6 @@
 import React from "react";
+import Scene from "./BehindSceeneAnimation";
+import RuntimeVisualizer from "./BehindSceeneAnimation";
 
 const BehindTheScenesTutorial = () => {
   return (
@@ -126,94 +128,11 @@ const BehindTheScenesTutorial = () => {
         <p>
           এক্সিকিউশন স্ট্যাক দেখায় কিভাবে কোড চলাকালীন একাধিক কনটেক্সট ব্যবস্থাপনা হয়। নিম্নলিখিত উদাহরণটি দেখায় কিভাবে স্ট্যাক পরিবর্তিত হয়:
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Left side: Code example */}
-          <div className="p-4 bg-gray-900 rounded-md">
+          <div className="p-2 bg-gray-900 rounded-md ">
             <h3 className="text-xl font-semibold mb-2">কোড উদাহরণ</h3>
-            <pre>
-              <code className="whitespace-pre-line">
-                {`// Variables
-var a = 5;
-var b = 10;
-var c = a + b;
-
-// Function declaration
-function add(x, y) {
-  return x + y;
-}
-
-// Array and object
-var numbers = [1, 2, 3, 4, 5];
-var person = {
-  name: "John",
-  age: 30,
-  greet: function() {
-    console.log("Hello, " + this.name);
-  }
-};
-
-// Function call
-var result = add(a, b);
-console.log(result); // Output: 15
-person.greet(); // Output: Hello, John
-
-// Nested function call
-function outerFunction() {
-  var outerVar = 'I am outer!';
-  function innerFunction() {
-    var innerVar = 'I am inner!';
-    console.log(outerVar); // Output: I am outer!
-    console.log(innerVar); // Output: I am inner!
-  }
-  innerFunction();
-}
-outerFunction();
-`}
-              </code>
-            </pre>
-          </div>
-
-          {/* Right side: Execution Stack */}
-          <div className="p-4 bg-gray-900 rounded-md">
-            <h3 className="text-xl font-semibold mb-2">এক্সিকিউশন স্ট্যাক</h3>
-            <div className="bg-gray-800 p-4 rounded-md">
-              <h4 className="text-lg font-semibold mb-2">স্টেপ ১: গ্লোবাল কনটেক্সট</h4>
-              <pre>
-                <code className="whitespace-pre-line">
-                  {`Global Execution Context:
-- a: 5
-- b: 10
-- c: 15 (calculated as a + b)
-- add function declared
-- numbers array initialized
-- person object initialized with name, age, and greet method`}
-                </code>
-              </pre>
-            </div>
-
-            <div className="bg-gray-800 p-4 rounded-md mt-4">
-              <h4 className="text-lg font-semibold mb-2">স্টেপ ২: ফাংশন কল</h4>
-              <pre>
-                <code className="whitespace-pre-line">
-                  {`Function Execution Context for add(a, b):
-- x: 5
-- y: 10
-- return x + y = 15
-
-Function Execution Context for person.greet():
-- this: {name: "John"}
-
-Function Execution Context for outerFunction():
-- outerVar: 'I am outer!'
-
-Function Execution Context for innerFunction():
-- outerVar: 'I am outer!'
-- innerVar: 'I am inner!'
-`}
-                </code>
-              </pre>
-            </div>
-          </div>
+            <RuntimeVisualizer/>
+         
         </div>
       </section>
     </div>

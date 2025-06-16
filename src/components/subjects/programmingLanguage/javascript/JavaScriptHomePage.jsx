@@ -139,7 +139,7 @@ const JavaScriptHomePage = () => {
   };
 
   return (
-    <div className="w-full h-auto flex flex-col gap-y-8 p-8 bg-gray-900 overflow-x-hidden">
+    <div className="w-full h-auto flex flex-col gap-y-8  bg-gray-900 overflow-x-hidden">
       <div className="w-20 h-20 text-yellow-400 self-center">
         <FaJs className="w-full h-full" />
       </div>
