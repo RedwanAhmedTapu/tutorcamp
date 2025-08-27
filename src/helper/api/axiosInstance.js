@@ -2,8 +2,8 @@
 import axios from 'axios';
 
 
-// const SERVER_URL="https://tutorcampbackend.onrender.com"
-const SERVER_URL="http://localhost:5000"
+const SERVER_URL="https://tutorcampbackend.onrender.com"
+// const SERVER_URL="http://localhost:5000"
 
 
 // Create an axios instance with custom configuration
